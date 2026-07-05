@@ -1,93 +1,1134 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบฟิสิกส์2569 </title>
-    <!-- ตกแต่งหน้าตาเว็บให้ดูทันสมัยแบบ Dark Mode -->
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a2e;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background-color: #16213e;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            text-align: center;
-            border: 1px solid #0f3460;
-        }
-        h1 { color: #4facfe; margin-top: 0;}
-        button {
-            background: linear-gradient(45deg, #e94560, #d13050);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
-        }
-        button:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(233, 69, 96, 0.6); }
-        #result {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #0f3460;
-            border-radius: 12px;
-            display: none; 
-            text-align: left;
-        }
-        .success-text { color: #4facfe; font-size: 24px; font-weight: bold; margin-bottom: 10px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ระบบส่งงานฟิสิกส์ ครูณัฐพล — สนมวิทยาคาร 2569</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* DARK tokens (default) */
+:root,[data-theme="dark"]{
+  --bg:radial-gradient(ellipse at 18% 5%,#0c2255 0%,#060b1a 55%),radial-gradient(ellipse at 82% 95%,#1a0847 0%,transparent 55%);
+  --bg-body:#07090f;
+  --topbar-bg:rgba(7,9,15,.78);
+  --g0:rgba(255,255,255,.055); --g1:rgba(255,255,255,.10);
+  --g2:rgba(255,255,255,.16);  --g3:rgba(255,255,255,.24);
+  --gb:rgba(255,255,255,.16);  --gbs:rgba(255,255,255,.30);
+  --ghi:rgba(255,255,255,.38);
+  --t1:#eef2ff; --t2:rgba(238,242,255,.72);
+  --t3:rgba(238,242,255,.44); --t4:rgba(238,242,255,.24);
+  --ac:#1e72e8; --ac-g:rgba(30,114,232,.38);
+  --ph5:#7c6af5; --ph5-g:rgba(124,106,245,.38);
+  --cy:#00d4ff; --cy-d:rgba(0,212,255,.15);
+  --ok:#00e8a0; --ok-b:rgba(0,232,160,.11); --ok-bd:rgba(0,232,160,.28);
+  --er:#ff4466; --er-b:rgba(255,68,102,.11); --er-bd:rgba(255,68,102,.28);
+  --wn:#ffaa44; --wn-b:rgba(255,170,68,.11); --wn-bd:rgba(255,170,68,.28);
+  --in-b:rgba(30,114,232,.12); --in-bd:rgba(30,114,232,.30);
+  --ac-dk:#155aab; --ph5-dk:#5b4ed4; --er-dk:#cc3355; --ok-dk:#00b878;
+  --overlay:rgba(7,9,15,.88); --overlay2:rgba(7,9,15,.92);
+  --cy-dash:rgba(0,212,255,.35); --cy-glow:rgba(0,212,255,.5); --cy-box-bd:rgba(0,212,255,.28);
+  --ph5-box-bg:rgba(124,106,245,.12); --ph5-box-bd:rgba(124,106,245,.28);
+  --ph5-panel-bg:rgba(124,106,245,.12); --ph5-panel-bd:rgba(124,106,245,.26);
+  --ac-glow:rgba(30,114,232,.5); --ph5-glow:rgba(124,106,245,.5);
+  --sc:0 4px 28px rgba(0,0,0,.4),0 1px 5px rgba(0,0,0,.25);
+  --sf:0 16px 56px rgba(0,0,0,.55),0 4px 18px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+/* LIGHT tokens */
+[data-theme="light"]{
+  --bg:linear-gradient(160deg,#dce8fb 0%,#eef2ff 60%,#ede9ff 100%);
+  --bg-body:#f0f4fb;
+  --topbar-bg:rgba(236,242,255,.84);
+  --g0:rgba(255,255,255,.55); --g1:rgba(255,255,255,.72);
+  --g2:rgba(255,255,255,.86); --g3:rgba(255,255,255,.96);
+  --gb:rgba(100,120,200,.18); --gbs:rgba(80,100,180,.32);
+  --ghi:rgba(255,255,255,.92);
+  --t1:#0e1630; --t2:rgba(14,22,48,.72);
+  --t3:rgba(14,22,48,.48); --t4:rgba(14,22,48,.28);
+  --ac:#1557c8; --ac-g:rgba(21,87,200,.20);
+  --ph5:#6355d8; --ph5-g:rgba(99,85,216,.20);
+  --cy:#0077bb; --cy-d:rgba(0,119,187,.12);
+  --ok:#007a50; --ok-b:rgba(0,122,80,.10); --ok-bd:rgba(0,122,80,.28);
+  --er:#bb1133; --er-b:rgba(187,17,51,.10); --er-bd:rgba(187,17,51,.28);
+  --wn:#b06000; --wn-b:rgba(176,96,0,.10); --wn-bd:rgba(176,96,0,.28);
+  --in-b:rgba(21,87,200,.09); --in-bd:rgba(21,87,200,.25);
+  --ac-dk:#104599; --ph5-dk:#4f44b8; --er-dk:#991028; --ok-dk:#006640;
+  --overlay:rgba(240,244,251,.88); --overlay2:rgba(240,244,251,.92);
+  --cy-dash:rgba(0,119,187,.35); --cy-glow:rgba(0,119,187,.45); --cy-box-bd:rgba(0,119,187,.28);
+  --ph5-box-bg:rgba(99,85,216,.10); --ph5-box-bd:rgba(99,85,216,.25);
+  --ph5-panel-bg:rgba(99,85,216,.10); --ph5-panel-bd:rgba(99,85,216,.24);
+  --ac-glow:rgba(21,87,200,.35); --ph5-glow:rgba(99,85,216,.35);
+  --sc:0 2px 18px rgba(60,80,160,.10),0 1px 4px rgba(60,80,160,.06);
+  --sf:0 10px 40px rgba(40,60,140,.16),0 3px 12px rgba(40,60,140,.08);
+  color-scheme:light;
+}
+/* AUTO */
+@media(prefers-color-scheme:light){[data-theme="auto"]{
+  --bg:linear-gradient(160deg,#dce8fb 0%,#eef2ff 60%,#ede9ff 100%);
+  --bg-body:#f0f4fb; --topbar-bg:rgba(236,242,255,.84);
+  --g0:rgba(255,255,255,.55);--g1:rgba(255,255,255,.72);--g2:rgba(255,255,255,.86);--g3:rgba(255,255,255,.96);
+  --gb:rgba(100,120,200,.18);--gbs:rgba(80,100,180,.32);--ghi:rgba(255,255,255,.92);
+  --t1:#0e1630;--t2:rgba(14,22,48,.72);--t3:rgba(14,22,48,.48);--t4:rgba(14,22,48,.28);
+  --ac:#1557c8;--ac-g:rgba(21,87,200,.20);--ph5:#6355d8;--ph5-g:rgba(99,85,216,.20);
+  --cy:#0077bb;--cy-d:rgba(0,119,187,.12);
+  --ok:#007a50;--ok-b:rgba(0,122,80,.10);--ok-bd:rgba(0,122,80,.28);
+  --er:#bb1133;--er-b:rgba(187,17,51,.10);--er-bd:rgba(187,17,51,.28);
+  --wn:#b06000;--wn-b:rgba(176,96,0,.10);--wn-bd:rgba(176,96,0,.28);
+  --in-b:rgba(21,87,200,.09);--in-bd:rgba(21,87,200,.25);
+  --sc:0 2px 18px rgba(60,80,160,.10),0 1px 4px rgba(60,80,160,.06);
+  --sf:0 10px 40px rgba(40,60,140,.16),0 3px 12px rgba(40,60,140,.08);
+  color-scheme:light;
+}}
+@media(prefers-color-scheme:dark){[data-theme="auto"]{
+  --bg:radial-gradient(ellipse at 18% 5%,#0c2255 0%,#060b1a 55%),radial-gradient(ellipse at 82% 95%,#1a0847 0%,transparent 55%);
+  --bg-body:#07090f;--topbar-bg:rgba(7,9,15,.78);
+  --g0:rgba(255,255,255,.055);--g1:rgba(255,255,255,.10);--g2:rgba(255,255,255,.16);--g3:rgba(255,255,255,.24);
+  --gb:rgba(255,255,255,.16);--gbs:rgba(255,255,255,.30);--ghi:rgba(255,255,255,.38);
+  --t1:#eef2ff;--t2:rgba(238,242,255,.72);--t3:rgba(238,242,255,.44);--t4:rgba(238,242,255,.24);
+  --ac:#1e72e8;--ac-g:rgba(30,114,232,.38);--ph5:#7c6af5;--ph5-g:rgba(124,106,245,.38);
+  --cy:#00d4ff;--cy-d:rgba(0,212,255,.15);
+  --ok:#00e8a0;--ok-b:rgba(0,232,160,.11);--ok-bd:rgba(0,232,160,.28);
+  --er:#ff4466;--er-b:rgba(255,68,102,.11);--er-bd:rgba(255,68,102,.28);
+  --wn:#ffaa44;--wn-b:rgba(255,170,68,.11);--wn-bd:rgba(255,170,68,.28);
+  --in-b:rgba(30,114,232,.12);--in-bd:rgba(30,114,232,.30);
+  --ac-dk:#155aab;--ph5-dk:#5b4ed4;--er-dk:#cc3355;--ok-dk:#00b878;
+  --overlay:rgba(7,9,15,.88);--overlay2:rgba(7,9,15,.92);
+  --cy-dash:rgba(0,212,255,.35);--cy-glow:rgba(0,212,255,.5);--cy-box-bd:rgba(0,212,255,.28);
+  --ph5-box-bg:rgba(124,106,245,.12);--ph5-box-bd:rgba(124,106,245,.28);
+  --ph5-panel-bg:rgba(124,106,245,.12);--ph5-panel-bd:rgba(124,106,245,.26);
+  --ac-glow:rgba(30,114,232,.5);--ph5-glow:rgba(124,106,245,.5);
+  --sc:0 4px 28px rgba(0,0,0,.4),0 1px 5px rgba(0,0,0,.25);
+  --sf:0 16px 56px rgba(0,0,0,.55),0 4px 18px rgba(0,0,0,.35);
+  color-scheme:dark;
+}}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg-body) var(--bg);background-attachment:fixed;color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;font-family:'IBM Plex Sans Thai',-apple-system,system-ui,sans-serif;transition:background .3s,color .25s;}
+[data-theme="dark"] body::before,[data-theme="auto"] body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 12% 20%,rgba(30,114,232,.16) 0%,transparent 42%),radial-gradient(circle at 88% 78%,rgba(124,106,245,.12) 0%,transparent 40%);pointer-events:none;z-index:0;}
+button,input,select,textarea{font-family:inherit;outline:none;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--g2);border-radius:99px;}
+
+/* GLASS CARD */
+.gc{background:var(--g1);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);border:1px solid var(--gb);border-radius:18px;box-shadow:var(--sc);padding:22px;margin-bottom:16px;position:relative;overflow:hidden;transition:background .25s,border-color .25s;}
+.gc::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ghi),transparent);pointer-events:none;}
+
+/* PAGES */
+.page{display:none;}.page.active{display:block;animation:fi .32s cubic-bezier(.4,0,.2,1);}
+@keyframes fi{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+/* TOPBAR */
+.topbar{background:var(--topbar-bg);backdrop-filter:blur(32px) saturate(200%);-webkit-backdrop-filter:blur(32px) saturate(200%);border-bottom:1px solid var(--gb);padding:0 18px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:200;transition:background .3s;}
+.tb-title{font-weight:700;font-size:.97rem;color:var(--t1);letter-spacing:-.01em;}
+.tb-sub{font-size:.72rem;color:var(--t3);}
+.tb-acts{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+
+/* THEME SWITCHER */
+.th-sw{display:flex;align-items:center;background:var(--g1);border:1px solid var(--gb);border-radius:99px;padding:3px;gap:2px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+.th-btn{width:28px;height:28px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.88rem;transition:all .18s;color:var(--t3);}
+.th-btn.on{background:var(--g3);color:var(--t1);box-shadow:0 2px 8px rgba(0,0,0,.18);}
+.th-btn:hover:not(.on){color:var(--t1);}
+
+/* CONTAINER */
+.con{max-width:1140px;margin:0 auto;padding:24px 16px;position:relative;z-index:1;}
+
+/* TYPOGRAPHY */
+.sec-title{font-size:.97rem;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.lbl{display:block;font-size:.72rem;font-weight:600;color:var(--t3);margin-bottom:5px;letter-spacing:.05em;text-transform:uppercase;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:12px;font-weight:600;border:none;cursor:pointer;font-size:.85rem;transition:all .18s;white-space:nowrap;font-family:inherit;position:relative;overflow:hidden;}
+.btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.13) 0%,transparent 55%);border-radius:inherit;pointer-events:none;}
+.btn:active{transform:scale(.96);}.btn:disabled{opacity:.42;pointer-events:none;}
+.btn-p{background:linear-gradient(135deg,var(--ac),var(--ac-dk));color:#fff;border:1px solid rgba(255,255,255,.18);box-shadow:0 4px 18px var(--ac-g);}
+.btn-p:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-5{background:linear-gradient(135deg,var(--ph5),var(--ph5-dk));color:#fff;border:1px solid rgba(255,255,255,.15);box-shadow:0 4px 18px var(--ph5-g);}
+.btn-5:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-g{background:var(--g2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--gbs);color:var(--t1);}
+.btn-g:hover{background:var(--g3);}
+.btn-d{background:linear-gradient(135deg,var(--er),var(--er-dk));color:#fff;border:1px solid rgba(255,255,255,.12);}
+.btn-d:hover{filter:brightness(1.1);}
+.btn-ok{background:linear-gradient(135deg,var(--ok),var(--ok-dk));color:#fff;border:1px solid rgba(255,255,255,.12);}
+.btn-ok:hover{filter:brightness(1.1);}
+.btn-o{background:transparent;border:1.5px solid var(--gbs);color:var(--t2);}
+.btn-o:hover{background:var(--g1);color:var(--t1);}
+.btn-sm{padding:6px 11px;font-size:.76rem;border-radius:8px;}
+.btn-lg{padding:12px 18px;width:100%;font-size:.93rem;border-radius:12px;}
+
+/* FORM */
+.fg{margin-bottom:13px;}
+.fc{width:100%;padding:9px 13px;background:var(--g1);border:1px solid var(--gb);border-radius:12px;font-size:.88rem;color:var(--t1);font-family:inherit;transition:border-color .2s,background .25s,color .25s;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.fc:focus{border-color:var(--cy);box-shadow:0 0 0 3px var(--cy-d);background:var(--g2);}
+.fc::placeholder{color:var(--t4);}
+select.fc option{background:#111827;color:#eef2ff;}
+[data-theme="light"] select.fc option{background:#fff;color:#0e1630;}
+
+/* BADGES */
+.bd{padding:3px 9px;border-radius:20px;font-size:.7rem;font-weight:700;}
+.bd-ok{background:var(--ok-b);color:var(--ok);border:1px solid var(--ok-bd);}
+.bd-wn{background:var(--wn-b);color:var(--wn);border:1px solid var(--wn-bd);}
+.bd-er{background:var(--er-b);color:var(--er);border:1px solid var(--er-bd);}
+.bd-bl{background:var(--in-b);color:var(--ac);border:1px solid var(--in-bd);}
+.bd-new{background:var(--wn-b);color:var(--wn);border:1px solid var(--wn-bd);animation:pw 1.8s infinite;}
+@keyframes pw{0%,100%{box-shadow:0 0 0 0 rgba(255,170,68,.4);}50%{box-shadow:0 0 0 4px rgba(255,170,68,0);}}
+
+/* STEP BAR */
+.step-bar{display:flex;overflow-x:auto;margin-bottom:20px;gap:3px;}
+.step{flex:1;text-align:center;padding:9px 5px;font-size:.72rem;font-weight:600;color:var(--t3);border-bottom:2px solid transparent;transition:all .28s;white-space:nowrap;}
+.step.active{border-color:var(--cy);color:var(--cy);}
+
+/* STAT CARDS */
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:18px;}
+.sc-card{background:var(--g1);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--gb);border-radius:12px;padding:14px 12px;text-align:center;position:relative;overflow:hidden;transition:transform .2s,background .25s;}
+.sc-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ghi),transparent);}
+.sc-card:hover{transform:translateY(-2px);}
+.sc-num{font-size:1.9rem;font-weight:700;line-height:1.1;margin-bottom:3px;letter-spacing:-.03em;}
+.sc-lbl{font-size:.72rem;font-weight:600;color:var(--t3);}
+
+/* PROGRESS */
+.pw{background:rgba(128,128,128,.18);border-radius:99px;height:5px;overflow:hidden;}
+.pf{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ac),var(--cy));transition:width .6s cubic-bezier(.4,0,.2,1);}
+
+/* ACCORDION */
+.ch-blk{margin-bottom:8px;border:1px solid var(--gb);border-radius:12px;overflow:hidden;}
+.ch-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;background:var(--g0);cursor:pointer;transition:background .15s;user-select:none;}
+.ch-hdr:hover{background:var(--g1);}.ch-hdr.open{background:var(--in-b);border-bottom:1px solid var(--in-bd);}
+.ch-title{font-weight:700;font-size:.9rem;color:var(--t1);display:flex;align-items:center;gap:8px;}
+.ch-meta{display:flex;align-items:center;gap:9px;}
+.ch-arr{font-size:.82rem;color:var(--t3);transition:transform .24s;}.ch-arr.open{transform:rotate(180deg);}
+.ch-body{display:none;padding:0 10px 10px;}.ch-body.open{display:block;animation:fi .2s ease;}
+
+/* ASSIGNMENT ITEM */
+.ai{border:1px solid var(--gb);border-radius:8px;padding:12px 14px;margin-top:7px;background:var(--g0);display:flex;justify-content:space-between;align-items:center;transition:all .15s;}
+.ai:hover{background:var(--g1);border-color:var(--gbs);}.ai.cl{cursor:pointer;}
+.ai-info{flex:1;}.ai-name{font-weight:700;font-size:.88rem;color:var(--t1);}
+.ai-meta{font-size:.74rem;color:var(--t3);margin-top:3px;line-height:1.5;}
+.ai-acts{display:flex;gap:5px;flex-shrink:0;margin-left:10px;}
+
+/* RESOURCE LINKS */
+.res-lnk{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:var(--cy-d);border:1px solid rgba(0,200,255,.25);border-radius:20px;font-size:.72rem;font-weight:600;color:var(--cy);text-decoration:none;transition:all .15s;margin:2px;}
+[data-theme="light"] .res-lnk{background:rgba(0,119,187,.09);color:var(--cy);}
+.res-lnk:hover{filter:brightness(1.15);}
+.res-sec{margin-top:7px;}
+.miss-bd{display:inline-flex;align-items:center;gap:4px;background:var(--er-b);color:var(--er);border:1px solid var(--er-bd);border-radius:20px;padding:3px 9px;font-size:.7rem;font-weight:700;cursor:pointer;transition:.15s;}
+.miss-bd:hover{filter:brightness(1.15);}
+
+/* TABLE */
+.tw{overflow-x:auto;border:1px solid var(--gb);border-radius:12px;}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:10px 13px;border-bottom:1px solid var(--gb);font-size:.82rem;text-align:left;}
+th{background:var(--g0);font-weight:700;color:var(--t3);font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;}
+tr:hover td{background:var(--g0);}tr:last-child td{border-bottom:none;}td{color:var(--t2);}
+
+/* GRADING PANEL — flat, single-surface design (no nested blur/glass layers) */
+.sub-box{margin:0 0 10px;padding:9px 11px;border-radius:8px;display:flex;align-items:flex-start;gap:8px;background:transparent;}
+.sub-box.sub{border:1px solid var(--ok-bd);}
+.sub-box.mis{border:1px solid var(--er-bd);}
+.sub-lnk{display:inline-flex;align-items:center;gap:5px;margin-top:5px;padding:4px 10px;background:transparent;border:1px solid var(--gbs);border-radius:8px;color:var(--t1);font-weight:600;font-size:.76rem;text-decoration:none;cursor:pointer;transition:.15s;}
+.sub-lnk:hover{background:var(--g1);}
+
+.qsw{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px;}
+.qsb{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--gb);background:transparent;color:var(--t2);font-weight:700;font-size:.8rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.qsb:hover,.qsb.on{background:var(--ac);border-color:var(--ac);color:#fff;transform:scale(1.08);box-shadow:0 4px 12px var(--ac-g);}
+.grd-sec{background:transparent;padding:11px 0 0;border-top:1px dashed var(--gb);margin-top:10px;}
+
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle;flex-shrink:0;}
+.dot-ok{background:var(--ok);box-shadow:0 0 6px var(--ok);}
+.dot-wn{background:var(--wn);box-shadow:0 0 6px var(--wn);}
+.dot-cy{background:var(--cy);box-shadow:0 0 8px var(--cy);animation:pw 1.4s infinite;}
+
+/* Chapter accordion — single border, no inner glass card */
+.pc-blk{margin-bottom:10px;border:1px solid var(--gb);border-radius:14px;overflow:hidden;background:var(--g0);}
+.pc-hdr{display:flex;align-items:center;gap:7px;padding:11px 14px;background:transparent;cursor:pointer;user-select:none;transition:background .15s;border-bottom:1px solid transparent;}
+.pc-hdr:hover{background:var(--g1);}
+.pc-hdr.open{background:var(--in-b);border-bottom-color:var(--in-bd);}
+.pc-body{display:none;}.pc-body.open{display:block;}
+
+/* Assignment row inside a chapter — flat list item, divided by hairlines, not stacked cards */
+.asn-row{padding:13px 14px;border-top:1px solid var(--gb);position:relative;}
+.asn-row:first-child{border-top:none;}
+.asn-row.unmarked{box-shadow:inset 3px 0 0 var(--wn);}
+.asn-row.resubmitted{box-shadow:inset 3px 0 0 var(--cy);}
+.asn-row.graded{box-shadow:inset 3px 0 0 var(--ok);}
+.asn-row.missing{box-shadow:inset 3px 0 0 var(--gb);}
+.asn-name{font-weight:700;font-size:.86rem;color:var(--t1);display:flex;align-items:center;flex-wrap:wrap;gap:5px;}
+.asn-max{font-size:.74rem;font-weight:400;color:var(--t3);}
+
+/* MODALS */
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:400;align-items:center;justify-content:center;padding:16px;}
+.mbg.open{display:flex;animation:fi .2s ease;}
+.mo{background:var(--g2);backdrop-filter:blur(44px) saturate(180%);-webkit-backdrop-filter:blur(44px) saturate(180%);border:1px solid var(--gbs);border-radius:26px;padding:24px;width:100%;max-width:430px;box-shadow:var(--sf);position:relative;}
+.mo::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ghi),transparent);border-radius:26px 26px 0 0;}
+.mo-wide{max-width:700px;max-height:86vh;overflow-y:auto;}
+.mo-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.mo-title{font-size:1rem;font-weight:700;color:var(--t1);}
+.mo-x{background:var(--g1);border:1px solid var(--gb);color:var(--t2);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;transition:.15s;}
+.mo-x:hover{background:var(--g3);color:var(--t1);}
+
+/* SIDE PANEL */
+.sp{position:fixed;right:-540px;top:0;bottom:0;width:500px;max-width:100vw;background:var(--overlay);backdrop-filter:blur(44px) saturate(200%);-webkit-backdrop-filter:blur(44px) saturate(200%);border-left:1px solid var(--gbs);box-shadow:-8px 0 44px rgba(0,0,0,.4);z-index:300;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
+.sp.open{right:0;}
+.sp-hdr{padding:16px 18px;background:var(--g1);border-bottom:1px solid var(--gb);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.sp-body{padding:16px;overflow-y:auto;flex:1;background:transparent;}
+.sp-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:299;}
+.sp-ov.open{display:block;}
+
+/* Exam-total summary block at top of panel — flat, no blur stacking */
+.exam-blk{padding:0 0 16px;margin-bottom:14px;border-bottom:1px solid var(--gb);}
+.exam-blk-title{font-weight:700;margin-bottom:11px;font-size:.86rem;color:var(--ph5);}
+
+/* MISSING LIST */
+.miss-lst{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:6px;margin-top:10px;}
+.miss-stu{background:var(--er-b);border:1px solid var(--er-bd);border-radius:8px;padding:7px 11px;font-size:.8rem;color:var(--er);font-weight:600;display:flex;align-items:center;gap:5px;}
+
+/* RAND DISPLAY */
+#randDisp{font-size:1.4rem;font-weight:700;color:var(--cy);min-height:76px;display:flex;align-items:center;justify-content:center;background:var(--cy-d);border-radius:12px;margin-bottom:14px;border:1.5px dashed var(--cy-dash);text-align:center;padding:12px;letter-spacing:-.02em;}
+
+/* TOOLS GRID */
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.tc{background:var(--g1);border:1px solid var(--gb);border-radius:12px;padding:14px 10px;cursor:pointer;transition:all .2s;text-align:center;}
+.tc:hover{background:var(--g2);border-color:var(--gbs);transform:translateY(-2px);}
+.tc-ico{width:32px;height:32px;margin:0 auto 6px;color:var(--cy);}
+.tc-nm{font-weight:700;font-size:.82rem;color:var(--t1);}
+.tc-ds{font-size:.7rem;color:var(--t3);margin-top:2px;}
+
+.timer-d{font-size:3.2rem;font-weight:700;letter-spacing:-.04em;color:var(--cy);text-align:center;text-shadow:0 0 28px var(--cy-glow);margin:14px 0;}
+.noise-lv{height:18px;border-radius:99px;overflow:hidden;margin:10px 0;background:var(--g0);border:1px solid var(--gb);}
+.noise-b{height:100%;border-radius:99px;transition:width .2s,background .3s;}
+
+.fm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.fm-item{background:var(--in-b);border:1px solid var(--in-bd);border-radius:8px;padding:9px 13px;}
+.fm-sym{font-size:1rem;font-weight:700;color:var(--cy);display:block;margin-bottom:2px;}
+[data-theme="light"] .fm-sym{color:var(--ac);}
+
+.res-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--g0);border:1px solid var(--gb);border-radius:8px;margin-bottom:6px;}
+
+/* HOME CARDS */
+.hc{background:var(--g1);backdrop-filter:blur(32px) saturate(180%);-webkit-backdrop-filter:blur(32px) saturate(180%);border:1px solid var(--gbs);border-radius:34px;padding:26px 22px;text-align:center;cursor:pointer;min-width:196px;width:196px;transition:all .28s;position:relative;overflow:hidden;z-index:2;-webkit-tap-highlight-color:transparent;user-select:none;}
+.hc > *{pointer-events:none;}
+.hc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.09) 0%,transparent 55%);pointer-events:none;}
+.hc::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ghi),transparent);pointer-events:none;}
+.hc:hover{transform:translateY(-7px) scale(1.02);box-shadow:0 20px 58px rgba(0,0,0,.38);border-color:var(--ghi);}
+.sj-c{background:var(--g1);border:1px solid var(--gb);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;}
+.sj-c:hover{background:var(--g2);transform:translateY(-2px);}
+.stab{flex:1;padding:11px;background:var(--g1);border:1px solid var(--gb);border-radius:12px;color:var(--t2);font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;font-size:.88rem;text-align:center;}
+.spin{width:40px;height:40px;border-radius:50%;border:3px solid var(--g2);border-top-color:var(--cy);animation:sp .8s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.toast-box{position:fixed;bottom:22px;right:18px;z-index:600;display:flex;flex-direction:column;gap:7px;}
+.th-btn{font-size:.62rem;font-weight:700;letter-spacing:.02em;padding:0 7px;width:auto;min-width:28px;}
+.hc-ico{width:56px;height:56px;margin:0 auto 9px;color:var(--ac);}
+.hc-ico svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 14px var(--ac-glow));}
+.hc-ico-ph5{color:var(--ph5);}
+.hc-ico-ph5 svg{filter:drop-shadow(0 0 14px var(--ph5-glow));}
+.home-logo{width:64px;height:64px;margin:0 auto 10px;color:var(--cy);}
+.home-logo svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 22px var(--cy-glow));}
+.sj-ico{width:42px;height:42px;margin:0 auto 7px;color:var(--ac);}
+.sj-ico svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 12px var(--ac-glow));}
+.sj-ico-ph5{color:var(--ph5);}
+.sj-ico-ph5 svg{filter:drop-shadow(0 0 12px var(--ph5-glow));}
+.exam-total-box{background:var(--ph5-box-bg);border:1px solid var(--ph5-box-bd);border-radius:12px;padding:13px;text-align:center;}
+.ph5-panel{background:var(--ph5-panel-bg);border:1px solid var(--ph5-panel-bd);border-radius:8px;}
+.cy-tag{border:1px solid var(--cy-box-bd);}
+.res-highlight{background:var(--cy-d);border:1px solid var(--cy-box-bd);border-radius:8px;padding:9px 12px;margin-bottom:3px;}
+.ico{display:inline-block;line-height:0;vertical-align:middle;}
+.ico svg{display:block;}
+.ico-sm{width:14px;height:14px;}
+.ico-md{width:20px;height:20px;}
+.ico-lg{width:28px;height:28px;}
+.login-ico{width:48px;height:48px;margin:0 auto 8px;color:var(--ph5);}
+.login-ico svg{width:100%;height:100%;display:block;}
+.tc-ico{width:32px;height:32px;margin:0 auto 6px;color:var(--cy);}
+.tc-ico svg{width:100%;height:100%;display:block;}
+.stab.on{background:linear-gradient(135deg,var(--ac),var(--ac-dk));border-color:transparent;color:#fff;box-shadow:0 4px 16px var(--ac-g);}
+#ldr{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(12px);z-index:999;display:none;align-items:center;justify-content:center;flex-direction:column;}
+.toast{background:var(--overlay2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--gbs);color:var(--t1);padding:10px 16px;border-radius:12px;font-weight:600;font-size:.82rem;animation:su .28s ease;box-shadow:var(--sf);max-width:310px;}
+.toast.ok{border-color:var(--ok-bd);color:var(--ok);}
+.toast.er{border-color:var(--er-bd);color:var(--er);}
+.toast.wn{border-color:var(--wn-bd);color:var(--wn);}
+@keyframes su{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+.dvd{height:1px;background:var(--gb);margin:14px 0;}
+
+@media(max-width:640px){
+  .con{padding:12px 10px;}.sg{grid-template-columns:1fr 1fr;}
+  .fm-grid{grid-template-columns:1fr;}.tg{grid-template-columns:repeat(2,1fr);}
+  .hc{width:155px;min-width:155px;}.sp{width:100%;right:-100%;}
+}
+</style>
 </head>
 <body>
+<div id="ldr"><div class="spin"></div><div style="margin-top:12px;font-size:.8rem;font-weight:600;color:var(--t3);">กำลังประมวลผล...</div></div>
+<div class="toast-box" id="toastBox"></div>
+<div class="sp-ov" id="spOv" onclick="closeSP()"></div>
 
-    <div class="container">
-        <h1>⚛️ ระบบฟิสิกส์ v2.0</h1>
-        <p>ทดสอบหน้าเว็บจากเครื่องคอมพิวเตอร์ ดึงข้อมูลจาก Google Sheets</p>
-        
-        <button onclick="testAPI()">🚀 ทดสอบดึงข้อมูล</button>
+<!-- MODALS -->
+<div class="mbg" id="mMiss"><div class="mo mo-wide"><div class="mo-hdr"><span class="mo-title" id="mMissT">รายชื่อที่ยังไม่ส่งงาน</span><button class="mo-x" onclick="closeM('mMiss')">X</button></div><div id="mMissB"></div></div></div>
 
-        <div id="result"></div>
+<div class="mbg" id="mTools">
+  <div class="mo mo-wide" style="max-width:560px;">
+    <div class="mo-hdr"><span class="mo-title">ระบบอำนวยการสอน</span><button class="mo-x" onclick="closeM('mTools');App.stopNoise();clearInterval(S.tmrIv);S.tmrOn=false;">X</button></div>
+    <div class="tg" id="tgMain">
+      <div class="tc" onclick="App.tool('rand')"><div class="tc-ico" data-ico="dice"></div><div class="tc-nm">สุ่มเรียกชื่อ</div><div class="tc-ds">สุ่มนักเรียนตอบ</div></div>
+      <div class="tc" onclick="App.tool('timer')"><div class="tc-ico" data-ico="timer"></div><div class="tc-nm">จับเวลา</div><div class="tc-ds">นับถอยหลัง/ขึ้น</div></div>
+      <div class="tc" onclick="App.tool('formula')"><div class="tc-ico" data-ico="formula"></div><div class="tc-nm">สูตรฟิสิกส์</div><div class="tc-ds">สูตรและค่าคงที่</div></div>
+      <div class="tc" onclick="App.tool('noise')"><div class="tc-ico" data-ico="sound"></div><div class="tc-nm">วัดเสียงห้อง</div><div class="tc-ds">ระดับเสียงเรียลไทม์</div></div>
+      <div class="tc" onclick="App.tool('group')"><div class="tc-ico" data-ico="group"></div><div class="tc-nm">แบ่งกลุ่ม</div><div class="tc-ds">สุ่มจัดกลุ่มนักเรียน</div></div>
+      <div class="tc" onclick="App.tool('poll')"><div class="tc-ico" data-ico="poll"></div><div class="tc-nm">โหวตความเข้าใจ</div><div class="tc-ds">เข้าใจ / งง / ไม่เข้าใจ</div></div>
+    </div>
+    <div id="tgPanel" style="display:none;margin-top:14px;"></div>
+    <div id="tgBack" style="display:none;margin-top:10px;"><button class="btn btn-g btn-sm" onclick="App.backTool()">← กลับเมนูหลัก</button></div>
+  </div>
+</div>
+
+<div class="mbg" id="mRes">
+  <div class="mo" style="max-width:500px;">
+    <div class="mo-hdr"><span class="mo-title" id="mResT">จัดการลิงก์</span><button class="mo-x" onclick="closeM('mRes')">X</button></div>
+    <div id="mResB" style="max-height:220px;overflow-y:auto;margin-bottom:12px;"></div>
+    <div class="dvd"></div>
+    <div class="lbl" style="margin-bottom:10px;">เพิ่มลิงก์ใหม่</div>
+    <div class="fg"><label class="lbl">ชื่อลิงก์</label><input type="text" class="fc" id="rName" placeholder="เช่น ใบงาน, คลิปทดลอง..."></div>
+    <div class="fg"><label class="lbl">URL</label><input type="url" class="fc" id="rUrl" placeholder="https://..."></div>
+    <div class="fg"><label class="lbl">ประเภท</label>
+      <select class="fc" id="rType">
+        <option value="doc">ใบงาน</option><option value="vid">วิดีโอ</option>
+        <option value="lab">การทดลอง</option><option value="lesson">บทเรียน</option><option value="link">อื่นๆ</option>
+      </select></div>
+    <button class="btn btn-p" style="width:100%;" onclick="App.addRes()">เพิ่มลิงก์</button>
+  </div>
+</div>
+
+<!-- SIDE PANEL -->
+<div class="sp" id="sideP">
+  <div class="sp-hdr">
+    <div><div id="spN" style="font-weight:700;font-size:1.05rem;color:var(--t1);"></div><div id="spM" style="font-size:.74rem;color:var(--t3);margin-top:1px;"></div></div>
+    <button class="mo-x" onclick="closeSP()">X</button>
+  </div>
+  <div class="sp-body" id="spB"></div>
+</div>
+
+<!-- PAGE: HOME -->
+<div id="pg-home" class="page active">
+  <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative;z-index:1;">
+    <div style="position:absolute;top:18px;right:18px;">
+      <div class="th-sw">
+        <button class="th-btn on" id="h-dk" onclick="setTh('dark')" title="โหมดมืด">มืด</button>
+        <button class="th-btn" id="h-lt" onclick="setTh('light')" title="โหมดสว่าง">สว่าง</button>
+        <button class="th-btn" id="h-au" onclick="setTh('auto')" title="ตามระบบ">Auto</button>
+      </div>
+    </div>
+    <div class="home-logo" id="homeLogo"></div>
+    <h1 style="color:var(--t1);text-align:center;font-size:1.65rem;margin-bottom:5px;font-weight:700;letter-spacing:-.03em;">ระบบส่งงานและตรวจงานฟิสิกส์</h1>
+    <p style="color:var(--t3);margin-bottom:36px;font-size:.84rem;">สนมวิทยาคาร 2569 · ครูณัฐพล สุขยานุดิษฐ</p>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center;">
+      <div class="hc" id="nav-stu" role="button" tabindex="0" aria-label="เข้าสู่ระบบนักเรียน">
+        <div class="hc-ico" id="ico-stu"></div>
+        <div style="font-weight:700;font-size:1rem;color:var(--t1);margin-bottom:3px;">นักเรียน</div>
+        <div style="color:var(--t3);font-size:.75rem;">ส่งงานและดูคะแนน</div>
+      </div>
+      <div class="hc" id="nav-tc" role="button" tabindex="0" aria-label="เข้าสู่ระบบครูผู้สอน">
+        <div class="hc-ico hc-ico-ph5" id="ico-tc"></div>
+        <div style="font-weight:700;font-size:1rem;color:var(--t1);margin-bottom:3px;">ครูผู้สอน</div>
+        <div style="color:var(--t3);font-size:.75rem;">จัดการงานและตรวจคะแนน</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: STUDENT -->
+<div id="pg-stu" class="page">
+  <div class="topbar">
+    <div><div class="tb-title">ส่งงานวิชาฟิสิกส์</div><div class="tb-sub">สนมวิทยาคาร 2569</div></div>
+    <div class="tb-acts">
+      <div class="th-sw"><button class="th-btn" id="s-dk" onclick="setTh('dark')">มืด</button><button class="th-btn" id="s-lt" onclick="setTh('light')">สว่าง</button><button class="th-btn" id="s-au" onclick="setTh('auto')">Auto</button></div>
+      <button class="btn btn-g btn-sm" onclick="App.fetch(true)">รีเฟรช</button>
+      <button class="btn btn-g btn-sm" onclick="App.go('pg-home')">หน้าแรก</button>
+    </div>
+  </div>
+  <div class="con" style="max-width:720px;">
+    <div class="step-bar"><div class="step active" id="st1">1 เลือกวิชา</div><div class="step" id="st2">2 ห้องเรียน</div><div class="step" id="st3">3 ชื่อของคุณ</div><div class="step" id="st4">4 แดชบอร์ด</div></div>
+
+    <div class="gc" id="ss1">
+      <div class="sec-title">เลือกวิชา</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
+        <div class="sj-c" data-subj="ฟิสิกส์ 3" role="button" tabindex="0"><div class="sj-ico" id="sj-ico-3"></div><div style="font-weight:700;font-size:1rem;color:var(--ac);">ฟิสิกส์ 3</div><div style="font-size:.75rem;color:var(--t3);margin-top:2px;">ม.5</div></div>
+        <div class="sj-c" data-subj="ฟิสิกส์ 5" role="button" tabindex="0"><div class="sj-ico sj-ico-ph5" id="sj-ico-5"></div><div style="font-weight:700;font-size:1rem;color:var(--ph5);">ฟิสิกส์ 5</div><div style="font-size:.75rem;color:var(--t3);margin-top:2px;">ม.6</div></div>
+      </div>
     </div>
 
-    <script>
-        // 🔴🔴🔴 สำคัญมาก: นำลิงก์ Web App URL (ยาวๆ) ของครู มาใส่ในเครื่องหมายคำพูดด้านล่างนี้ 🔴🔴🔴
-        const API_URL = "https://script.google.com/macros/s/AKfycbwSiibW8oJxLZf9fdirgwsFWDA7pZoF-Favz2eeYCPCrsyRxDaHWly3L8Gvk1aR9MY5Vw/exec";
+    <div class="gc" id="ss2" style="display:none;">
+      <div class="sec-title">เลือกห้องเรียน</div>
+      <div id="roomList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:9px;"></div>
+      <button class="btn btn-o btn-sm" style="margin-top:12px;" onclick="App.step(1)">← ย้อนกลับ</button>
+    </div>
 
-        // ฟังก์ชันนี้จะทำงานเมื่อกดปุ่ม
-        async function testAPI() {
-            const resultDiv = document.getElementById('result');
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = "⏳ กำลังวิ่งไปขอดึงข้อมูลจาก Google Sheets...";
+    <div class="gc" id="ss3" style="display:none;">
+      <div class="sec-title">เลือกชื่อของคุณ</div>
+      <select class="fc" id="stuSel" style="margin-bottom:14px;font-size:.92rem;padding:11px;"><option value="">— เลือกชื่อ-นามสกุล —</option></select>
+      <div style="display:flex;gap:10px;"><button class="btn btn-o" onclick="App.step(2)">← ย้อนกลับ</button><button class="btn btn-p" style="flex:1;" onclick="App.confStu()">เข้าสู่แดชบอร์ด →</button></div>
+    </div>
 
-            try {
-                // คำสั่ง fetch คือตัวเอก! มันทำหน้าที่วิ่งไปหาลิงก์ API ของเรา
-                const response = await fetch(API_URL);
-                const data = await response.json(); // แปลงข้อความกลับมาเป็นข้อมูลที่นำไปใช้ต่อได้
+    <div id="ss4" style="display:none;">
+      <div class="gc">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px;border-bottom:1px solid var(--gb);padding-bottom:13px;">
+          <div><div class="lbl">แดชบอร์ดนักเรียน</div><div style="font-size:1.25rem;font-weight:700;color:var(--cy);margin-top:2px;letter-spacing:-.02em;" id="dName"></div></div>
+          <button class="btn btn-g btn-sm" onclick="App.step(3)">เปลี่ยนชื่อ</button>
+        </div>
+        <div class="sg">
+          <div class="sc-card"><div class="sc-num" id="dTotal">0</div><div class="sc-lbl">งานทั้งหมด</div></div>
+          <div class="sc-card" style="background:var(--ok-b);border-color:var(--ok-bd);"><div class="sc-num" style="color:var(--ok)" id="dDone">0</div><div class="sc-lbl" style="color:var(--ok)">ส่งแล้ว</div></div>
+          <div class="sc-card" style="background:var(--er-b);border-color:var(--er-bd);"><div class="sc-num" style="color:var(--er)" id="dMiss">0</div><div class="sc-lbl" style="color:var(--er)">ค้างส่ง</div></div>
+          <div class="sc-card" style="background:var(--in-b);border-color:var(--in-bd);"><div class="sc-num" style="color:var(--cy)" id="dScore">0</div><div class="sc-lbl">คะแนนรวม</div></div>
+        </div>
+        <div style="padding:10px 12px;background:var(--g0);border-radius:8px;border:1px solid var(--gb);">
+          <div style="display:flex;justify-content:space-between;font-size:.76rem;font-weight:600;color:var(--t3);margin-bottom:4px;"><span>ความคืบหน้า</span><span id="dPct">0%</span></div>
+          <div class="pw"><div class="pf" id="dBar" style="width:0%"></div></div>
+        </div>
+      </div>
 
-                // นำข้อมูลที่ได้ มาจัดเรียงแสดงผลบนหน้าเว็บ
-                resultDiv.innerHTML = `
-                    <div class="success-text">ดึงข้อมูลสำเร็จ! ✅</div>
-                    <p><b>ข้อความจากหลังบ้าน:</b> ${data.message}</p>
-                    <p><b>เวลาที่บันทึก:</b> ${data.timestamp}</p>
-                `;
-            } catch (error) {
-                resultDiv.innerHTML = `<div style="color: #e94560;">❌ เกิดข้อผิดพลาด: ${error.message}</div>`;
-            }
-        }
-    </script>
+      <div class="gc" id="examCard" style="display:none;">
+        <div class="sec-title">คะแนนรวมตลอดภาคเรียน</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:12px;">
+          <div class="sc-card"><div class="sc-num" id="exP" style="font-size:1.4rem;color:var(--t1)">-</div><div class="sc-lbl">เก็บก่อนกลางภาค /25</div></div>
+          <div class="sc-card"><div class="sc-num" id="exM" style="font-size:1.4rem;color:var(--t1)">-</div><div class="sc-lbl">สอบกลางภาค /20</div></div>
+          <div class="sc-card"><div class="sc-num" id="exPo" style="font-size:1.4rem;color:var(--t1)">-</div><div class="sc-lbl">เก็บหลังกลางภาค /25</div></div>
+          <div class="sc-card"><div class="sc-num" id="exF" style="font-size:1.4rem;color:var(--t1)">-</div><div class="sc-lbl">สอบปลายภาค /30</div></div>
+        </div>
+        <div class="exam-total-box">
+          <div style="font-size:.75rem;font-weight:600;color:var(--ph5);margin-bottom:3px;">คะแนนรวมทั้งหมด</div>
+          <div style="font-size:2.1rem;font-weight:700;color:var(--ph5);letter-spacing:-.04em;" id="exT">-</div>
+          <div style="font-size:.74rem;color:var(--t3);">จาก 100 คะแนน</div>
+        </div>
+      </div>
 
+      <div class="gc"><div class="sec-title">รายการงานแยกตามบท</div><div id="stuAcc"></div></div>
+    </div>
+
+    <div class="gc" id="ss5" style="display:none;">
+      <div style="background:var(--in-b);padding:12px 14px;border-radius:8px;margin-bottom:16px;border:1px solid var(--in-bd);border-left:3px solid var(--ac);">
+        <div class="lbl">กำลังส่งงาน</div>
+        <div style="font-size:1.05rem;font-weight:700;color:var(--cy);margin-top:2px;" id="subAsnName"></div>
+      </div>
+      <div id="subResLinks" style="margin-bottom:12px;"></div>
+      <div class="fg"><label class="lbl">วางลิงก์งาน (Google Drive, Canva ฯลฯ)</label><input type="url" class="fc" id="linkIn" placeholder="https://..."></div>
+      <div style="text-align:center;margin:10px 0;color:var(--t4);font-weight:700;font-size:.8rem;">— หรือ —</div>
+      <div class="fg"><label class="lbl">อัปโหลดไฟล์งาน</label>
+        <div style="border:1.5px dashed var(--gbs);padding:16px;text-align:center;border-radius:12px;">
+          <input type="file" class="fc" id="fileIn" style="border:none;background:transparent;color:var(--t2);">
+          <div style="font-size:.72rem;color:var(--t4);margin-top:5px;">รองรับไฟล์ไม่เกิน 20MB</div>
+        </div></div>
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <button class="btn btn-o btn-lg" style="flex:1;" onclick="App.step(4)">ยกเลิก</button>
+        <button class="btn btn-p btn-lg" style="flex:2;" onclick="App.subWork()">ยืนยันส่งงาน</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: LOGIN -->
+<div id="pg-login" class="page">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;">
+    <div class="gc" style="text-align:center;max-width:350px;width:100%;padding:36px;">
+      <div class="login-ico" id="loginIco"></div>
+      <h2 style="font-weight:700;margin-bottom:4px;color:var(--t1);">เข้าสู่ระบบครูผู้สอน</h2>
+      <p style="font-size:.78rem;color:var(--t3);margin-bottom:22px;">สนมวิทยาคาร 2569</p>
+      <input type="password" class="fc" id="pwIn" placeholder="รหัสผ่าน..." style="margin-bottom:12px;font-size:.95rem;text-align:center;">
+      <button class="btn btn-p btn-lg" id="btn-login" type="button">เข้าสู่ระบบ</button>
+      <button class="btn btn-g" id="btn-home" type="button" style="width:100%;margin-top:9px;">← กลับหน้าหลัก</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: TEACHER -->
+<div id="pg-tc" class="page">
+  <div class="topbar">
+    <div><div class="tb-title">ระบบจัดการ (ครูผู้สอน)</div></div>
+    <div class="tb-acts">
+      <div class="th-sw"><button class="th-btn" id="t-dk" onclick="setTh('dark')">มืด</button><button class="th-btn" id="t-lt" onclick="setTh('light')">สว่าง</button><button class="th-btn" id="t-au" onclick="setTh('auto')">Auto</button></div>
+      <button class="btn btn-g btn-sm" onclick="App.fetch(true)">รีเฟรช</button>
+      <button class="btn btn-g btn-sm" onclick="openM('mTools')">อำนวยการสอน</button>
+      <button class="btn btn-g btn-sm" onclick="API.export()">CSV</button>
+      <button class="btn btn-o btn-sm" onclick="App.go('pg-home')">ออก</button>
+    </div>
+  </div>
+  <div class="con">
+    <div class="sg" id="tcSum"></div>
+    <div style="display:flex;gap:10px;margin-bottom:18px;">
+      <button class="stab on" id="tb3" onclick="App.setTab('ฟิสิกส์ 3')">ฟิสิกส์ 3 (ม.5)</button>
+      <button class="stab" id="tb5" onclick="App.setTab('ฟิสิกส์ 5')">ฟิสิกส์ 5 (ม.6)</button>
+    </div>
+
+    <div class="gc">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="sec-title" style="margin:0;">จัดการงาน <span id="tcSubjN" class="cy-tag" style="font-size:.76rem;color:var(--cy);background:var(--cy-d);padding:2px 9px;border-radius:5px;"></span></div>
+        <button class="btn btn-p" onclick="App.togForm()">สร้างงานใหม่</button>
+      </div>
+      <div id="asnForm" style="display:none;background:var(--g0);padding:16px;border-radius:12px;margin-bottom:18px;border:1px solid var(--gb);">
+        <input type="hidden" id="asId">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="fg" style="grid-column:1/-1;"><label class="lbl">ชื่องาน (บังคับ)</label><input type="text" class="fc" id="asNm" placeholder="เช่น ครั้งที่ 1 โหลดไฟล์แล้วหรือยัง"></div>
+          <div class="fg"><label class="lbl">บทที่</label><select class="fc" id="asCh"><option value="1">บทที่ 1</option><option value="2">บทที่ 2</option><option value="3">บทที่ 3</option><option value="4">บทที่ 4</option><option value="5">บทที่ 5</option><option value="6">บทที่ 6</option></select></div>
+          <div class="fg"><label class="lbl">คะแนนเต็ม</label><input type="number" class="fc" id="asSc" value="10"></div>
+          <div class="fg"><label class="lbl">กำหนดส่ง</label><input type="date" class="fc" id="asDt"></div>
+          <div class="fg" style="grid-column:1/-1;"><label class="lbl">คำอธิบาย</label><input type="text" class="fc" id="asDsc" placeholder="(ไม่บังคับ)"></div>
+        </div>
+        <div style="display:flex;gap:9px;margin-top:9px;">
+          <button class="btn btn-p" onclick="App.saveAsn()">บันทึกงาน</button>
+          <button class="btn btn-g" onclick="App.togForm()">ยกเลิก</button>
+        </div>
+      </div>
+      <div id="tcAcc"></div>
+    </div>
+
+    <div class="gc">
+      <div class="sec-title">สถานะการส่งงาน</div>
+      <div style="display:flex;gap:9px;margin-bottom:13px;flex-wrap:wrap;">
+        <select class="fc" id="roomF" onchange="App.renderTbl()" style="max-width:175px;"></select>
+        <input type="text" class="fc" id="search" placeholder="ค้นหาชื่อนักเรียน..." oninput="App.dbRender()" style="flex:1;min-width:155px;">
+        <select class="fc" id="statF" onchange="App.renderTbl()" style="max-width:175px;"><option value="">— ทุกสถานะ —</option><option value="m">ค้างส่ง</option><option value="c">ส่งครบ</option></select>
+      </div>
+      <div class="tw">
+        <table><thead><tr><th>ห้อง</th><th>ชื่อ-นามสกุล</th><th>ส่งแล้ว</th><th>ค้างส่ง</th><th>%</th><th>คะแนนเก็บ</th><th>คะแนนรวม 100</th></tr></thead><tbody id="tcTbl"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const STUDENTS={'ฟิสิกส์ 3':{'ม.5/1':['นายกนกศักดิ์ สีงาม','นายชยกร สมพันธ์','นายต้นตระกูล บุดดา','นายธนวัฒน์ บุญแสน','นายธนายุทธ วังศรี','นายธีรภัทร์ รุ่งเรือง','นายปวริศร์ ดวงเนตร','นายภควัตร อรุณหอม','นายวรากร ภูพันนา','นายวัชรสินธุ์ เกษใส','นายศิวัช วิถุนัด','นายนพนันท์ จันทะอ่อน','นายวุฒิชัย แสงสี','นายสุรพรชัย เสียมทอง','นางสาวกมลชนก บุตตัสสะ','นางสาวกันต์ฤทัย บุญมะยา','นางสาวจันทร์เพ็ญ สอนคำจันทร์','นางสาวจุฑาพร วิศาลศาสตร์บำรุง','นางสาวณัฐรินยา เสน่หา','นางสาวณิชนันทร์ สืบทอง','นางสาวธนัฐนันท์ บุญปั้ว','นางสาวปภาวรินทร์ โฆสิตดุลย์','นางสาวปรียดา พิศภิรมย์','นางสาวปาลิตา โรมพันธ์','นางสาวพิชญธิดา กัลยะกิติ','นางสาวอุษามณี พันธ์อินทร์ป้อ','นางสาวศิริลักษณ์ พิศภิรมย์'],'ม.5/2':['นายณปกร สำอางค์','นายแทนคุณ เกษรจันทร์','นายธีรวัฒน์ เกตไสย','นายนันทพัฒน์ พุดลา','นายภัทรธร เผือกนอก','นายศุภวิชญ์ คมกล้า','นายสิทธิชัย สิมนาม','นายสิทธินนท์ จันทร์ชื่น','นายสุทธิศักดิ์ หงษ์กรรณ์','นายณัฎฐชัย สุทธิ','นายสรวิชญ์ แสงภักดี','นางสาวกุลธิดา รัตน์ทอง','นางสาวกรชนก สะสมทรัพย์','นางสาวกัญญารัตน์ ชัยยิ่ง','นางสาวกัญญารัตน์ แสงพลอย','นางสาวพิณณ์ประภา เกตไสย์','นางสาววันวิสา ดวงเดือน','นางสาววิกานดา พางาม','เด็กหญิงศุทธวดี สิมมาวงษ์','นางสาวศุภิสรา โปยทอง','นางสาวชุติมา คำหอม','เด็กหญิงนนทิญาภรณ์ ตรองจิตร','นางสาวกัญจน์จิรา แก้วดี','นางสาวณัฐณิชา บุญแจ้ง','นางสาวบุณยานุช บุญสุข','นางสาวเบญญาภา เสรีภาพ','นางสาวสิริกรณ์ ธรรมรักษา','นางสาวเพชรลดา ปรารถนา'],'ม.5/3':['นายกิตติพศ โสนทอง','นายไกรวิชญ์ ฟองนวล','นายชยานันท์ พันนุรัตน์','นายชลธิต เจริญเมือง','นายปฏิวัติ ผาสุข','นายพัศนัย ศรีกุล','นายอติกานต์ มงคลแผ้ว','นายอนันดา ทองขนาน','นายจิรชยนต์ หมื่นเจริญ','นายภาณุวัตร ทองงาม','นางสาวกัญญรัตน์ ผึ่งผาย','นางสาวขวัญจิรา ศรงาม','นางสาวชลธิชา นวนดี','นางสาวณัฐธัญญา ไชโย','นางสาวธัญวรัตน์ สะสม','นางสาวธิดารัตน์ บุญช่วย','นางสาวนพิมประภา อินทร์งาม','นางสาวปิยาพัชร แซ่เตียว','นางสาวพิมลวรรณ นิลจันทร์','นางสาวสุชานาถ สำอางค์','นางสาวสุชาวดี บำรุงนาม','นางสาวสุริวิภา แข่งขัน','นางสาวปัทมวรรณ สีเป้ง','นางสาวปัณฑิตา พินโต','นางสาวกนกขวัญ กะการดี','นางสาวธัญชนก สันทอง','นางสาวสุกัญญา พัดพรม']},'ฟิสิกส์ 5':{'ม.6/1':['นายฆนรุจ ชัยภักดี','นายภูวนาท พรมแดน','นายรัฐพล ทองมาก','นายเอกณกร เจริญพร','นายพชรนันต์ จันดารักษ์','นายภัทรกร ชะช้างรัมย์','นายเศรษฐศาสตร์ พรมตวง','นางสาวกานต์อุษา อินทร์สุข','นางสาวจิราภัทร ย่างสุข','นางสาวญดาวดี คำสีดา','นางสาวณัฐกมล ละม่อม','นางสาวธนพรพรรณ แก้วนนท์','นางสาวนันธิดา จันทร์ชื่น','นางสาวพรฝัน พวงพั่ว','นางสาววรรณิดา มุ่งกองกลาง','นางสาววริศรา โต๊ะสิงห์','นางสาววันวิสา แสงทอง','นางสาวสุธิดา วิชาดี','นางสาวกฤษฎาภา สาระติ','นางสาวกันย์ธิชา โคตรชัย','นางสาวช่อมุกดา เหลื่อมเพชร','นางสาวชีวา อิ่มเอก','นางสาวณัฐธิชาภรณ์ บุญเกตุ','นางสาววิศรุตา ศาลารัตน์','นางสาวศศิวรรณ วงษาเนาว์'],'ม.6/2':['นายกิตติ์ธวัช เจริญชาติ','นายชัยอุดม ยืนยง','นายณภัทร นูพิมพ์','นายเดชดนัย จันทร์ชื่น','นายโทนี่ สอนดี','นายพัชระสิน สำอางค์','นายชวิศ สอนดี','นายอดิเทพ ศรีนิล','นายอภิชาติ พนารักษ์','นายธนัญกร อินนอก','นายสุรศักดิ์ ชมภู่','นายอธิภูมิ สวัสดี','นายอัษฎายุธ แก้วขวัญ','นายอัษฎาวุธ แก้วขวัญ','นางสาวกฤษณา ม่วงทองหลาง','นางสาวชลิตา ศรีเมือง','นางสาวณัฐชยา สายสมุทร','นางสาวโปรดปราน เสริมรัก','นางสาวยศสรัล ล้วนงาม','นางสาวสุธาสินี ตระกูลสุข','นางสาวอัญชิษฐา พลชา','นางสาวอินธิรา ภูพันนา','นางสาวจิรัชญา แสนสุข','นางสาวธิดารัตน์ บุญเสริม','นางสาวธาดารัศมิ์ เพชรโคตร','นางสาวบุตรี วงเวียน'],'ม.6/3':['นายกฤศนล จึงวิเศษพงศ์','นายชิติพัทธ์ อุตรา','นายธนวิชญ์ ไทยตรง','นายธีระภัทร สมรูป','นายปัญญานันท์ บุญเพ็ง','นายภูมินทร์ สืบสังข์','นายศุภกร สวัสดี','นายสิรภัทร คมกล้า','นายอภิภู อินทร์แก้ว','นายเอกรงค์ โพธิ์มี','นายทินกร เจริญศิริ','นางสาวณัฏฐกานต์ เหล่าสกุล','นางสาวณัฐกุล ศรีสว่าง','นางสาวทิวากานต์ บุญหวัง','นางสาวธิดาแก้ว ภาสวัสดิ์','นางสาวนภาพร หีบแก้ว','นางสาวนริศรา ดีหมี','นางสาวนลินญา คมสัน','นางสาวบัณฑิตา ธรรมวัตร','นางสาวปุณยาพร พนารักษ์','นางสาวพัชริดา สุทแสง','นางสาวสุทธิดา ผัดสี','นางสาวหทัยขวัญ ทองมี','นางสาวไอลดา สมบูรณ์','นางสาวกมลทิพย์ แก้วพิลา','นางสาวอรปรีดา เงางาม']}};
+const FM={'ฟิสิกส์ 3':[{s:'F = ma',d:'กฎที่ 2 ของนิวตัน'},{s:'W = Fs cosθ',d:'งาน (Work)'},{s:'KE = ½mv²',d:'พลังงานจลน์'},{s:'PE = mgh',d:'พลังงานศักย์โน้มถ่วง'},{s:'P = W/t',d:'กำลัง (Power)'},{s:'p = mv',d:'โมเมนตัม'},{s:'J = FΔt = Δp',d:'แรงกระตุ้น'},{s:'v² = u² + 2as',d:'สมการการเคลื่อนที่'},{s:'g = 10 m/s²',d:'ค่าแรงโน้มถ่วง'},{s:'T = 2π√(L/g)',d:'คาบของลูกตุ้มนาฬิกา'}],'ฟิสิกส์ 5':[{s:'F = kQ₁Q₂/r²',d:'กฎของคูลอมบ์'},{s:'E = F/q',d:'สนามไฟฟ้า'},{s:'V = kQ/r',d:'ศักย์ไฟฟ้า'},{s:'C = Q/V',d:'ความจุไฟฟ้า'},{s:'I = Q/t',d:'กระแสไฟฟ้า'},{s:'V = IR',d:'กฎของโอห์ม'},{s:'P = IV = I²R',d:'กำลังไฟฟ้า'},{s:'F = qvB sinθ',d:'แรงบนประจุในสนามแม่เหล็ก'},{s:'ε = -ΔΦ/Δt',d:'กฎของฟาราเดย์'},{s:'k = 9×10⁹',d:'ค่าคงที่คูลอมบ์'}]};
+const PW='physics2569';
+
+/* SVG ICONS — ใช้แทน emoji ใน GAS WebView */
+var IcoPaths={
+  atom:'<circle cx="12" cy="12" r="2.5" fill="currentColor"/><ellipse cx="12" cy="12" rx="9" ry="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/><ellipse cx="12" cy="12" rx="9" ry="3.5" fill="none" stroke="currentColor" stroke-width="1.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.5" fill="none" stroke="currentColor" stroke-width="1.6" transform="rotate(-60 12 12)"/>',
+  book:'<path d="M6 4h8a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2V4z"/><path d="M6 4h8v14H8a2 2 0 0 1-2-2V4z"/><path d="M18 4h-8a2 2 0 0 0-2 2v14h8a2 2 0 0 0 2-2V4z"/>',
+  flask:'<path d="M10 2v6l-5 9a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-5-9V2"/><path d="M8 2h8"/>',
+  lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  bolt:'<path d="M13 2L4 14h7l-1 8 10-14h-7l0-6z"/>',
+  wave:'<path d="M2 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M2 19c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>',
+  dice:'<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1.2" fill="currentColor" stroke="none"/>',
+  timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v5l3 2"/><path d="M10 2h4"/>',
+  formula:'<path d="M4 7h6M7 4v6M14 7l6 10M20 7L14 17"/>',
+  sound:'<path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M16 9a4 4 0 0 1 0 6M18 7a7 7 0 0 1 0 10"/>',
+  group:'<circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M4 19c0-3 2.5-5 5-5s5 2 5 5M13 19c0-2 1.5-4 3.5-4"/>',
+  poll:'<path d="M4 19V5M4 19h4M4 13h7M4 7h10"/><path d="M16 16l3-3-3-3"/>'
+};
+var Ico={
+  svg:function(n){var p=IcoPaths[n];return p?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>':'';},
+  put:function(id,n){var el=$(id);if(el)el.innerHTML=Ico.svg(n);},
+  bindData:function(root){(root||document).querySelectorAll('[data-ico]').forEach(function(el){el.innerHTML=Ico.svg(el.getAttribute('data-ico'));});}
+};
+var RES_LBL={doc:'ใบงาน',vid:'วิดีโอ',lab:'การทดลอง',lesson:'บทเรียน',link:'อื่นๆ'};
+function resLbl(t){return RES_LBL[t]||t||'ลิงก์';}
+
+/* THEME */
+function setTh(t){
+  document.documentElement.setAttribute('data-theme',t);
+  try{localStorage.setItem('th',t);}catch(e){}
+  ['dk','lt','au'].forEach(k=>{
+    const m={'dk':'dark','lt':'light','au':'auto'}[k];
+    document.querySelectorAll(`[id$="-${k}"]`).forEach(b=>b.classList.toggle('on',m===t));
+  });
+}
+(()=>{let t='dark';try{t=localStorage.getItem('th')||'dark';}catch(e){}setTh(t);})();
+
+/* RESOURCE STORE */
+const Res={
+  load:id=>{try{return JSON.parse(localStorage.getItem('r_'+id)||'[]');}catch(e){return[];}},
+  save:(id,a)=>{try{localStorage.setItem('r_'+id,JSON.stringify(a));}catch(e){}},
+  add:(id,item)=>{const a=Res.load(id);a.push(item);Res.save(id,a);},
+  del:(id,i)=>{const a=Res.load(id);a.splice(i,1);Res.save(id,a);}
+};
+
+/* STATE */
+let S={
+  asns:[],subs:[],grds:[],exams:[],subj:'',room:'',stu:'',asn:'',tab:'ฟิสิกส์ 3',
+  siMap:new Map(),giMap:new Map(),exMap:new Map(),
+  scaMap:new Map(),scuMap:new Map(),scoreMap:new Map(),
+  rId:null,rName:'',_dbt:null,
+  tmrIv:null,tmrOn:false,tmrSec:0,tmrInit:false,tmrDown:true,
+  noStream:null,noAnim:null,poll:{y:0,m:0,n:0},randIv:null
+};
+
+/* UI */
+function $(id){return document.getElementById(id);}
+var UI={
+  show:id=>{const e=$(id);if(e)e.style.display='block';},
+  hide:id=>{const e=$(id);if(e)e.style.display='none';},
+  v:id=>{const e=$(id);return e?e.value:'';},
+  sv:(id,v)=>{const e=$(id);if(e)e.value=v;},
+  h:(id,h)=>{const e=$(id);if(e)e.innerHTML=h;},
+  load:on=>{const l=$('ldr');if(l)l.style.display=on?'flex':'none';},
+  toast:(msg,tp='ok')=>{
+    const t=document.createElement('div');t.className=`toast ${tp}`;t.textContent=msg;
+    $('toastBox').appendChild(t);
+    const d=tp==='er'?7000:3200;
+    setTimeout(()=>{t.style.transition='.28s';t.style.opacity='0';t.style.transform='translateY(6px)';setTimeout(()=>t.remove(),300);},d);
+  }
+};
+function openM(id){$(id).classList.add('open');}
+function closeM(id){$(id).classList.remove('open');}
+function closeSP(){$('sideP').classList.remove('open');$('spOv').classList.remove('open');}
+
+/* API */
+const API={
+  _ready:false,
+  ping:()=>new Promise((res,rej)=>{
+    if(typeof google==='undefined'||!google.script||!google.script.run){res(false);return;}
+    google.script.run
+      .withSuccessHandler(r=>{API._ready=!!(r&&r.ok);res(API._ready);})
+      .withFailureHandler(e=>{console.error('ping',e);API._ready=false;res(false);})
+      .serverCall('ping');
+  }),
+  call:(a,p)=>new Promise((res,rej)=>{
+    if(typeof google==='undefined'||!google.script||!google.script.run){
+      console.warn('google.script.run unavailable — preview mode');
+      res({});
+      return;
+    }
+    google.script.run
+      .withSuccessHandler(r=>{
+        if(r==null){console.warn(a+' returned null');res({_n:true});}
+        else if(r.error){res(r);}
+        else res(r);
+      })
+      .withFailureHandler(e=>{
+        console.error(a,e);
+        const msg=(e&&e.message)?e.message:String(e);
+        rej(new Error(msg.includes('Script')||msg.includes('Authorization')?msg:'การเชื่อมต่อเซิร์ฟเวอร์ล้มเหลว — ลองรีเฟรชหรือตรวจสิทธิ์ Deploy'));
+      })
+      .serverCall(a,p||{});
+  }),
+  export:()=>{
+    if(typeof google==='undefined'||!google.script||!google.script.run){
+      UI.toast('ต้อง Deploy เป็น Web App ก่อน','er');return;
+    }
+    UI.toast('กำลังเตรียม CSV...','wn');
+    google.script.run
+      .withSuccessHandler(csv=>{
+        if(!csv){UI.toast('ส่งออกไม่สำเร็จ','er');return;}
+        const a=document.createElement('a');
+        a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+        a.download='รายงานส่งงาน.csv';a.click();
+        UI.toast('ดาวน์โหลด CSV แล้ว','ok');
+      })
+      .withFailureHandler(e=>UI.toast('ส่งออกล้มเหลว: '+e,'er'))
+      .serverCall('exportCSV');
+  }
+};
+
+/* REBUILD INDEXES */
+function rebuildIdx(){
+  S.siMap=new Map();S.subs.forEach(s=>S.siMap.set(`${s.subject}|${s.room}|${s.student}|${s.assignment}`,s));
+  S.giMap=new Map();S.grds.forEach(g=>S.giMap.set(`${g.subject}|${g.room}|${g.student}|${g.assignment}`,g));
+  S.scaMap=new Map();S.subs.forEach(s=>{const k=`${s.subject}|${s.assignment}`;S.scaMap.set(k,(S.scaMap.get(k)||0)+1);});
+  S.scuMap=new Map();S.subs.forEach(s=>{const k=`${s.subject}|${s.room}|${s.student}`;S.scuMap.set(k,(S.scuMap.get(k)||0)+1);});
+  S.scoreMap=new Map();S.grds.forEach(g=>{const k=`${g.subject}|${g.room}|${g.student}`;S.scoreMap.set(k,(S.scoreMap.get(k)||0)+(Number(g.score)||0));});
+  S.exMap=new Map();S.exams.forEach(e=>S.exMap.set(`${e.subject}|${e.room}|${e.student}`,e));
+}
+
+/* MAIN APP */
+var App={
+  go:function(id){
+    if(!id)return;
+    document.querySelectorAll('.page').forEach(function(p){
+      p.classList.remove('active');
+      p.style.display='none';
+    });
+    var t=$(id);
+    if(!t){console.error('Page not found:',id);return;}
+    t.classList.add('active');
+    t.style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  },
+  fetch:async(show=false)=>{
+    if(show)UI.load(true);
+    try{
+      const d=await API.call('getAll');
+      if(d._n){if(show)UI.toast('เซิร์ฟเวอร์ไม่ตอบ — ตรวจ Deploy และสิทธิ์ Sheet','er');if(show)UI.load(false);return;}
+      if(d.error)throw new Error(d.error);
+      S.asns=d.asns||[];
+      const valid=new Set(S.asns.map(a=>a.name));
+      const sm={};(d.subs||[]).forEach(s=>{if(valid.has(s.assignment))sm[`${s.subject}|${s.room}|${s.student}|${s.assignment}`]=s;});
+      S.subs=Object.values(sm);
+      S.grds=(d.grds||[]).filter(g=>valid.has(g.assignment));
+      S.exams=d.exams||[];
+      rebuildIdx();
+      if(show)UI.toast('อัปเดตเรียบร้อย','ok');
+      App.refresh();
+    }catch(e){UI.toast('เชื่อมต่อล้มเหลว: '+e,'er');}
+    if(show)UI.load(false);
+  },
+  refresh:()=>{if(S.stu)App.renderStuDash();App.renderTcDash();},
+
+  /* STUDENT FLOW */
+  goStu:function(){
+    App.go('pg-stu');
+    App.step(1);
+    App.fetch(false);
+  },
+  goTc:function(){
+    App.go('pg-login');
+  },
+  step:n=>{
+    [1,2,3,4,5].forEach(i=>{UI.hide('ss'+i);const s=$(i>4?'st4':'st'+i);if(s)s.classList.remove('active');});
+    UI.show('ss'+n);const s=$(n>4?'st4':'st'+n);if(s)s.classList.add('active');
+  },
+  selSubj:sj=>{S.subj=sj;App.renderRooms();App.step(2);},
+  renderRooms:()=>{
+    UI.h('roomList',Object.keys(STUDENTS[S.subj]).map(r=>`<div class="ai cl" style="justify-content:center;padding:13px;" onclick="App.selRoom('${r}')"><b style="font-size:.95rem;color:var(--t1);">${r}</b></div>`).join(''));
+  },
+  selRoom:r=>{S.room=r;UI.h('stuSel','<option value="">— เลือกชื่อ-นามสกุล —</option>'+STUDENTS[S.subj][r].map(n=>`<option value="${n}">${n}</option>`).join(''));App.step(3);},
+  confStu:()=>{const n=UI.v('stuSel');if(!n)return UI.toast('กรุณาเลือกชื่อก่อนครับ','wn');S.stu=n;App.renderStuDash();App.step(4);},
+
+  renderStuDash:()=>{
+    UI.h('dName',S.stu);
+    const asns=S.asns.filter(a=>a.subject===S.subj);
+    const subs=S.subs.filter(s=>s.subject===S.subj&&s.room===S.room&&s.student===S.stu);
+    const grds=S.grds.filter(g=>g.subject===S.subj&&g.room===S.room&&g.student===S.stu);
+    const done=subs.length,miss=asns.length-done,score=grds.reduce((s,g)=>s+(Number(g.score)||0),0);
+    UI.h('dTotal',asns.length);UI.h('dDone',done);UI.h('dMiss',miss);UI.h('dScore',score);
+    const pct=asns.length?Math.round(done/asns.length*100):0;
+    $('dPct').textContent=pct+'%';$('dBar').style.width=pct+'%';
+    const ex=S.exMap.get(`${S.subj}|${S.room}|${S.stu}`);
+    const ec=$('examCard');
+    if(ex){ec.style.display='block';UI.h('exP',ex.preMid!=null?ex.preMid:'-');UI.h('exM',ex.midExam!=null?ex.midExam:'-');UI.h('exPo',ex.postMid!=null?ex.postMid:'-');UI.h('exF',ex.finalExam!=null?ex.finalExam:'-');UI.h('exT',ex.total!=null?ex.total:'-');}
+    else ec.style.display='none';
+    const chs={};asns.forEach(a=>{const c=a.chapter||'1';if(!chs[c])chs[c]=[];chs[c].push(a);});
+    let html='';
+    Object.keys(chs).sort((a,b)=>+a-+b).forEach(ch=>{
+      const items=chs[ch],chD=items.filter(a=>subs.find(s=>s.assignment===a.name)).length;
+      html+=`<div class="ch-blk"><div class="ch-hdr" onclick="togCh(this)"><div class="ch-title">บทที่ ${ch}<span class="bd bd-bl">${items.length} งาน</span>${chD===items.length?'<span class="bd bd-ok">ครบ</span>':'<span class="bd bd-er">ค้าง '+(items.length-chD)+'</span>'}</div><div class="ch-meta"><span style="font-size:.74rem;color:var(--t3);">${chD}/${items.length}</span><span class="ch-arr">▾</span></div></div><div class="ch-body">${items.map(a=>{
+        const sub=subs.find(s=>s.assignment===a.name),grd=grds.find(g=>g.assignment===a.name);
+        const res=Res.load(a.id);
+        return `<div class="ai cl" onclick="App.prepSub('${a.name.replace(/'/g,"\\'")}','${a.id}')"><div class="ai-info"><div class="ai-name">${a.name}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}${sub?'<br><span style="color:var(--ok);font-weight:600;">ส่งแล้ว '+(sub.submittedAt||'')+'</span>':''}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div style="text-align:right;flex-shrink:0;margin-left:10px;">${sub?'<span class="bd bd-ok">ส่งแล้ว</span>':'<span class="bd bd-er">ค้างส่ง</span>'}<div style="font-size:.76rem;margin-top:5px;color:var(--t3);">${grd?'<b style="color:var(--cy)">'+grd.score+'</b>/'+a.maxScore:'-/'+a.maxScore}</div></div></div>`;
+      }).join('')}</div></div>`;
+    });
+    UI.h('stuAcc',html||'<div style="text-align:center;padding:18px;color:var(--t3)">ยังไม่มีชิ้นงาน</div>');
+  },
+
+  prepSub:(name,id)=>{
+    S.asn=name;UI.h('subAsnName',name);UI.sv('linkIn','');UI.sv('fileIn','');
+    const links=Res.load(id);
+    UI.h('subResLinks',links.length?'<div class="res-highlight"><div class="lbl" style="margin-bottom:6px;">สื่อประกอบการเรียน</div>'+links.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':'');
+    App.step(5);
+  },
+  subWork:async()=>{
+    const link=UI.v('linkIn'),file=$('fileIn').files[0];
+    if(!link&&!file)return UI.toast('กรุณาใส่ลิงก์หรือเลือกไฟล์งาน','wn');
+    UI.load(true);
+    const p={subject:S.subj,room:S.room,student:S.stu,assignment:S.asn,link};
+    if(file){
+      if(file.size>20*1024*1024){UI.load(false);return UI.toast('ไฟล์ใหญ่เกิน 20MB','er');}
+      const rd=new FileReader();
+      rd.onload=async e=>{p.fileData=e.target.result;p.fileName=file.name;p.fileMime=file.type;await App._doSub(p);};
+      rd.readAsDataURL(file);
+    }else await App._doSub(p);
+  },
+  _doSub:async p=>{
+    const r=await API.call('submitAssignment',p);
+    if(r.error){UI.toast('ส่งงานล้มเหลว: '+r.error,'er');UI.load(false);return;}
+    if(r.success){
+      UI.toast('ส่งงานเรียบร้อย','ok');
+      const now=new Date().toLocaleString('th-TH');
+      let ex=S.subs.find(s=>s.subject===p.subject&&s.room===p.room&&s.student===p.student&&s.assignment===p.assignment);
+      if(ex){ex.link=p.link||'';ex.fileName=p.fileName||'';ex.fileUrl=r.fileUrl||'';ex.submittedAt=now;}
+      else S.subs.push({...p,id:'SUB_'+Date.now(),fileUrl:r.fileUrl||'',submittedAt:now});
+      rebuildIdx();App.step(4);App.renderStuDash();
+    }else UI.toast('ส่งงานล้มเหลว','er');
+    UI.load(false);
+  },
+
+  /* TEACHER */
+  login:()=>{if(UI.v('pwIn')===PW){App.go('pg-tc');App.fetch(true);UI.sv('pwIn','');}else UI.toast('รหัสผ่านไม่ถูกต้อง!','er');},
+  setTab:function(t){
+    S.tab=t;
+    var tb3=$('tb3'),tb5=$('tb5');
+    if(tb3)tb3.className='stab'+(t==='ฟิสิกส์ 3'?' on':'');
+    if(tb5)tb5.className='stab'+(t==='ฟิสิกส์ 5'?' on':'');
+    var rf=$('roomF');
+    if(rf)UI.h('roomF','<option value="">— ดูทุกห้อง —</option>'+Object.keys(STUDENTS[t]).map(function(r){return '<option>'+r+'</option>';}).join(''));
+    if($('pg-tc'))App.renderTcDash();
+  },
+  renderTcDash:function(){
+    if(!$('tcSubjN'))return;
+    UI.h('tcSubjN',`(${S.tab})`);
+    const asns=S.asns.filter(a=>a.subject===S.tab);
+    const allS=Object.values(STUDENTS[S.tab]).flat();
+    let tS=0,tM=0;
+    Object.entries(STUDENTS[S.tab]).forEach(([room,stus])=>stus.forEach(stu=>{const ms=S.scuMap.get(`${S.tab}|${room}|${stu}`)||0;tS+=ms;if(ms<asns.length)tM++;}));
+    let tU=0;S.subs.forEach(s=>{if(s.subject===S.tab&&!S.giMap.has(`${s.subject}|${s.room}|${s.student}|${s.assignment}`))tU++;});
+    UI.h('tcSum',`<div class="sc-card"><div class="sc-num" style="color:var(--cy)">${asns.length}</div><div class="sc-lbl">ชิ้นงานทั้งหมด</div></div><div class="sc-card"><div class="sc-num">${allS.length}</div><div class="sc-lbl">นักเรียนทั้งหมด</div></div><div class="sc-card" style="background:var(--ok-b);border-color:var(--ok-bd);"><div class="sc-num" style="color:var(--ok)">${tS}</div><div class="sc-lbl">ชิ้นงานที่ส่ง</div></div><div class="sc-card" style="background:var(--er-b);border-color:var(--er-bd);"><div class="sc-num" style="color:var(--er)">${tM}</div><div class="sc-lbl">คนที่ยังค้างส่ง</div></div><div class="sc-card" style="background:var(--wn-b);border-color:var(--wn-bd);"><div class="sc-num" style="color:var(--wn)">${tU}</div><div class="sc-lbl">รอตรวจ</div></div>`);
+    const chs={};asns.forEach(a=>{const c=a.chapter||'1';if(!chs[c])chs[c]=[];chs[c].push(a);});
+    const tot=allS.length;let html='';
+    Object.keys(chs).sort((a,b)=>+a-+b).forEach(ch=>{
+      const items=chs[ch];
+      html+=`<div class="ch-blk"><div class="ch-hdr" onclick="togCh(this)"><div class="ch-title">บทที่ ${ch}<span class="bd bd-bl">${items.length} งาน</span></div><span class="ch-arr">▾</span></div><div class="ch-body">${items.map(a=>{
+        const done=S.scaMap.get(`${S.tab}|${a.name}`)||0,miss=tot-done,pct=tot?Math.round(done/tot*100):0;
+        const res=Res.load(a.id);
+        return `<div class="ai" style="flex-direction:column;align-items:stretch;gap:9px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="ai-info"><div class="ai-name">${a.name}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div class="ai-acts">${miss>0?'<span class="miss-bd" onclick="App.showMiss(\''+a.name.replace(/'/g,"\\'")+'\')">ค้าง '+miss+' คน</span>':'<span class="bd bd-ok">ครบ</span>'}<button class="btn btn-g btn-sm" onclick="App.openRes(\''+a.id.replace(/'/g,"\\'")+'\',\''+a.name.replace(/'/g,"\\'")+'\')">ลิงก์</button><button class="btn btn-g btn-sm" onclick='App.editAsn(${JSON.stringify(a).replace(/'/g,"&apos;")})'>แก้ไข</button><button class="btn btn-d btn-sm" onclick="App.delAsn('${a.id}')">ลบ</button></div></div><div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--t3);margin-bottom:3px;"><span>ส่งแล้ว ${done}/${tot} คน</span><span>${pct}%</span></div><div class="pw"><div class="pf" style="width:${pct}%"></div></div></div></div>`;
+      }).join('')}</div></div>`;
+    });
+    UI.h('tcAcc',html||'<div style="text-align:center;padding:18px;color:var(--t3);">ยังไม่มีชิ้นงาน</div>');
+    App.renderTbl();
+  },
+  togForm:()=>{const f=$('asnForm');if(f.style.display==='none'||!f.style.display){UI.sv('asId','');UI.sv('asNm','');UI.sv('asSc','10');UI.sv('asDt','');UI.sv('asDsc','');UI.sv('asCh','1');UI.show('asnForm');}else UI.hide('asnForm');},
+  editAsn:a=>{UI.show('asnForm');UI.sv('asId',a.id);UI.sv('asNm',a.name);UI.sv('asSc',a.maxScore);UI.sv('asDt',a.dueDate);UI.sv('asDsc',a.desc);UI.sv('asCh',a.chapter||'1');$('asnForm').scrollIntoView({behavior:'smooth',block:'center'});},
+  saveAsn:async()=>{
+    if(!UI.v('asNm'))return UI.toast('กรุณาระบุชื่องานด้วยครับ','wn');
+    const p={id:UI.v('asId'),subject:S.tab,name:UI.v('asNm'),maxScore:UI.v('asSc'),dueDate:UI.v('asDt'),desc:UI.v('asDsc'),chapter:UI.v('asCh')};
+    UI.hide('asnForm');UI.toast('กำลังบันทึก...','wn');
+    const r=await API.call('saveAssignment',p);
+    if(r.success){UI.toast('บันทึกสำเร็จ','ok');await App.fetch(true);}else UI.toast((r.error||'เกิดข้อผิดพลาด'),'er');
+  },
+  delAsn:async id=>{
+    if(!confirm('ยืนยันการลบชิ้นงานนี้?'))return;
+    const d=S.asns.find(a=>a.id===id);S.asns=S.asns.filter(a=>a.id!==id);
+    if(d){S.subs=S.subs.filter(s=>s.assignment!==d.name);S.grds=S.grds.filter(g=>g.assignment!==d.name);}
+    rebuildIdx();App.renderTcDash();UI.toast('ลบแล้ว','ok');API.call('deleteAssignment',{id});
+  },
+
+  /* RESOURCE */
+  openRes:(id,name)=>{S.rId=id;S.rName=name;UI.h('mResT','จัดการลิงก์: '+name);App.renderRes();UI.sv('rName','');UI.sv('rUrl','');openM('mRes');},
+  renderRes:()=>{
+    const lnks=Res.load(S.rId);
+    UI.h('mResB',lnks.length===0?'<div style="text-align:center;padding:12px;color:var(--t3);font-size:.82rem;">ยังไม่มีลิงก์ประกอบ</div>':
+      lnks.map(function(r,i){return '<div class="res-item"><div style="display:flex;align-items:center;gap:8px;"><span>'+resLbl(r.type)+'</span><div><div style="font-weight:600;font-size:.84rem;color:var(--t1);">'+r.name+'</div><div style="font-size:.7rem;color:var(--t3);max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+r.url+'</div></div></div><div style="display:flex;gap:5px;"><a href="'+r.url+'" target="_blank" class="btn btn-g btn-sm">เปิด</a><button class="btn btn-d btn-sm" onclick="App.delRes('+i+')">X</button></div></div>';}).join(''));
+  },
+  addRes:()=>{
+    const name=UI.v('rName').trim(),url=UI.v('rUrl').trim(),type=UI.v('rType');
+    if(!name||!url)return UI.toast('กรุณากรอกชื่อและ URL','wn');
+    if(!url.startsWith('http'))return UI.toast('URL ต้องขึ้นต้นด้วย http://','wn');
+    Res.add(S.rId,{name,url,type});UI.sv('rName','');UI.sv('rUrl','');
+    App.renderRes();App.renderTcDash();UI.toast('เพิ่มลิงก์แล้ว','ok');
+  },
+  delRes:i=>{Res.del(S.rId,i);App.renderRes();App.renderTcDash();UI.toast('ลบลิงก์แล้ว','ok');},
+
+  /* MISSING */
+  showMiss:name=>{
+    const rf=UI.v('roomF');UI.h('mMissT','ยังไม่ส่ง: '+name);let html='';
+    Object.entries(STUDENTS[S.tab]).forEach(([room,stus])=>{
+      if(rf&&room!==rf)return;
+      const miss=stus.filter(stu=>!S.subs.find(s=>s.subject===S.tab&&s.room===room&&s.student===stu&&s.assignment===name));
+      if(!miss.length)return;
+      html+='<div style="margin-bottom:13px;"><div style="font-weight:700;color:var(--t3);font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">'+room+' — ค้าง '+miss.length+' คน</div><div class="miss-lst">'+miss.map(function(n){return '<div class="miss-stu">'+n+'</div>';}).join('')+'</div></div>';
+    });
+    UI.h('mMissB',html||'<div style="text-align:center;padding:18px;color:var(--ok);">ทุกคนส่งงานแล้ว</div>');
+    openM('mMiss');
+  },
+
+  /* TABLE */
+  dbRender:()=>{clearTimeout(S._dbt);S._dbt=setTimeout(App.renderTbl,250);},
+  renderTbl:()=>{
+    const rf=UI.v('roomF'),sf=UI.v('search').toLowerCase(),stf=UI.v('statF');
+    const asns=S.asns.filter(a=>a.subject===S.tab);let rows=[];
+    Object.entries(STUDENTS[S.tab]).forEach(([room,stus])=>{
+      if(rf&&room!==rf)return;
+      stus.forEach(stu=>{
+        if(sf&&!stu.toLowerCase().includes(sf))return;
+        const done=S.scuMap.get(`${S.tab}|${room}|${stu}`)||0;
+        const score=S.scoreMap.get(`${S.tab}|${room}|${stu}`)||0;
+        const exam=S.exMap.get(`${S.tab}|${room}|${stu}`);
+        const miss=Math.max(0,asns.length-done),pct=asns.length?Math.round(done/asns.length*100):0;
+        if(stf==='m'&&miss===0)return;if(stf==='c'&&miss>0)return;
+        const hasU=S.subs.some(s=>s.subject===S.tab&&s.room===room&&s.student===stu&&!S.giMap.has(`${s.subject}|${s.room}|${s.student}|${s.assignment}`));
+        rows.push(`<tr onclick="App.openPanel('${room}','${stu.replace(/'/g,"\\'")}')"><td style="font-weight:700;color:var(--t1);">${room}</td><td style="color:var(--t1);">${stu}${hasU?` <span class="bd bd-wn" style="font-size:.65rem;">รอตรวจ</span>`:''}</td><td style="color:var(--ok);font-weight:700;">${done}/${asns.length}</td><td style="color:${miss>0?'var(--er)':'var(--ok)'};font-weight:700;">${miss}</td><td><div style="display:flex;align-items:center;gap:5px;"><div class="pw" style="width:42px;"><div class="pf" style="width:${pct}%"></div></div><span style="font-size:.72rem;color:var(--t3);">${pct}%</span></div></td><td style="color:var(--cy);font-weight:700;">${score}</td><td style="color:${exam?'var(--ph5)':'var(--t4)'};font-weight:700;">${exam?exam.total+'/100':'-'}</td></tr>`);
+      });
+    });
+    UI.h('tcTbl',rows.join('')||'<tr><td colspan="7" style="text-align:center;padding:18px;color:var(--t3);">ไม่พบข้อมูล</td></tr>');
+  },
+
+  /* SIDE PANEL */
+  openPanel:(room,stu)=>{
+    UI.h('spN',stu);UI.h('spM',`วิชา ${S.tab} | ห้อง ${room}`);
+    const asns=S.asns.filter(a=>a.subject===S.tab);
+    const subs=S.subs.filter(s=>s.subject===S.tab&&s.room===room&&s.student===stu);
+    const grds=S.grds.filter(g=>g.subject===S.tab&&g.room===room&&g.student===stu);
+    const exam=S.exMap.get(`${S.tab}|${room}|${stu}`);
+    let html='<div class="exam-blk"><div class="exam-blk-title">คะแนนรวม (100 คะแนน)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px;"><div><label class="lbl">เก็บก่อนกลางภาค /25</label><input type="number" id="epre" class="fc" min="0" max="25" value="'+(exam?exam.preMid:'')+'" placeholder="0-25" oninput="App.prevEx()"></div><div><label class="lbl">สอบกลางภาค /20</label><input type="number" id="emid" class="fc" min="0" max="20" value="'+(exam?exam.midExam:'')+'" placeholder="0-20" oninput="App.prevEx()"></div><div><label class="lbl">เก็บหลังกลางภาค /25</label><input type="number" id="epost" class="fc" min="0" max="25" value="'+(exam?exam.postMid:'')+'" placeholder="0-25" oninput="App.prevEx()"></div><div><label class="lbl">สอบปลายภาค /30</label><input type="number" id="efin" class="fc" min="0" max="30" value="'+(exam?exam.finalExam:'')+'" placeholder="0-30" oninput="App.prevEx()"></div></div><div class="ph5-panel" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:9px;"><span style="font-weight:700;font-size:.82rem;color:var(--ph5);">รวม</span><span style="font-weight:700;font-size:1.35rem;color:var(--ph5);letter-spacing:-.03em;" id="etot">'+(exam?exam.total:0)+'</span><span style="font-size:.76rem;color:var(--t3);">/ 100</span></div><button class="btn btn-5" style="width:100%;font-size:.82rem;" onclick="App.saveEx(\''+room+'\',\''+stu.replace(/'/g,"\\'")+'\')">บันทึกคะแนนรวม</button></div>';
+    const chs={};asns.forEach(a=>{const c=a.chapter||'1';if(!chs[c])chs[c]=[];chs[c].push(a);});
+    Object.keys(chs).sort((a,b)=>+a-+b).forEach(ch=>{
+      const items=chs[ch];
+      const ung=items.filter(a=>{const sub=subs.find(s=>s.assignment===a.name);const grd=grds.find(g=>g.assignment===a.name);return sub&&!grd;}).length;
+      const newS=items.filter(a=>{const sub=subs.find(s=>s.assignment===a.name);const grd=grds.find(g=>g.assignment===a.name);return sub&&grd&&sub.submittedAt&&grd.gradedAt&&sub.submittedAt>grd.gradedAt;}).length;
+      html+=`<div class="pc-blk"><div class="pc-hdr open" onclick="togPC(this)"><span class="ch-arr open">▾</span><span style="font-weight:700;font-size:.86rem;color:var(--t1);">บทที่ ${ch}</span><span class="bd bd-bl" style="font-size:.66rem;">${items.length} งาน</span>${ung>0?`<span class="bd bd-wn" style="font-size:.66rem;">รอตรวจ ${ung}</span>`:''}${newS>0?`<span class="bd bd-new" style="font-size:.66rem;">ส่งใหม่ ${newS}</span>`:''}</div><div class="pc-body open">${items.map(a=>{
+        const sub=subs.find(s=>s.assignment===a.name),grd=grds.find(g=>g.assignment===a.name);
+        const maxS=Number(a.maxScore)||10;
+        const scores=maxS<=10?Array.from({length:maxS+1},(_,i)=>i):[0,Math.floor(maxS*.25),Math.floor(maxS*.5),Math.floor(maxS*.75),maxS];
+        let dc='',dl='',rowCls='missing';
+        if(sub&&!grd){dc='dot-wn';dl='รอตรวจ';rowCls='unmarked';}
+        else if(sub&&grd){const isN=sub.submittedAt&&grd.gradedAt&&sub.submittedAt>grd.gradedAt;dc=isN?'dot-cy':'dot-ok';dl=isN?'ส่งใหม่หลังตรวจ!':'ตรวจแล้ว';rowCls=isN?'resubmitted':'graded';}
+        const stH=sub?`<div class="sub-box sub"><span style="font-weight:700;color:var(--ok);">OK</span><div><div style="font-size:.8rem;font-weight:700;color:var(--ok);">ส่งแล้ว — ${sub.submittedAt||'-'}</div>${sub.fileName?`<a href="${sub.fileUrl}" target="_blank" class="sub-lnk">ไฟล์: ${sub.fileName}</a>`:''}${sub.link?`<a href="${sub.link}" target="_blank" class="sub-lnk">ลิงก์งาน</a>`:''}</div></div>`:`<div class="sub-box mis"><span style="font-weight:700;color:var(--er);">X</span><div style="font-size:.8rem;font-weight:700;color:var(--er);">ยังไม่ส่งงาน</div></div>`;
+        return `<div class="asn-row ${rowCls}"><div class="asn-name">${dc?`<span class="dot ${dc}" title="${dl}"></span>`:''}${a.name}<span class="asn-max">(${a.maxScore} คะแนน)</span>${dc==='dot-cy'?` <span class="bd bd-new" style="font-size:.64rem;">ส่งใหม่!</span>`:dc==='dot-wn'&&sub?` <span class="bd bd-wn" style="font-size:.64rem;">รอตรวจ</span>`:''}</div>${stH}${sub?`<div class="grd-sec"><div class="lbl" style="margin-bottom:6px;">ให้คะแนน</div><div class="qsw">${scores.map(s=>`<button class="qsb${grd&&Number(grd.score)===s?' on':''}" onclick="App.qsc('g_${a.id}','${s}',this)">${s}</button>`).join('')}</div><div style="display:flex;gap:7px;align-items:center;"><input type="number" id="g_${a.id}" class="fc" value="${grd?grd.score:''}" min="0" max="${maxS}" style="width:68px;text-align:center;font-weight:700;color:var(--cy);font-size:.98rem;"><input type="text" id="c_${a.id}" class="fc" value="${grd?grd.comment:''}" placeholder="ข้อเสนอแนะ..." style="flex:1;"><button class="btn btn-p btn-sm" onclick="App.saveGrd('${room}','${stu.replace(/'/g,"\\'")}','${a.name.replace(/'/g,"\\'")}','${a.id}','${a.maxScore}')">บันทึก</button></div>${grd?`<div style="font-size:.68rem;color:var(--t4);margin-top:4px;">ตรวจล่าสุด: ${grd.gradedAt||'-'}</div>`:''}</div>`:''}</div>`;
+      }).join('')}</div></div>`;
+    });
+    UI.h('spB',html);
+    $('sideP').classList.add('open');$('spOv').classList.add('open');
+  },
+  qsc:(inputId,val,btn)=>{UI.sv(inputId,val);btn.closest('.qsw').querySelectorAll('.qsb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');},
+  saveGrd:(room,stu,name,asnId,maxScore)=>{
+    const score=UI.v('g_'+asnId),comment=UI.v('c_'+asnId),now=new Date().toLocaleString('th-TH');
+    let ex=S.grds.find(g=>g.subject===S.tab&&g.room===room&&g.student===stu&&g.assignment===name);
+    const old=ex?Number(ex.score)||0:0;
+    if(ex){ex.score=score;ex.comment=comment;ex.gradedAt=now;}
+    else{ex={id:'GRD_'+Date.now(),subject:S.tab,room,student:stu,assignment:name,maxScore,score,comment,gradedAt:now};S.grds.push(ex);}
+    S.giMap.set(`${S.tab}|${room}|${stu}|${name}`,ex);
+    const k=`${S.tab}|${room}|${stu}`;S.scoreMap.set(k,(S.scoreMap.get(k)||0)-old+(Number(score)||0));
+    UI.toast('กำลังเซฟ...','wn');
+    API.call('saveGrade',{subject:S.tab,room,student:stu,assignment:name,score,comment,maxScore})
+      .then(r=>{if(r.success){UI.toast('บันทึกคะแนนสำเร็จ','ok');App.renderTbl();}else if(r.error)UI.toast(r.error,'er');})
+      .catch(function(){UI.toast('การเชื่อมต่อขัดข้อง','er');});
+  },
+  prevEx:()=>{const v=id=>Number(UI.v(id))||0,t=v('epre')+v('emid')+v('epost')+v('efin');const el=$('etot');if(el)el.textContent=t;},
+  saveEx:async(room,stu)=>{
+    const preMid=UI.v('epre')||0,midExam=UI.v('emid')||0,postMid=UI.v('epost')||0,finalExam=UI.v('efin')||0;
+    UI.toast('กำลังบันทึก...','wn');
+    const r=await API.call('saveExamScore',{subject:S.tab,room,student:stu,preMid,midExam,postMid,finalExam});
+    if(r._n){UI.toast('การเชื่อมต่อหลุด','er');return;}
+    if(r.success){
+      const k=`${S.tab}|${room}|${stu}`,obj={subject:S.tab,room,student:stu,preMid,midExam,postMid,finalExam,total:r.total};
+      S.exMap.set(k,obj);const i=S.exams.findIndex(e=>e.subject===S.tab&&e.room===room&&e.student===stu);
+      if(i>=0)S.exams[i]=obj;else S.exams.push(obj);
+      UI.toast('บันทึกคะแนนรวม ('+r.total+'/100)','ok');App.renderTbl();
+    }else UI.toast((r.error||'บันทึกไม่สำเร็จ'),'er');
+  },
+
+  /* TOOLS */
+  tool:t=>{
+    $('tgMain').style.display='none';$('tgPanel').style.display='block';$('tgBack').style.display='block';
+    const p=$('tgPanel');
+    if(t==='rand'){
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">สุ่มเรียกชื่อนักเรียน</div><select class="fc" id="randRm" style="margin-bottom:10px;font-weight:700;">'+Object.keys(STUDENTS[S.tab]).map(function(r){return '<option>'+r+'</option>';}).join('')+'</select><div id="randDisp">พร้อมสุ่ม!</div><button class="btn btn-p btn-lg" onclick="App.doRand()">สุ่มเลย</button>';
+    }else if(t==='timer'){
+      S.tmrInit=false;S.tmrOn=false;clearInterval(S.tmrIv);
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">จับเวลา</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;"><input type="number" class="fc" id="tmrIn" value="5" min="1" max="90" style="width:70px;text-align:center;"><span style="color:var(--t3);font-size:.82rem;">นาที</span><select class="fc" id="tmrMd" style="flex:1;"><option value="down">นับถอยหลัง</option><option value="up">นับขึ้น</option></select></div><div class="timer-d" id="tmrDisp">5:00</div><div style="display:flex;gap:8px;"><button class="btn btn-ok" style="flex:1;" onclick="App.tmrStart()">เริ่ม</button><button class="btn btn-g" style="flex:1;" onclick="App.tmrPause()">หยุด</button><button class="btn btn-d" style="flex:1;" onclick="App.tmrReset()">รีเซต</button></div>';
+    }else if(t==='formula'){
+      const list=FM[S.tab]||[];
+      p.innerHTML='<div class="lbl" style="margin-bottom:8px;">สูตร '+S.tab+'</div><div class="fm-grid">'+list.map(function(f){return '<div class="fm-item"><span class="fm-sym">'+f.s+'</span><span style="font-size:.74rem;color:var(--t3);">'+f.d+'</span></div>';}).join('')+'</div>';
+    }else if(t==='noise'){
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">วัดระดับเสียงห้องเรียน</div><div class="noise-lv"><div class="noise-b" id="noiseB" style="width:0%;background:var(--ok);"></div></div><div style="text-align:center;font-size:1.4rem;font-weight:700;color:var(--cy);margin:8px 0;" id="noiseLbl">-- %</div><div id="noiseSt" style="text-align:center;font-size:.78rem;color:var(--t3);margin-bottom:10px;">กด เริ่มวัด เพื่อเปิดไมโครโฟน</div><div style="display:flex;gap:9px;"><button class="btn btn-ok" style="flex:1;" onclick="App.startNoise()">เริ่มวัด</button><button class="btn btn-d" style="flex:1;" onclick="App.stopNoise()">หยุด</button></div>';
+    }else if(t==='group'){
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">แบ่งกลุ่มนักเรียน</div><div style="display:flex;gap:9px;margin-bottom:10px;flex-wrap:wrap;"><select class="fc" id="grpRm" style="flex:1;min-width:120px;">'+Object.keys(STUDENTS[S.tab]).map(function(r){return '<option>'+r+'</option>';}).join('')+'</select><div style="display:flex;align-items:center;gap:6px;"><input type="number" class="fc" id="grpSz" value="4" min="2" max="10" style="width:60px;text-align:center;"><span style="color:var(--t3);font-size:.8rem;">คน/กลุ่ม</span></div></div><button class="btn btn-p" style="width:100%;margin-bottom:10px;" onclick="App.doGroup()">สุ่มจัดกลุ่ม</button><div id="grpRes"></div>';
+    }else if(t==='poll'){
+      S.poll={y:0,m:0,n:0};
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">โหวตความเข้าใจ</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:12px;"><div style="text-align:center;cursor:pointer;padding:14px;background:var(--ok-b);border:1.5px solid var(--ok-bd);border-radius:12px;" onclick="App.vote(\'y\',this)"><div style="font-weight:700;font-size:1.1rem;color:var(--ok);">Y</div><div style="font-weight:700;color:var(--ok);margin-top:5px;" id="py">0</div><div style="font-size:.72rem;color:var(--t3);">เข้าใจ</div></div><div style="text-align:center;cursor:pointer;padding:14px;background:var(--wn-b);border:1.5px solid var(--wn-bd);border-radius:12px;" onclick="App.vote(\'m\',this)"><div style="font-weight:700;font-size:1.1rem;color:var(--wn);">?</div><div style="font-weight:700;color:var(--wn);margin-top:5px;" id="pm">0</div><div style="font-size:.72rem;color:var(--t3);">ยังงง</div></div><div style="text-align:center;cursor:pointer;padding:14px;background:var(--er-b);border:1.5px solid var(--er-bd);border-radius:12px;" onclick="App.vote(\'n\',this)"><div style="font-weight:700;font-size:1.1rem;color:var(--er);">N</div><div style="font-weight:700;color:var(--er);margin-top:5px;" id="pn">0</div><div style="font-size:.72rem;color:var(--t3);">ไม่เข้าใจ</div></div></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:.8rem;color:var(--t3);">รวม:</span><span id="ptot" style="font-weight:700;color:var(--cy);">0</span><span style="font-size:.8rem;color:var(--t3);">โหวต</span></div><button class="btn btn-g btn-sm" onclick="App.resetPoll()">รีเซตผล</button>';
+    }
+  },
+  backTool:()=>{App.stopNoise();clearInterval(S.tmrIv);S.tmrOn=false;$('tgMain').style.display='grid';$('tgPanel').style.display='none';$('tgBack').style.display='none';UI.h('tgPanel','');},
+  doRand:()=>{
+    const list=STUDENTS[S.tab][UI.v('randRm')];if(!list)return;
+    clearInterval(S.randIv);let ticks=0;
+    S.randIv=setInterval(function(){var el=$('randDisp');if(!el)return;var nm=list[Math.floor(Math.random()*list.length)];el.textContent=nm;if(++ticks>28){clearInterval(S.randIv);el.textContent='>> '+nm+' <<';}},55);
+  },
+  tmrStart:()=>{
+    if(S.tmrOn)return;
+    if(!S.tmrInit){const m=parseInt(UI.v('tmrIn'))||5,md=UI.v('tmrMd');S.tmrSec=md==='down'?m*60:0;S.tmrDown=md==='down';S.tmrInit=true;}
+    S.tmrOn=true;
+    S.tmrIv=setInterval(()=>{
+      if(S.tmrDown){if(S.tmrSec<=0){clearInterval(S.tmrIv);S.tmrOn=false;UI.toast('⏰ หมดเวลาแล้ว!','wn');return;}S.tmrSec--;}else S.tmrSec++;
+      const m=Math.floor(S.tmrSec/60),s=S.tmrSec%60;const el=$('tmrDisp');if(el)el.textContent=`${m}:${String(s).padStart(2,'0')}`;
+    },1000);
+  },
+  tmrPause:()=>{clearInterval(S.tmrIv);S.tmrOn=false;},
+  tmrReset:()=>{clearInterval(S.tmrIv);S.tmrOn=false;S.tmrInit=false;const m=parseInt(UI.v('tmrIn'))||5;const el=$('tmrDisp');if(el)el.textContent=`${m}:00`;S.tmrSec=0;},
+  startNoise:async()=>{
+    try{
+      const stream=await navigator.mediaDevices.getUserMedia({audio:true});S.noStream=stream;
+      const ctx=new(window.AudioContext||window.webkitAudioContext)();
+      const src=ctx.createMediaStreamSource(stream),ana=ctx.createAnalyser();ana.fftSize=256;src.connect(ana);
+      const data=new Uint8Array(ana.frequencyBinCount);
+      const tick=()=>{
+        ana.getByteFrequencyData(data);const avg=data.reduce((a,b)=>a+b,0)/data.length,pct=Math.min(100,avg/128*100);
+        const bar=$('noiseB'),lbl=$('noiseLbl'),st=$('noiseSt');
+        if(bar){bar.style.width=pct+'%';bar.style.background=pct>70?'var(--er)':pct>40?'var(--wn)':'var(--ok)';}
+        if(lbl)lbl.textContent=Math.round(pct)+' %';
+        if(st)st.textContent=pct>70?'[สูง] เสียงดังมาก!':pct>40?'[กลาง] เสียงปานกลาง':'[ต่ำ] เงียบดี';
+        S.noAnim=requestAnimationFrame(tick);
+      };tick();
+    }catch(e){UI.toast('ไม่สามารถเข้าถึงไมโครโฟน','er');}
+  },
+  stopNoise:()=>{if(S.noAnim)cancelAnimationFrame(S.noAnim);if(S.noStream)S.noStream.getTracks().forEach(t=>t.stop());S.noStream=null;S.noAnim=null;},
+  doGroup:()=>{
+    const room=UI.v('grpRm'),size=parseInt(UI.v('grpSz'))||4;
+    const stus=[...STUDENTS[S.tab][room]].sort(()=>Math.random()-.5);
+    const groups=[];let i=0;while(i<stus.length){groups.push(stus.slice(i,i+size));i+=size;}
+    UI.h('grpRes',`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;">${groups.map((g,i)=>`<div style="background:var(--g0);border:1px solid var(--gb);border-radius:8px;padding:9px;"><div style="font-weight:700;color:var(--cy);font-size:.76rem;margin-bottom:5px;">กลุ่ม ${i+1}</div>${g.map(n=>`<div style="font-size:.76rem;color:var(--t2);padding:1px 0;">• ${n}</div>`).join('')}</div>`).join('')}</div>`);
+  },
+  vote:(t,el)=>{S.poll[t]=(S.poll[t]||0)+1;const tot=S.poll.y+S.poll.m+S.poll.n;UI.h('py',S.poll.y);UI.h('pm',S.poll.m);UI.h('pn',S.poll.n);UI.h('ptot',tot);el.style.transform='scale(1.06)';setTimeout(()=>el.style.transform='',200);},
+  resetPoll:()=>{S.poll={y:0,m:0,n:0};UI.h('py',0);UI.h('pm',0);UI.h('pn',0);UI.h('ptot',0);}
+};
+
+/* ACCORDION */
+function togCh(h){const b=h.nextElementSibling,a=h.querySelector('.ch-arr'),o=b.classList.contains('open');h.classList.toggle('open',!o);b.classList.toggle('open',!o);if(a)a.classList.toggle('open',!o);}
+function togPC(h){const b=h.nextElementSibling,a=h.querySelector('.ch-arr'),o=b.classList.contains('open');h.classList.toggle('open',!o);b.classList.toggle('open',!o);if(a)a.classList.toggle('open',!o);}
+
+/* EXPOSE GLOBALS — จำเป็นสำหรับ Google Apps Script iframe + inline onclick */
+window.App=App;
+window.UI=UI;
+window.setTh=setTh;
+window.openM=openM;
+window.closeM=closeM;
+window.closeSP=closeSP;
+window.togCh=togCh;
+window.togPC=togPC;
+
+function bindNav(){
+  var stu=$('nav-stu'),tc=$('nav-tc');
+  function goStuFn(){App.goStu();}
+  function goTcFn(){App.goTc();}
+  if(stu){
+    stu.addEventListener('click',goStuFn);
+    stu.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')goStuFn();});
+  }
+  if(tc){
+    tc.addEventListener('click',goTcFn);
+    tc.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')goTcFn();});
+  }
+  document.querySelectorAll('.sj-c[data-subj]').forEach(function(el){
+    el.addEventListener('click',function(){
+      App.selSubj(el.getAttribute('data-subj'));
+    });
+    el.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===' ')App.selSubj(el.getAttribute('data-subj'));
+    });
+  });
+  var btnLogin=$('btn-login'),btnHome=$('btn-home'),pwIn=$('pwIn');
+  if(btnLogin)btnLogin.addEventListener('click',function(){App.login();});
+  if(btnHome)btnHome.addEventListener('click',function(){App.go('pg-home');});
+  if(pwIn)pwIn.addEventListener('keydown',function(e){if(e.key==='Enter')App.login();});
+}
+
+function bootApp(){
+  try{
+    Ico.put('homeLogo','atom');
+    Ico.put('ico-stu','book');
+    Ico.put('ico-tc','flask');
+    Ico.put('sj-ico-3','bolt');
+    Ico.put('sj-ico-5','wave');
+    Ico.put('loginIco','lock');
+    var tg=$('tgMain');if(tg)Ico.bindData(tg);
+    bindNav();
+    App.setTab('ฟิสิกส์ 3');
+    if(typeof google!=='undefined'&&google.script&&google.script.run){
+      API.ping().then(function(ok){
+        if(!ok)console.warn('Backend ping failed — run setupOnce() in Apps Script editor');
+      });
+    }
+  }catch(err){
+    console.error('bootApp',err);
+    if(UI&&UI.toast)UI.toast('เริ่มระบบผิดพลาด: '+err.message,'er');
+  }
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',bootApp);
+}else{
+  bootApp();
+}
+
+window.onerror=function(msg,src,line){
+  console.error(msg,src,line);
+  if(UI&&UI.toast)UI.toast('ข้อผิดพลาด: '+msg,'er');
+  return false;
+};
+</script>
 </body>
 </html>
