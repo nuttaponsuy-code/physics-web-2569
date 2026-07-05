@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ระบบส่งงานฟิสิกส์ โรงเรียนสนมวิทยาคาร</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* CSS VARIABLES (Muted/Dark vs Light Theme) */
 :root {
@@ -31,7 +31,7 @@
   --ph5: #e11d48; --ph5-b: #ffe4e6;
   --in-b: #f1f5f9; --in-bd: #e2e8f0;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Inter", "Sukhumvit Set", "Prompt", sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kanit', -apple-system, BlinkMacSystemFont, "Sukhumvit Set", sans-serif; }
 body { background: var(--g0); color: var(--t1); line-height: 1.5; font-size: 15px; overflow-x: hidden; }
 
 
@@ -690,6 +690,15 @@ function rebuildIdx(){
 }
 
 
+function isLate(subTime, dueStr) {
+  if(!subTime || !dueStr) return false;
+  let p = subTime.split(' ')[0].split('/');
+  if(p.length !== 3) return false;
+  let y = parseInt(p[2]), m = p[1].padStart(2,'0'), d = p[0].padStart(2,'0');
+  if (y > 2500) y -= 543;
+  return `${y}-${m}-${d}` > dueStr;
+}
+
 /* MAIN APP */
 var App={
   go:function(id){
@@ -779,7 +788,10 @@ var App={
       html+=`<div class="ch-blk"><div class="ch-hdr" onclick="togCh(this)"><div class="ch-title">บทที่ ${ch}<span class="bd bd-bl">${items.length} งาน</span>${chD===items.length?'<span class="bd bd-ok">ครบ</span>':'<span class="bd bd-er">ค้าง '+(items.length-chD)+'</span>'}</div><div class="ch-meta"><span style="font-size:.74rem;color:var(--t3);">${chD}/${items.length}</span><span class="ch-arr">▾</span></div></div><div class="ch-body">${items.map(a=>{
         const sub=subs.find(s=>s.assignment===a.name),grd=grds.find(g=>g.assignment===a.name);
         const res=Res.load(a.id);
-        return `<div class="ai cl" onclick="App.prepSub('${a.id}')"><div class="ai-info"><div class="ai-name">${a.name}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}${sub?'<br><span style="color:var(--ok);font-weight:600;">ส่งแล้ว '+(sub.submittedAt||'')+'</span>':''}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div style="text-align:right;flex-shrink:0;margin-left:10px;">${sub?'<span class="bd bd-ok">ส่งแล้ว</span>':'<span class="bd bd-er">ค้างส่ง</span>'}<div style="font-size:.76rem;margin-top:5px;color:var(--t3);">${grd?'<b style="color:var(--cy)">'+grd.score+'</b>/'+a.maxScore:'-/'+a.maxScore}</div></div></div>`;
+        const isL = sub ? isLate(sub.submittedAt, a.dueDate) : false;
+        const subColor = isL ? 'var(--wn)' : 'var(--ok)';
+        const subText = isL ? 'ส่งช้ากว่ากำหนด' : 'ส่งแล้ว';
+        return `<div class="ai cl" onclick="App.prepSub('${a.id}')"><div class="ai-info"><div class="ai-name">${a.name}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}${sub?`<br><span style="color:${subColor};font-weight:600;">${subText} `+(sub.submittedAt||'')+'</span>':''}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div style="text-align:right;flex-shrink:0;margin-left:10px;">${sub?`<span class="bd" style="background:rgba(${isL?'245,158,11':'16,185,129'},.1);color:${subColor};border-color:rgba(${isL?'245,158,11':'16,185,129'},.3)">${subText}</span>`:'<span class="bd bd-er">ค้างส่ง</span>'}<div style="font-size:.76rem;margin-top:5px;color:var(--t3);">${grd?'<b style="color:var(--cy)">'+grd.score+'</b>/'+a.maxScore:'-/'+a.maxScore}</div></div></div>`;
       }).join('')}</div></div>`;
     });
     UI.h('stuAcc',html||'<div style="text-align:center;padding:18px;color:var(--t3)">ยังไม่มีชิ้นงาน</div>');
@@ -988,7 +1000,8 @@ var App={
         let dc='',dl='',rowCls='missing';
         if(sub&&!grd){dc='dot-wn';dl='รอตรวจ';rowCls='unmarked';}
         else if(sub&&grd){const isN=sub.submittedAt&&grd.gradedAt&&sub.submittedAt>grd.gradedAt;dc=isN?'dot-cy':'dot-ok';dl=isN?'ส่งใหม่หลังตรวจ!':'ตรวจแล้ว';rowCls=isN?'resubmitted':'graded';}
-        const stH=sub?`<div class="sub-box sub"><span style="font-weight:700;color:var(--ok);">OK</span><div><div style="font-size:.8rem;font-weight:700;color:var(--ok);">ส่งแล้ว — ${sub.submittedAt||'-'}</div>${sub.fileName?`<a href="${sub.fileUrl}" target="_blank" class="sub-lnk">ไฟล์: ${sub.fileName}</a>`:''}${sub.link?`<a href="${sub.link}" target="_blank" class="sub-lnk">ลิงก์งาน</a>`:''}</div></div>`:`<div class="sub-box mis"><span style="font-weight:700;color:var(--er);">X</span><div style="font-size:.8rem;font-weight:700;color:var(--er);">ยังไม่ส่งงาน</div></div>`;
+        const isL=sub?isLate(sub.submittedAt,a.dueDate):false;const subColor=isL?'var(--wn)':'var(--ok)';const subText=isL?'ส่งช้ากว่ากำหนด':'ส่งแล้ว';
+        const stH=sub?`<div class="sub-box sub" style="border-color:rgba(${isL?'245,158,11':'16,185,129'},0.3);background:rgba(${isL?'245,158,11':'16,185,129'},0.1);"><span style="font-weight:700;color:${subColor};">${isL?'LATE':'OK'}</span><div><div style="font-size:.8rem;font-weight:700;color:${subColor};">${subText} — ${sub.submittedAt||'-'}</div>${sub.fileName?`<a href="${sub.fileUrl}" target="_blank" class="sub-lnk">ไฟล์: ${sub.fileName}</a>`:''}${sub.link?`<a href="${sub.link}" target="_blank" class="sub-lnk">ลิงก์งาน</a>`:''}</div></div>`:`<div class="sub-box mis"><span style="font-weight:700;color:var(--er);">X</span><div style="font-size:.8rem;font-weight:700;color:var(--er);">ยังไม่ส่งงาน</div></div>`;
         return `<div class="asn-row ${rowCls}"><div class="asn-name">${dc?`<span class="dot ${dc}" title="${dl}"></span>`:''}${a.name}<span class="asn-max">(${a.maxScore} คะแนน)</span>${dc==='dot-cy'?` <span class="bd bd-new" style="font-size:.64rem;">ส่งใหม่!</span>`:dc==='dot-wn'&&sub?` <span class="bd bd-wn" style="font-size:.64rem;">รอตรวจ</span>`:''}</div>${stH}${sub?`<div class="grd-sec"><div class="lbl" style="margin-bottom:6px;">ให้คะแนน</div><div class="qsw">${scores.map(s=>`<button class="qsb${grd&&Number(grd.score)===s?' on':''}" onclick="App.qsc('g_${a.id}','${s}',this)">${s}</button>`).join('')}</div><div style="display:flex;gap:7px;align-items:center;"><input type="number" id="g_${a.id}" class="fc" value="${grd?grd.score:''}" min="0" max="${maxS}" style="width:68px;text-align:center;font-weight:700;color:var(--cy);font-size:.98rem;"><input type="text" id="c_${a.id}" class="fc" value="${grd?grd.comment:''}" placeholder="ข้อเสนอแนะ..." style="flex:1;"><button class="btn btn-p btn-sm" onclick="App.saveGrd('${room}','${stu.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${a.id}')">บันทึก</button></div>${grd?`<div style="font-size:.68rem;color:var(--t4);margin-top:4px;">ตรวจล่าสุด: ${grd.gradedAt||'-'}</div>`:''}</div>`:''}</div>`;
       }).join('')}</div></div>`;
     });
