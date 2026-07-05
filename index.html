@@ -668,50 +668,53 @@ function openM(id){$(id).classList.add('open');}
 function closeM(id){$(id).classList.remove('open');}
 function closeSP(){$('sideP').classList.remove('open');$('spOv').classList.remove('open');}
 
-/* API */
+/* API - อัปเกรดสำหรับรันบน GitHub Pages */
+const API_URL = "https://script.googleusercontent.com/a/macros/thaimooc.ac.th/echo?user_content_key=AUkAhnT1q1527OncytPl_s4hb04iLiTBH7DrzwfLjhtS9PYiqZYqOiPaZybLZL_6heownhISX3sNOYzdv4qoPo5AUJyrxTBGfYw2m2cE5vBc1MEzPob_curgkIJJYVICoQ7M58Lyjqd5nYGPZIRAbaN1oVyUi0NLCrppIMAesUSBmiXUrRpxHqO7LNRSG1qhezz6FgDleWszqpTle2iuwgA4XmgN65Fd7mKiynWjILiQO2RMpUxmwr_QC1QnVAghCrwph46bvivGbqZxF-4CupmgTXFgbcdfPLRUwQBcTMKildFSEQAfcQU&lib=Mozu02Vw3c74gFuJ1j3UGoai60Hw58VBZ"; // 🛑 ครูต้องเอา URL จาก Apps Script มาใส่ในเครื่องหมายคำพูดนี้ครับ!
+
 const API={
-  _ready:false,
-  ping:()=>new Promise((res,rej)=>{
-    if(typeof google==='undefined'||!google.script||!google.script.run){res(false);return;}
-    google.script.run
-      .withSuccessHandler(r=>{API._ready=!!(r&&r.ok);res(API._ready);})
-      .withFailureHandler(e=>{console.error('ping',e);API._ready=false;res(false);})
-      .serverCall('ping');
-  }),
-  call:(a,p)=>new Promise((res,rej)=>{
-    if(typeof google==='undefined'||!google.script||!google.script.run){
-      console.warn('google.script.run unavailable — preview mode');
-      res({});
+  _ready:true,
+  ping:()=>new Promise((res)=>{ res(true); }),
+  call:async (a,p)=>{
+    if (!API_URL || API_URL === "วาง_URL_WEB_APP_ของครูที่นี่") {
+      UI.toast('ยังไม่ได้ใส่ API URL ในโค้ด', 'er');
+      return {error: 'API URL is missing'};
+    }
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: a, payload: p || {} })
+      });
+      const result = await response.json();
+      if(result && result.error) return result;
+      return result || { _n: true };
+    } catch (e) {
+      console.error(a, e);
+      return { error: 'การเชื่อมต่อเซิร์ฟเวอร์ล้มเหลว' };
+    }
+  },
+  export:async ()=>{
+    if (!API_URL || API_URL === "วาง_URL_WEB_APP_ของครูที่นี่") {
+      UI.toast('ยังไม่ได้ใส่ API URL ในโค้ด', 'er');
       return;
     }
-    google.script.run
-      .withSuccessHandler(r=>{
-        if(r==null){console.warn(a+' returned null');res({_n:true});}
-        else if(r.error){res(r);}
-        else res(r);
-      })
-      .withFailureHandler(e=>{
-        console.error(a,e);
-        const msg=(e&&e.message)?e.message:String(e);
-        rej(new Error(msg.includes('Script')||msg.includes('Authorization')?msg:'การเชื่อมต่อเซิร์ฟเวอร์ล้มเหลว — ลองรีเฟรชหรือตรวจสิทธิ์ Deploy'));
-      })
-      .serverCall(a,p||{});
-  }),
-  export:()=>{
-    if(typeof google==='undefined'||!google.script||!google.script.run){
-      UI.toast('ต้อง Deploy เป็น Web App ก่อน','er');return;
-    }
     UI.toast('กำลังเตรียม CSV...','wn');
-    google.script.run
-      .withSuccessHandler(csv=>{
-        if(!csv){UI.toast('ส่งออกไม่สำเร็จ','er');return;}
-        const a=document.createElement('a');
-        a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
-        a.download='รายงานส่งงาน.csv';a.click();
-        UI.toast('ดาวน์โหลด CSV แล้ว','ok');
-      })
-      .withFailureHandler(e=>UI.toast('ส่งออกล้มเหลว: '+e,'er'))
-      .serverCall('exportCSV');
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'exportCSV', payload: {} })
+      });
+      const result = await response.json();
+      if(result.error) throw new Error(result.error);
+      
+      const csv = result;
+      if(!csv){UI.toast('ส่งออกไม่สำเร็จ','er');return;}
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+      a.download='รายงานส่งงาน.csv';a.click();
+      UI.toast('ดาวน์โหลด CSV แล้ว','ok');
+    } catch (e) {
+      UI.toast('ส่งออกล้มเหลว: '+e,'er');
+    }
   }
 };
 
