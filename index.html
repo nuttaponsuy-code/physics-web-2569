@@ -1,434 +1,341 @@
 <!DOCTYPE html>
-<html lang="th" data-theme="dark">
+<html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ระบบส่งงานฟิสิกส์ ครูณัฐพล — สนมวิทยาคาร 2569</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ระบบส่งงานฟิสิกส์</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* DARK tokens (default) */
-:root,[data-theme="dark"]{
-  --bg:radial-gradient(ellipse at 18% 5%,#0c2255 0%,#060b1a 55%),radial-gradient(ellipse at 82% 95%,#1a0847 0%,transparent 55%);
-  --bg-body:#07090f;
-  --topbar-bg:rgba(7,9,15,.78);
-  --g0:rgba(255,255,255,.055); --g1:rgba(255,255,255,.10);
-  --g2:rgba(255,255,255,.16);  --g3:rgba(255,255,255,.24);
-  --gb:rgba(255,255,255,.16);  --gbs:rgba(255,255,255,.30);
-  --ghi:rgba(255,255,255,.38);
-  --t1:#eef2ff; --t2:rgba(238,242,255,.72);
-  --t3:rgba(238,242,255,.44); --t4:rgba(238,242,255,.24);
-  --ac:#1e72e8; --ac-g:rgba(30,114,232,.38);
-  --ph5:#7c6af5; --ph5-g:rgba(124,106,245,.38);
-  --cy:#00d4ff; --cy-d:rgba(0,212,255,.15);
-  --ok:#00e8a0; --ok-b:rgba(0,232,160,.11); --ok-bd:rgba(0,232,160,.28);
-  --er:#ff4466; --er-b:rgba(255,68,102,.11); --er-bd:rgba(255,68,102,.28);
-  --wn:#ffaa44; --wn-b:rgba(255,170,68,.11); --wn-bd:rgba(255,170,68,.28);
-  --in-b:rgba(30,114,232,.12); --in-bd:rgba(30,114,232,.30);
-  --ac-dk:#155aab; --ph5-dk:#5b4ed4; --er-dk:#cc3355; --ok-dk:#00b878;
-  --overlay:rgba(7,9,15,.88); --overlay2:rgba(7,9,15,.92);
-  --cy-dash:rgba(0,212,255,.35); --cy-glow:rgba(0,212,255,.5); --cy-box-bd:rgba(0,212,255,.28);
-  --ph5-box-bg:rgba(124,106,245,.12); --ph5-box-bd:rgba(124,106,245,.28);
-  --ph5-panel-bg:rgba(124,106,245,.12); --ph5-panel-bd:rgba(124,106,245,.26);
-  --ac-glow:rgba(30,114,232,.5); --ph5-glow:rgba(124,106,245,.5);
-  --sc:0 4px 28px rgba(0,0,0,.4),0 1px 5px rgba(0,0,0,.25);
-  --sf:0 16px 56px rgba(0,0,0,.55),0 4px 18px rgba(0,0,0,.35);
-  color-scheme:dark;
+/* CSS VARIABLES (Muted/Dark vs Light Theme) */
+:root {
+  --g0: #101216; --g1: #1a1d24; --gb: #272c36; --gbs: #353a45;
+  --t1: #e2e8f0; --t2: #cbd5e1; --t3: #94a3b8; --t4: #64748b;
+  --ac: #38bdf8; --ac-h: #0ea5e9; --ac-bg: rgba(56,189,248,.12);
+  --ok: #10b981; --ok-b: rgba(16,185,129,.1); --ok-bd: rgba(16,185,129,.25);
+  --er: #ef4444; --er-b: rgba(239,68,68,.1); --er-bd: rgba(239,68,68,.25);
+  --wn: #f59e0b; --wn-b: rgba(245,158,11,.1); --wn-bd: rgba(245,158,11,.25);
+  --cy: #06b6d4; --cy-d: rgba(6,182,212,.15);
+  --ph3: #8b5cf6; --ph3-b: rgba(139,92,246,.15);
+  --ph5: #f43f5e; --ph5-b: rgba(244,63,94,.15);
+  --in-b: #1e242d; --in-bd: #2d3748;
 }
-/* LIGHT tokens */
-[data-theme="light"]{
-  --bg:linear-gradient(160deg,#dce8fb 0%,#eef2ff 60%,#ede9ff 100%);
-  --bg-body:#f0f4fb;
-  --topbar-bg:rgba(236,242,255,.84);
-  --g0:rgba(255,255,255,.55); --g1:rgba(255,255,255,.72);
-  --g2:rgba(255,255,255,.86); --g3:rgba(255,255,255,.96);
-  --gb:rgba(100,120,200,.18); --gbs:rgba(80,100,180,.32);
-  --ghi:rgba(255,255,255,.92);
-  --t1:#0e1630; --t2:rgba(14,22,48,.72);
-  --t3:rgba(14,22,48,.48); --t4:rgba(14,22,48,.28);
-  --ac:#1557c8; --ac-g:rgba(21,87,200,.20);
-  --ph5:#6355d8; --ph5-g:rgba(99,85,216,.20);
-  --cy:#0077bb; --cy-d:rgba(0,119,187,.12);
-  --ok:#007a50; --ok-b:rgba(0,122,80,.10); --ok-bd:rgba(0,122,80,.28);
-  --er:#bb1133; --er-b:rgba(187,17,51,.10); --er-bd:rgba(187,17,51,.28);
-  --wn:#b06000; --wn-b:rgba(176,96,0,.10); --wn-bd:rgba(176,96,0,.28);
-  --in-b:rgba(21,87,200,.09); --in-bd:rgba(21,87,200,.25);
-  --ac-dk:#104599; --ph5-dk:#4f44b8; --er-dk:#991028; --ok-dk:#006640;
-  --overlay:rgba(240,244,251,.88); --overlay2:rgba(240,244,251,.92);
-  --cy-dash:rgba(0,119,187,.35); --cy-glow:rgba(0,119,187,.45); --cy-box-bd:rgba(0,119,187,.28);
-  --ph5-box-bg:rgba(99,85,216,.10); --ph5-box-bd:rgba(99,85,216,.25);
-  --ph5-panel-bg:rgba(99,85,216,.10); --ph5-panel-bd:rgba(99,85,216,.24);
-  --ac-glow:rgba(21,87,200,.35); --ph5-glow:rgba(99,85,216,.35);
-  --sc:0 2px 18px rgba(60,80,160,.10),0 1px 4px rgba(60,80,160,.06);
-  --sf:0 10px 40px rgba(40,60,140,.16),0 3px 12px rgba(40,60,140,.08);
-  color-scheme:light;
+[data-theme="light"] {
+  --g0: #f8fafc; --g1: #ffffff; --gb: #e2e8f0; --gbs: #cbd5e1;
+  --t1: #0f172a; --t2: #334155; --t3: #64748b; --t4: #94a3b8;
+  --ac: #0284c7; --ac-h: #0369a1; --ac-bg: #e0f2fe;
+  --ok: #059669; --ok-b: #d1fae5; --ok-bd: #6ee7b7;
+  --er: #dc2626; --er-b: #fee2e2; --er-bd: #fca5a5;
+  --wn: #d97706; --wn-b: #fef3c7; --wn-bd: #fcd34d;
+  --cy: #0891b2; --cy-d: #cffafe;
+  --ph3: #7c3aed; --ph3-b: #ede9fe;
+  --ph5: #e11d48; --ph5-b: #ffe4e6;
+  --in-b: #f1f5f9; --in-bd: #e2e8f0;
 }
-/* AUTO */
-@media(prefers-color-scheme:light){[data-theme="auto"]{
-  --bg:linear-gradient(160deg,#dce8fb 0%,#eef2ff 60%,#ede9ff 100%);
-  --bg-body:#f0f4fb; --topbar-bg:rgba(236,242,255,.84);
-  --g0:rgba(255,255,255,.55);--g1:rgba(255,255,255,.72);--g2:rgba(255,255,255,.86);--g3:rgba(255,255,255,.96);
-  --gb:rgba(100,120,200,.18);--gbs:rgba(80,100,180,.32);--ghi:rgba(255,255,255,.92);
-  --t1:#0e1630;--t2:rgba(14,22,48,.72);--t3:rgba(14,22,48,.48);--t4:rgba(14,22,48,.28);
-  --ac:#1557c8;--ac-g:rgba(21,87,200,.20);--ph5:#6355d8;--ph5-g:rgba(99,85,216,.20);
-  --cy:#0077bb;--cy-d:rgba(0,119,187,.12);
-  --ok:#007a50;--ok-b:rgba(0,122,80,.10);--ok-bd:rgba(0,122,80,.28);
-  --er:#bb1133;--er-b:rgba(187,17,51,.10);--er-bd:rgba(187,17,51,.28);
-  --wn:#b06000;--wn-b:rgba(176,96,0,.10);--wn-bd:rgba(176,96,0,.28);
-  --in-b:rgba(21,87,200,.09);--in-bd:rgba(21,87,200,.25);
-  --sc:0 2px 18px rgba(60,80,160,.10),0 1px 4px rgba(60,80,160,.06);
-  --sf:0 10px 40px rgba(40,60,140,.16),0 3px 12px rgba(40,60,140,.08);
-  color-scheme:light;
-}}
-@media(prefers-color-scheme:dark){[data-theme="auto"]{
-  --bg:radial-gradient(ellipse at 18% 5%,#0c2255 0%,#060b1a 55%),radial-gradient(ellipse at 82% 95%,#1a0847 0%,transparent 55%);
-  --bg-body:#07090f;--topbar-bg:rgba(7,9,15,.78);
-  --g0:rgba(255,255,255,.055);--g1:rgba(255,255,255,.10);--g2:rgba(255,255,255,.16);--g3:rgba(255,255,255,.24);
-  --gb:rgba(255,255,255,.16);--gbs:rgba(255,255,255,.30);--ghi:rgba(255,255,255,.38);
-  --t1:#eef2ff;--t2:rgba(238,242,255,.72);--t3:rgba(238,242,255,.44);--t4:rgba(238,242,255,.24);
-  --ac:#1e72e8;--ac-g:rgba(30,114,232,.38);--ph5:#7c6af5;--ph5-g:rgba(124,106,245,.38);
-  --cy:#00d4ff;--cy-d:rgba(0,212,255,.15);
-  --ok:#00e8a0;--ok-b:rgba(0,232,160,.11);--ok-bd:rgba(0,232,160,.28);
-  --er:#ff4466;--er-b:rgba(255,68,102,.11);--er-bd:rgba(255,68,102,.28);
-  --wn:#ffaa44;--wn-b:rgba(255,170,68,.11);--wn-bd:rgba(255,170,68,.28);
-  --in-b:rgba(30,114,232,.12);--in-bd:rgba(30,114,232,.30);
-  --ac-dk:#155aab;--ph5-dk:#5b4ed4;--er-dk:#cc3355;--ok-dk:#00b878;
-  --overlay:rgba(7,9,15,.88);--overlay2:rgba(7,9,15,.92);
-  --cy-dash:rgba(0,212,255,.35);--cy-glow:rgba(0,212,255,.5);--cy-box-bd:rgba(0,212,255,.28);
-  --ph5-box-bg:rgba(124,106,245,.12);--ph5-box-bd:rgba(124,106,245,.28);
-  --ph5-panel-bg:rgba(124,106,245,.12);--ph5-panel-bd:rgba(124,106,245,.26);
-  --ac-glow:rgba(30,114,232,.5);--ph5-glow:rgba(124,106,245,.5);
-  --sc:0 4px 28px rgba(0,0,0,.4),0 1px 5px rgba(0,0,0,.25);
-  --sf:0 16px 56px rgba(0,0,0,.55),0 4px 18px rgba(0,0,0,.35);
-  color-scheme:dark;
-}}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Sarabun', sans-serif; }
+body { background: var(--g0); color: var(--t1); line-height: 1.5; font-size: 15px; overflow-x: hidden; }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg-body) var(--bg);background-attachment:fixed;color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;font-family:'IBM Plex Sans Thai',-apple-system,system-ui,sans-serif;transition:background .3s,color .25s;}
-[data-theme="dark"] body::before,[data-theme="auto"] body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 12% 20%,rgba(30,114,232,.16) 0%,transparent 42%),radial-gradient(circle at 88% 78%,rgba(124,106,245,.12) 0%,transparent 40%);pointer-events:none;z-index:0;}
-button,input,select,textarea{font-family:inherit;outline:none;}
-::-webkit-scrollbar{width:5px;height:5px;}
-::-webkit-scrollbar-thumb{background:var(--g2);border-radius:99px;}
+/* LAYOUT */
+.topbar { background: var(--g1); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gb); position: sticky; top: 0; z-index: 50; }
+.tb-title { font-size: 1.15rem; font-weight: 700; color: var(--t1); letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px; }
+.tb-acts { display: flex; gap: 8px; align-items: center; }
+.con { max-width: 900px; margin: 0 auto; padding: 18px 14px; padding-bottom: 80px; }
 
-/* GLASS CARD */
-.gc{background:var(--g1);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);border:1px solid var(--gb);border-radius:18px;box-shadow:var(--sc);padding:22px;margin-bottom:16px;position:relative;overflow:hidden;transition:background .25s,border-color .25s;}
-.gc::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ghi),transparent);pointer-events:none;}
+/* CARDS & CONTAINERS */
+.gc { background: var(--g1); border: 1px solid var(--gb); border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.03); }
+.sg { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.sc-card { background: var(--g1); border: 1px solid var(--gb); padding: 14px 12px; border-radius: 10px; text-align: center; }
+.sc-num { font-size: 1.6rem; font-weight: 700; color: var(--t1); line-height: 1.1; margin-bottom: 4px; }
+.sc-lbl { font-size: .78rem; color: var(--t3); font-weight: 500; }
 
-/* PAGES */
-.page{display:none;}.page.active{display:block;animation:fi .32s cubic-bezier(.4,0,.2,1);}
-@keyframes fi{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
-
-/* TOPBAR */
-.topbar{background:var(--topbar-bg);backdrop-filter:blur(32px) saturate(200%);-webkit-backdrop-filter:blur(32px) saturate(200%);border-bottom:1px solid var(--gb);padding:0 18px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:200;transition:background .3s;}
-.tb-title{font-weight:700;font-size:.97rem;color:var(--t1);letter-spacing:-.01em;}
-.tb-sub{font-size:.72rem;color:var(--t3);}
-.tb-acts{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
-
-/* THEME SWITCHER */
-.th-sw{display:flex;align-items:center;background:var(--g1);border:1px solid var(--gb);border-radius:99px;padding:3px;gap:2px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
-.th-btn{width:28px;height:28px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.88rem;transition:all .18s;color:var(--t3);}
-.th-btn.on{background:var(--g3);color:var(--t1);box-shadow:0 2px 8px rgba(0,0,0,.18);}
-.th-btn:hover:not(.on){color:var(--t1);}
-
-/* CONTAINER */
-.con{max-width:1140px;margin:0 auto;padding:24px 16px;position:relative;z-index:1;}
-
-/* TYPOGRAPHY */
-.sec-title{font-size:.97rem;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:8px;margin-bottom:14px;}
-.lbl{display:block;font-size:.72rem;font-weight:600;color:var(--t3);margin-bottom:5px;letter-spacing:.05em;text-transform:uppercase;}
+/* FORMS */
+.fg { margin-bottom: 14px; }
+.lbl { display: block; font-size: .84rem; color: var(--t2); font-weight: 600; margin-bottom: 6px; }
+.fc { width: 100%; background: var(--in-b); border: 1px solid var(--in-bd); color: var(--t1); padding: 9px 12px; border-radius: 8px; outline: none; font-size: .95rem; transition: border .2s; }
+.fc:focus { border-color: var(--ac); }
+.fc::placeholder { color: var(--t4); }
+select.fc { appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill="%2394a3b8" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>'); background-repeat: no-repeat; background-position: right 8px center; background-size: 20px; padding-right: 32px; }
 
 /* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:12px;font-weight:600;border:none;cursor:pointer;font-size:.85rem;transition:all .18s;white-space:nowrap;font-family:inherit;position:relative;overflow:hidden;}
-.btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.13) 0%,transparent 55%);border-radius:inherit;pointer-events:none;}
-.btn:active{transform:scale(.96);}.btn:disabled{opacity:.42;pointer-events:none;}
-.btn-p{background:linear-gradient(135deg,var(--ac),var(--ac-dk));color:#fff;border:1px solid rgba(255,255,255,.18);box-shadow:0 4px 18px var(--ac-g);}
-.btn-p:hover{filter:brightness(1.1);transform:translateY(-1px);}
-.btn-5{background:linear-gradient(135deg,var(--ph5),var(--ph5-dk));color:#fff;border:1px solid rgba(255,255,255,.15);box-shadow:0 4px 18px var(--ph5-g);}
-.btn-5:hover{filter:brightness(1.1);transform:translateY(-1px);}
-.btn-g{background:var(--g2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--gbs);color:var(--t1);}
-.btn-g:hover{background:var(--g3);}
-.btn-d{background:linear-gradient(135deg,var(--er),var(--er-dk));color:#fff;border:1px solid rgba(255,255,255,.12);}
-.btn-d:hover{filter:brightness(1.1);}
-.btn-ok{background:linear-gradient(135deg,var(--ok),var(--ok-dk));color:#fff;border:1px solid rgba(255,255,255,.12);}
-.btn-ok:hover{filter:brightness(1.1);}
-.btn-o{background:transparent;border:1.5px solid var(--gbs);color:var(--t2);}
-.btn-o:hover{background:var(--g1);color:var(--t1);}
-.btn-sm{padding:6px 11px;font-size:.76rem;border-radius:8px;}
-.btn-lg{padding:12px 18px;width:100%;font-size:.93rem;border-radius:12px;}
+.btn { border: none; border-radius: 8px; padding: 8px 16px; font-size: .92rem; font-weight: 600; cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.btn:active { transform: scale(.97); }
+.btn-p { background: var(--ac); color: #fff; }
+.btn-p:hover { background: var(--ac-h); }
+.btn-o { background: transparent; border: 1px solid var(--ac); color: var(--ac); }
+.btn-g { background: var(--gbs); color: var(--t1); }
+.btn-d { background: var(--er-b); color: var(--er); }
+.btn-ok { background: var(--ok-b); color: var(--ok); }
+.btn-sm { padding: 5px 12px; font-size: .8rem; }
+.btn-lg { padding: 12px 20px; font-size: 1rem; width: 100%; }
+.btn-3 { background: var(--ph3); color: #fff; }
+.btn-5 { background: var(--ph5); color: #fff; }
 
-/* FORM */
-.fg{margin-bottom:13px;}
-.fc{width:100%;padding:9px 13px;background:var(--g1);border:1px solid var(--gb);border-radius:12px;font-size:.88rem;color:var(--t1);font-family:inherit;transition:border-color .2s,background .25s,color .25s;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
-.fc:focus{border-color:var(--cy);box-shadow:0 0 0 3px var(--cy-d);background:var(--g2);}
-.fc::placeholder{color:var(--t4);}
-select.fc option{background:#111827;color:#eef2ff;}
-[data-theme="light"] select.fc option{background:#fff;color:#0e1630;}
+/* TABS */
+.stab { background: var(--g0); color: var(--t3); border: 1px solid var(--gb); padding: 9px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; flex: 1; text-align: center; transition: .2s; font-size: .9rem; }
+.stab.on { background: var(--ac-bg); color: var(--ac); border-color: var(--ac); }
+
+/* ACCORDION (CHAPTERS) */
+.ch-blk { border: 1px solid var(--gb); border-radius: 10px; margin-bottom: 10px; background: var(--g1); overflow: hidden; }
+.ch-hdr { padding: 14px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: var(--g0); border-bottom: 1px solid transparent; transition: background .2s; }
+.ch-hdr:hover { background: var(--in-b); }
+.ch-hdr.open { border-bottom-color: var(--gb); }
+.ch-title { font-size: 1rem; font-weight: 700; color: var(--t1); display: flex; align-items: center; gap: 10px; }
+.ch-meta { display: flex; align-items: center; gap: 10px; }
+.ch-arr { font-size: 1.1rem; color: var(--t4); transition: transform .3s; }
+.ch-arr.open { transform: rotate(180deg); }
+.ch-body { display: none; padding: 8px; }
+.ch-body.open { display: block; }
+
+/* ASSIGNMENT ITEMS */
+.ai { background: var(--g0); border-radius: 8px; padding: 12px; margin-bottom: 8px; border: 1px solid var(--gb); display: flex; justify-content: space-between; align-items: center; transition: .2s; }
+.ai.cl { cursor: pointer; }
+.ai.cl:hover { border-color: var(--ac); background: var(--ac-bg); }
+.ai-info { flex: 1; min-width: 0; padding-right: 12px; }
+.ai-name { font-weight: 700; font-size: .98rem; color: var(--t1); margin-bottom: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+.ai-meta { font-size: .78rem; color: var(--t4); }
+.ai-acts { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 
 /* BADGES */
-.bd{padding:3px 9px;border-radius:20px;font-size:.7rem;font-weight:700;}
-.bd-ok{background:var(--ok-b);color:var(--ok);border:1px solid var(--ok-bd);}
-.bd-wn{background:var(--wn-b);color:var(--wn);border:1px solid var(--wn-bd);}
-.bd-er{background:var(--er-b);color:var(--er);border:1px solid var(--er-bd);}
-.bd-bl{background:var(--in-b);color:var(--ac);border:1px solid var(--in-bd);}
-.bd-new{background:var(--wn-b);color:var(--wn);border:1px solid var(--wn-bd);animation:pw 1.8s infinite;}
-@keyframes pw{0%,100%{box-shadow:0 0 0 0 rgba(255,170,68,.4);}50%{box-shadow:0 0 0 4px rgba(255,170,68,0);}}
-
-/* STEP BAR */
-.step-bar{display:flex;overflow-x:auto;margin-bottom:20px;gap:3px;}
-.step{flex:1;text-align:center;padding:9px 5px;font-size:.72rem;font-weight:600;color:var(--t3);border-bottom:2px solid transparent;transition:all .28s;white-space:nowrap;}
-.step.active{border-color:var(--cy);color:var(--cy);}
-
-/* STAT CARDS */
-.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:18px;}
-.sc-card{background:var(--g1);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--gb);border-radius:12px;padding:14px 12px;text-align:center;position:relative;overflow:hidden;transition:transform .2s,background .25s;}
-.sc-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ghi),transparent);}
-.sc-card:hover{transform:translateY(-2px);}
-.sc-num{font-size:1.9rem;font-weight:700;line-height:1.1;margin-bottom:3px;letter-spacing:-.03em;}
-.sc-lbl{font-size:.72rem;font-weight:600;color:var(--t3);}
+.bd { display: inline-block; padding: 2px 7px; border-radius: 5px; font-size: .72rem; font-weight: 700; letter-spacing: .02em; }
+.bd-ok { background: var(--ok-b); color: var(--ok); }
+.bd-er { background: var(--er-b); color: var(--er); }
+.bd-wn { background: var(--wn-b); color: var(--wn); }
+.bd-bl { background: var(--ac-bg); color: var(--ac); }
+.bd-new { background: rgba(236,72,153,.15); color: #ec4899; }
 
 /* PROGRESS */
-.pw{background:rgba(128,128,128,.18);border-radius:99px;height:5px;overflow:hidden;}
-.pf{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ac),var(--cy));transition:width .6s cubic-bezier(.4,0,.2,1);}
-
-/* ACCORDION */
-.ch-blk{margin-bottom:8px;border:1px solid var(--gb);border-radius:12px;overflow:hidden;}
-.ch-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;background:var(--g0);cursor:pointer;transition:background .15s;user-select:none;}
-.ch-hdr:hover{background:var(--g1);}.ch-hdr.open{background:var(--in-b);border-bottom:1px solid var(--in-bd);}
-.ch-title{font-weight:700;font-size:.9rem;color:var(--t1);display:flex;align-items:center;gap:8px;}
-.ch-meta{display:flex;align-items:center;gap:9px;}
-.ch-arr{font-size:.82rem;color:var(--t3);transition:transform .24s;}.ch-arr.open{transform:rotate(180deg);}
-.ch-body{display:none;padding:0 10px 10px;}.ch-body.open{display:block;animation:fi .2s ease;}
-
-/* ASSIGNMENT ITEM */
-.ai{border:1px solid var(--gb);border-radius:8px;padding:12px 14px;margin-top:7px;background:var(--g0);display:flex;justify-content:space-between;align-items:center;transition:all .15s;}
-.ai:hover{background:var(--g1);border-color:var(--gbs);}.ai.cl{cursor:pointer;}
-.ai-info{flex:1;}.ai-name{font-weight:700;font-size:.88rem;color:var(--t1);}
-.ai-meta{font-size:.74rem;color:var(--t3);margin-top:3px;line-height:1.5;}
-.ai-acts{display:flex;gap:5px;flex-shrink:0;margin-left:10px;}
-
-/* RESOURCE LINKS */
-.res-lnk{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:var(--cy-d);border:1px solid rgba(0,200,255,.25);border-radius:20px;font-size:.72rem;font-weight:600;color:var(--cy);text-decoration:none;transition:all .15s;margin:2px;}
-[data-theme="light"] .res-lnk{background:rgba(0,119,187,.09);color:var(--cy);}
-.res-lnk:hover{filter:brightness(1.15);}
-.res-sec{margin-top:7px;}
-.miss-bd{display:inline-flex;align-items:center;gap:4px;background:var(--er-b);color:var(--er);border:1px solid var(--er-bd);border-radius:20px;padding:3px 9px;font-size:.7rem;font-weight:700;cursor:pointer;transition:.15s;}
-.miss-bd:hover{filter:brightness(1.15);}
+.pw { width: 100%; background: var(--gb); height: 6px; border-radius: 3px; overflow: hidden; margin-top: 6px; }
+.pf { height: 100%; background: var(--ac); transition: width .4s ease; }
 
 /* TABLE */
-.tw{overflow-x:auto;border:1px solid var(--gb);border-radius:12px;}
-table{width:100%;border-collapse:collapse;}
-th,td{padding:10px 13px;border-bottom:1px solid var(--gb);font-size:.82rem;text-align:left;}
-th{background:var(--g0);font-weight:700;color:var(--t3);font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;}
-tr:hover td{background:var(--g0);}tr:last-child td{border-bottom:none;}td{color:var(--t2);}
-
-/* GRADING PANEL — flat, single-surface design (no nested blur/glass layers) */
-.sub-box{margin:0 0 10px;padding:9px 11px;border-radius:8px;display:flex;align-items:flex-start;gap:8px;background:transparent;}
-.sub-box.sub{border:1px solid var(--ok-bd);}
-.sub-box.mis{border:1px solid var(--er-bd);}
-.sub-lnk{display:inline-flex;align-items:center;gap:5px;margin-top:5px;padding:4px 10px;background:transparent;border:1px solid var(--gbs);border-radius:8px;color:var(--t1);font-weight:600;font-size:.76rem;text-decoration:none;cursor:pointer;transition:.15s;}
-.sub-lnk:hover{background:var(--g1);}
-
-.qsw{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px;}
-.qsb{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--gb);background:transparent;color:var(--t2);font-weight:700;font-size:.8rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.qsb:hover,.qsb.on{background:var(--ac);border-color:var(--ac);color:#fff;transform:scale(1.08);box-shadow:0 4px 12px var(--ac-g);}
-.grd-sec{background:transparent;padding:11px 0 0;border-top:1px dashed var(--gb);margin-top:10px;}
-
-.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle;flex-shrink:0;}
-.dot-ok{background:var(--ok);box-shadow:0 0 6px var(--ok);}
-.dot-wn{background:var(--wn);box-shadow:0 0 6px var(--wn);}
-.dot-cy{background:var(--cy);box-shadow:0 0 8px var(--cy);animation:pw 1.4s infinite;}
-
-/* Chapter accordion — single border, no inner glass card */
-.pc-blk{margin-bottom:10px;border:1px solid var(--gb);border-radius:14px;overflow:hidden;background:var(--g0);}
-.pc-hdr{display:flex;align-items:center;gap:7px;padding:11px 14px;background:transparent;cursor:pointer;user-select:none;transition:background .15s;border-bottom:1px solid transparent;}
-.pc-hdr:hover{background:var(--g1);}
-.pc-hdr.open{background:var(--in-b);border-bottom-color:var(--in-bd);}
-.pc-body{display:none;}.pc-body.open{display:block;}
-
-/* Assignment row inside a chapter — flat list item, divided by hairlines, not stacked cards */
-.asn-row{padding:13px 14px;border-top:1px solid var(--gb);position:relative;}
-.asn-row:first-child{border-top:none;}
-.asn-row.unmarked{box-shadow:inset 3px 0 0 var(--wn);}
-.asn-row.resubmitted{box-shadow:inset 3px 0 0 var(--cy);}
-.asn-row.graded{box-shadow:inset 3px 0 0 var(--ok);}
-.asn-row.missing{box-shadow:inset 3px 0 0 var(--gb);}
-.asn-name{font-weight:700;font-size:.86rem;color:var(--t1);display:flex;align-items:center;flex-wrap:wrap;gap:5px;}
-.asn-max{font-size:.74rem;font-weight:400;color:var(--t3);}
-
-/* MODALS */
-.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:400;align-items:center;justify-content:center;padding:16px;}
-.mbg.open{display:flex;animation:fi .2s ease;}
-.mo{background:var(--g2);backdrop-filter:blur(44px) saturate(180%);-webkit-backdrop-filter:blur(44px) saturate(180%);border:1px solid var(--gbs);border-radius:26px;padding:24px;width:100%;max-width:430px;box-shadow:var(--sf);position:relative;}
-.mo::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ghi),transparent);border-radius:26px 26px 0 0;}
-.mo-wide{max-width:700px;max-height:86vh;overflow-y:auto;}
-.mo-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
-.mo-title{font-size:1rem;font-weight:700;color:var(--t1);}
-.mo-x{background:var(--g1);border:1px solid var(--gb);color:var(--t2);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;transition:.15s;}
-.mo-x:hover{background:var(--g3);color:var(--t1);}
+.tw { width: 100%; overflow-x: auto; border-radius: 10px; border: 1px solid var(--gb); background: var(--g1); }
+table { width: 100%; border-collapse: collapse; min-width: 600px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--gb); font-size: .88rem; }
+th { background: var(--g0); font-weight: 600; color: var(--t3); position: sticky; top: 0; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--in-b); }
+tr { cursor: pointer; }
 
 /* SIDE PANEL */
-.sp{position:fixed;right:-540px;top:0;bottom:0;width:500px;max-width:100vw;background:var(--overlay);backdrop-filter:blur(44px) saturate(200%);-webkit-backdrop-filter:blur(44px) saturate(200%);border-left:1px solid var(--gbs);box-shadow:-8px 0 44px rgba(0,0,0,.4);z-index:300;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
-.sp.open{right:0;}
-.sp-hdr{padding:16px 18px;background:var(--g1);border-bottom:1px solid var(--gb);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
-.sp-body{padding:16px;overflow-y:auto;flex:1;background:transparent;}
-.sp-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:299;}
-.sp-ov.open{display:block;}
+.spOv { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(2px); z-index: 100; opacity: 0; pointer-events: none; transition: .3s; }
+.spOv.open { opacity: 1; pointer-events: auto; }
+.sp { position: fixed; top: 0; right: -420px; width: 100%; max-width: 420px; height: 100vh; background: var(--g1); z-index: 110; box-shadow: -4px 0 20px rgba(0,0,0,.3); transition: right .3s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; }
+.sp.open { right: 0; }
+.sp-hdr { padding: 16px; background: var(--g0); border-bottom: 1px solid var(--gb); display: flex; justify-content: space-between; align-items: center; }
+.sp-con { flex: 1; overflow-y: auto; padding: 16px; }
 
-/* Exam-total summary block at top of panel — flat, no blur stacking */
-.exam-blk{padding:0 0 16px;margin-bottom:14px;border-bottom:1px solid var(--gb);}
-.exam-blk-title{font-weight:700;margin-bottom:11px;font-size:.86rem;color:var(--ph5);}
+/* MODALS */
+.moOv { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(2px); z-index: 120; display: none; align-items: center; justify-content: center; padding: 16px; opacity: 0; transition: .25s; }
+.moOv.open { display: flex; opacity: 1; }
+.mo { background: var(--g1); border-radius: 14px; width: 100%; max-width: 450px; border: 1px solid var(--gb); transform: scale(.95) translateY(10px); transition: .3s cubic-bezier(0.16,1,0.3,1); display: flex; flex-direction: column; max-height: 90vh; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+.moOv.open .mo { transform: scale(1) translateY(0); }
+.mo-hdr { padding: 16px 20px; border-bottom: 1px solid var(--gb); display: flex; justify-content: space-between; align-items: center; background: var(--g0); border-radius: 14px 14px 0 0; }
+.mo-con { padding: 20px; overflow-y: auto; flex: 1; }
+
+/* TOAST */
+.tb { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+.toast { background: var(--g1); border: 1px solid var(--gb); color: var(--t1); padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: .88rem; box-shadow: 0 4px 15px rgba(0,0,0,.2); animation: tIn .3s cubic-bezier(0.16,1,0.3,1); display: flex; align-items: center; gap: 8px; }
+.toast.ok { border-left: 3px solid var(--ok); }
+.toast.er { border-left: 3px solid var(--er); }
+.toast.wn { border-left: 3px solid var(--wn); }
+@keyframes tIn { from { opacity: 0; transform: translateY(15px) scale(.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* LOADER */
+.ldOv { position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(3px); z-index: 300; display: none; align-items: center; justify-content: center; flex-direction: column; color: #fff; }
+.spn { width: 44px; height: 44px; border: 4px solid rgba(255,255,255,.2); border-top-color: var(--ac); border-radius: 50%; animation: sp .8s linear infinite; margin-bottom: 16px; }
+@keyframes sp { to { transform: rotate(360deg); } }
+
+/* UTILS */
+.sec-title { font-size: 1.05rem; font-weight: 700; color: var(--t1); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.sec-title::before { content:''; display:inline-block; width:4px; height:18px; background:var(--ac); border-radius:2px; }
+.page { display: none; animation: fd .25s; }
+.page.active { display: block; }
+@keyframes fd { from{opacity:0;} to{opacity:1;} }
+
+/* HOME HERO */
+.hero { text-align: center; padding: 40px 20px; background: linear-gradient(180deg, var(--g0) 0%, var(--g1) 100%); border-bottom: 1px solid var(--gb); margin-bottom: 24px; position: relative; overflow: hidden; }
+.hero-bg { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 50% 50%, var(--ac-bg) 0%, transparent 40%); opacity: .5; z-index: 0; pointer-events: none; }
+.hero-c { position: relative; z-index: 1; }
+.h-ico { width: 64px; height: 64px; background: var(--ac); color: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; box-shadow: 0 8px 20px var(--ac-bg); }
+.h-ico svg { width: 36px; height: 36px; }
+.sj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 450px; margin: 0 auto; }
+.sj-c { background: var(--g1); border: 2px solid var(--gb); padding: 20px; border-radius: 16px; text-align: center; cursor: pointer; transition: all .2s; }
+.sj-c:hover { border-color: var(--ac); transform: translateY(-3px); box-shadow: 0 10px 20px var(--ac-bg); }
+.sj-c.p3:hover { border-color: var(--ph3); box-shadow: 0 10px 20px var(--ph3-b); }
+.sj-c.p5:hover { border-color: var(--ph5); box-shadow: 0 10px 20px var(--ph5-b); }
+.sj-i { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+.sj-c.p3 .sj-i { background: var(--ph3-b); color: var(--ph3); }
+.sj-c.p5 .sj-i { background: var(--ph5-b); color: var(--ph5); }
+
+/* STEP WIZARD */
+.st { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; position: relative; padding: 0 10px; }
+.st::before { content:''; position: absolute; top: 14px; left: 30px; right: 30px; height: 2px; background: var(--gb); z-index: 0; }
+.st-i { position: relative; z-index: 1; width: 30px; height: 30px; border-radius: 50%; background: var(--g0); border: 2px solid var(--gb); display: flex; align-items: center; justify-content: center; font-size: .85rem; font-weight: 700; color: var(--t4); transition: .3s; }
+.st-i.active { border-color: var(--ac); background: var(--ac); color: #fff; box-shadow: 0 0 0 4px var(--ac-bg); }
+
+/* SUB BOX */
+.sub-box { padding: 10px 12px; border-radius: 8px; margin-top: 8px; font-size: .82rem; display: flex; align-items: flex-start; gap: 10px; }
+.sub-box.mis { background: var(--er-b); border: 1px solid var(--er-bd); }
+.sub-box.sub { background: var(--ok-b); border: 1px solid var(--ok-bd); }
+.sub-lnk { display: inline-block; padding: 3px 8px; background: var(--g1); border: 1px solid var(--ok-bd); border-radius: 5px; color: var(--ok); text-decoration: none; font-weight: 600; margin-top: 5px; margin-right: 5px; }
+
+/* PANEL ACCORDION */
+.pc-blk { margin-bottom: 1px; }
+.pc-hdr { background: var(--g0); padding: 12px 14px; border: 1px solid var(--gb); display: flex; align-items: center; gap: 10px; cursor: pointer; transition: .2s; }
+.pc-hdr:hover { background: var(--in-b); }
+.pc-body { border: 1px solid var(--gb); border-top: none; background: var(--g1); display: none; }
+.pc-body.open { display: block; }
+.asn-row { padding: 14px; border-bottom: 1px solid var(--gb); }
+.asn-row:last-child { border-bottom: none; }
+.asn-name { font-weight: 700; font-size: .95rem; color: var(--t1); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.asn-max { font-size: .75rem; color: var(--t4); font-weight: 500; }
+.asn-row.missing { border-left: 3px solid var(--er); }
+.asn-row.unmarked { border-left: 3px solid var(--wn); }
+.asn-row.graded { border-left: 3px solid var(--ok); }
+.asn-row.resubmitted { border-left: 3px solid var(--cy); background: var(--cy-d); }
+.grd-sec { background: var(--in-b); padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid var(--in-bd); }
+.qsw { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; }
+.qsb { padding: 6px 12px; border: 1px solid var(--gb); background: var(--g1); color: var(--t2); border-radius: 6px; cursor: pointer; font-weight: 700; font-size: .88rem; transition: .2s; }
+.qsb.on { background: var(--cy); color: #fff; border-color: var(--cy); }
+
+/* DOT INDICATORS */
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.dot-wn { background: var(--wn); box-shadow: 0 0 6px var(--wn); }
+.dot-ok { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
+.dot-cy { background: var(--cy); box-shadow: 0 0 6px var(--cy); animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%{transform:scale(.9);opacity:.7;} 50%{transform:scale(1.2);opacity:1;} 100%{transform:scale(.9);opacity:.7;} }
+
+/* RESOURCE LINKS */
+.res-sec { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 5px; }
+.res-lnk { display: inline-block; font-size: .75rem; padding: 3px 8px; background: var(--in-b); border: 1px solid var(--in-bd); border-radius: 4px; color: var(--t2); text-decoration: none; transition: .2s; }
+.res-lnk:hover { border-color: var(--ac); color: var(--ac); }
+.res-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid var(--gb); border-radius: 8px; margin-bottom: 8px; background: var(--g0); }
+.res-highlight { background: var(--ac-bg); border: 1px solid var(--ac); padding: 12px; border-radius: 8px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
+
+/* THEME TOGGLE */
+.th-sw { display: flex; background: var(--g0); border: 1px solid var(--gb); border-radius: 20px; overflow: hidden; }
+.th-btn { background: transparent; border: none; padding: 4px 10px; font-size: .75rem; color: var(--t3); cursor: pointer; font-weight: 600; }
+.th-btn.on { background: var(--gb); color: var(--t1); }
 
 /* MISSING LIST */
-.miss-lst{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:6px;margin-top:10px;}
-.miss-stu{background:var(--er-b);border:1px solid var(--er-bd);border-radius:8px;padding:7px 11px;font-size:.8rem;color:var(--er);font-weight:600;display:flex;align-items:center;gap:5px;}
+.miss-bd { display: inline-block; background: var(--er-b); color: var(--er); border: 1px solid var(--er-bd); padding: 3px 8px; border-radius: 5px; font-size: .75rem; font-weight: 700; cursor: pointer; transition: .2s; }
+.miss-bd:hover { background: var(--er); color: #fff; }
+.miss-lst { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
+.miss-stu { background: var(--g0); border: 1px solid var(--gb); padding: 6px 10px; border-radius: 6px; font-size: .82rem; color: var(--t2); }
 
-/* RAND DISPLAY */
-#randDisp{font-size:1.4rem;font-weight:700;color:var(--cy);min-height:76px;display:flex;align-items:center;justify-content:center;background:var(--cy-d);border-radius:12px;margin-bottom:14px;border:1.5px dashed var(--cy-dash);text-align:center;padding:12px;letter-spacing:-.02em;}
+/* LOGIN */
+.login-ico { width: 72px; height: 72px; background: var(--in-b); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--t3); border: 2px dashed var(--gb); }
+.login-ico svg { width: 36px; height: 36px; }
 
-/* TOOLS GRID */
-.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.tc{background:var(--g1);border:1px solid var(--gb);border-radius:12px;padding:14px 10px;cursor:pointer;transition:all .2s;text-align:center;}
-.tc:hover{background:var(--g2);border-color:var(--gbs);transform:translateY(-2px);}
-.tc-ico{width:32px;height:32px;margin:0 auto 6px;color:var(--cy);}
-.tc-nm{font-weight:700;font-size:.82rem;color:var(--t1);}
-.tc-ds{font-size:.7rem;color:var(--t3);margin-top:2px;}
+/* TOOLS DASHBOARD (TEACHER) */
+.tg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.tg-c { background: var(--g0); border: 1px solid var(--gb); padding: 16px; border-radius: 12px; text-align: center; cursor: pointer; transition: .2s; display: flex; flex-direction: column; align-items: center; }
+.tg-c:hover { border-color: var(--ac); background: var(--ac-bg); }
+.tg-i { width: 44px; height: 44px; background: var(--g1); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; color: var(--t1); box-shadow: 0 4px 10px rgba(0,0,0,.05); }
 
-.timer-d{font-size:3.2rem;font-weight:700;letter-spacing:-.04em;color:var(--cy);text-align:center;text-shadow:0 0 28px var(--cy-glow);margin:14px 0;}
-.noise-lv{height:18px;border-radius:99px;overflow:hidden;margin:10px 0;background:var(--g0);border:1px solid var(--gb);}
-.noise-b{height:100%;border-radius:99px;transition:width .2s,background .3s;}
+/* TIMER & NOISE */
+.timer-d { font-size: 3.5rem; font-weight: 700; color: var(--t1); text-align: center; font-variant-numeric: tabular-nums; line-height: 1; margin: 20px 0; letter-spacing: -0.02em; }
+.noise-lv { height: 24px; background: var(--in-b); border-radius: 12px; overflow: hidden; border: 1px solid var(--gb); margin-top: 10px; }
+.noise-b { height: 100%; width: 0%; transition: width .1s, background .2s; }
+#randDisp { text-align: center; font-size: 1.4rem; font-weight: 700; color: var(--cy); padding: 20px; margin: 10px 0; background: var(--in-b); border-radius: 12px; border: 1px dashed var(--cy); min-height: 80px; display: flex; align-items: center; justify-content: center; }
 
-.fm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
-.fm-item{background:var(--in-b);border:1px solid var(--in-bd);border-radius:8px;padding:9px 13px;}
-.fm-sym{font-size:1rem;font-weight:700;color:var(--cy);display:block;margin-bottom:2px;}
-[data-theme="light"] .fm-sym{color:var(--ac);}
+/* EXAM BLOCK */
+.exam-blk { background: var(--g0); border: 1px solid var(--gb); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
+.exam-blk-title { font-size: .9rem; font-weight: 700; color: var(--t1); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.exam-blk-title::before { content:''; width: 12px; height: 12px; background: var(--ph5); border-radius: 3px; display: inline-block; }
+.ph5-panel { background: var(--ph5-b); border: 1px solid rgba(244,63,94,.3); border-radius: 8px; }
 
-.res-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--g0);border:1px solid var(--gb);border-radius:8px;margin-bottom:6px;}
-
-/* HOME CARDS */
-.hc{background:var(--g1);backdrop-filter:blur(32px) saturate(180%);-webkit-backdrop-filter:blur(32px) saturate(180%);border:1px solid var(--gbs);border-radius:34px;padding:26px 22px;text-align:center;cursor:pointer;min-width:196px;width:196px;transition:all .28s;position:relative;overflow:hidden;z-index:2;-webkit-tap-highlight-color:transparent;user-select:none;}
-.hc > *{pointer-events:none;}
-.hc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.09) 0%,transparent 55%);pointer-events:none;}
-.hc::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ghi),transparent);pointer-events:none;}
-.hc:hover{transform:translateY(-7px) scale(1.02);box-shadow:0 20px 58px rgba(0,0,0,.38);border-color:var(--ghi);}
-.sj-c{background:var(--g1);border:1px solid var(--gb);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;}
-.sj-c:hover{background:var(--g2);transform:translateY(-2px);}
-.stab{flex:1;padding:11px;background:var(--g1);border:1px solid var(--gb);border-radius:12px;color:var(--t2);font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;font-size:.88rem;text-align:center;}
-.spin{width:40px;height:40px;border-radius:50%;border:3px solid var(--g2);border-top-color:var(--cy);animation:sp .8s linear infinite;}
-@keyframes sp{to{transform:rotate(360deg);}}
-.toast-box{position:fixed;bottom:22px;right:18px;z-index:600;display:flex;flex-direction:column;gap:7px;}
-.th-btn{font-size:.62rem;font-weight:700;letter-spacing:.02em;padding:0 7px;width:auto;min-width:28px;}
-.hc-ico{width:56px;height:56px;margin:0 auto 9px;color:var(--ac);}
-.hc-ico svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 14px var(--ac-glow));}
-.hc-ico-ph5{color:var(--ph5);}
-.hc-ico-ph5 svg{filter:drop-shadow(0 0 14px var(--ph5-glow));}
-.home-logo{width:64px;height:64px;margin:0 auto 10px;color:var(--cy);}
-.home-logo svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 22px var(--cy-glow));}
-.sj-ico{width:42px;height:42px;margin:0 auto 7px;color:var(--ac);}
-.sj-ico svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 12px var(--ac-glow));}
-.sj-ico-ph5{color:var(--ph5);}
-.sj-ico-ph5 svg{filter:drop-shadow(0 0 12px var(--ph5-glow));}
-.exam-total-box{background:var(--ph5-box-bg);border:1px solid var(--ph5-box-bd);border-radius:12px;padding:13px;text-align:center;}
-.ph5-panel{background:var(--ph5-panel-bg);border:1px solid var(--ph5-panel-bd);border-radius:8px;}
-.cy-tag{border:1px solid var(--cy-box-bd);}
-.res-highlight{background:var(--cy-d);border:1px solid var(--cy-box-bd);border-radius:8px;padding:9px 12px;margin-bottom:3px;}
-.ico{display:inline-block;line-height:0;vertical-align:middle;}
-.ico svg{display:block;}
-.ico-sm{width:14px;height:14px;}
-.ico-md{width:20px;height:20px;}
-.ico-lg{width:28px;height:28px;}
-.login-ico{width:48px;height:48px;margin:0 auto 8px;color:var(--ph5);}
-.login-ico svg{width:100%;height:100%;display:block;}
-.tc-ico{width:32px;height:32px;margin:0 auto 6px;color:var(--cy);}
-.tc-ico svg{width:100%;height:100%;display:block;}
-.stab.on{background:linear-gradient(135deg,var(--ac),var(--ac-dk));border-color:transparent;color:#fff;box-shadow:0 4px 16px var(--ac-g);}
-#ldr{position:fixed;inset:0;background:var(--overlay);backdrop-filter:blur(12px);z-index:999;display:none;align-items:center;justify-content:center;flex-direction:column;}
-.toast{background:var(--overlay2);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--gbs);color:var(--t1);padding:10px 16px;border-radius:12px;font-weight:600;font-size:.82rem;animation:su .28s ease;box-shadow:var(--sf);max-width:310px;}
-.toast.ok{border-color:var(--ok-bd);color:var(--ok);}
-.toast.er{border-color:var(--er-bd);color:var(--er);}
-.toast.wn{border-color:var(--wn-bd);color:var(--wn);}
-@keyframes su{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
-.dvd{height:1px;background:var(--gb);margin:14px 0;}
-
-@media(max-width:640px){
-  .con{padding:12px 10px;}.sg{grid-template-columns:1fr 1fr;}
-  .fm-grid{grid-template-columns:1fr;}.tg{grid-template-columns:repeat(2,1fr);}
-  .hc{width:155px;min-width:155px;}.sp{width:100%;right:-100%;}
-}
+/* FORMULA */
+.fm-grid { display: grid; grid-template-columns: 1fr; gap: 8px; max-height: 350px; overflow-y: auto; padding-right: 5px; }
+.fm-item { padding: 10px; background: var(--g1); border: 1px solid var(--gb); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+.fm-sym { font-family: monospace; font-weight: 700; color: var(--cy); font-size: .95rem; }
 </style>
 </head>
 <body>
-<div id="ldr"><div class="spin"></div><div style="margin-top:12px;font-size:.8rem;font-weight:600;color:var(--t3);">กำลังประมวลผล...</div></div>
-<div class="toast-box" id="toastBox"></div>
-<div class="sp-ov" id="spOv" onclick="closeSP()"></div>
 
-<!-- MODALS -->
-<div class="mbg" id="mMiss"><div class="mo mo-wide"><div class="mo-hdr"><span class="mo-title" id="mMissT">รายชื่อที่ยังไม่ส่งงาน</span><button class="mo-x" onclick="closeM('mMiss')">X</button></div><div id="mMissB"></div></div></div>
+<!-- LOADER -->
+<div class="ldOv" id="ldr"><div class="spn"></div><div style="font-weight:600;letter-spacing:.05em;">กำลังโหลดข้อมูล...</div></div>
 
-<div class="mbg" id="mTools">
-  <div class="mo mo-wide" style="max-width:560px;">
-    <div class="mo-hdr"><span class="mo-title">ระบบอำนวยการสอน</span><button class="mo-x" onclick="closeM('mTools');App.stopNoise();clearInterval(S.tmrIv);S.tmrOn=false;">X</button></div>
-    <div class="tg" id="tgMain">
-      <div class="tc" onclick="App.tool('rand')"><div class="tc-ico" data-ico="dice"></div><div class="tc-nm">สุ่มเรียกชื่อ</div><div class="tc-ds">สุ่มนักเรียนตอบ</div></div>
-      <div class="tc" onclick="App.tool('timer')"><div class="tc-ico" data-ico="timer"></div><div class="tc-nm">จับเวลา</div><div class="tc-ds">นับถอยหลัง/ขึ้น</div></div>
-      <div class="tc" onclick="App.tool('formula')"><div class="tc-ico" data-ico="formula"></div><div class="tc-nm">สูตรฟิสิกส์</div><div class="tc-ds">สูตรและค่าคงที่</div></div>
-      <div class="tc" onclick="App.tool('noise')"><div class="tc-ico" data-ico="sound"></div><div class="tc-nm">วัดเสียงห้อง</div><div class="tc-ds">ระดับเสียงเรียลไทม์</div></div>
-      <div class="tc" onclick="App.tool('group')"><div class="tc-ico" data-ico="group"></div><div class="tc-nm">แบ่งกลุ่ม</div><div class="tc-ds">สุ่มจัดกลุ่มนักเรียน</div></div>
-      <div class="tc" onclick="App.tool('poll')"><div class="tc-ico" data-ico="poll"></div><div class="tc-nm">โหวตความเข้าใจ</div><div class="tc-ds">เข้าใจ / งง / ไม่เข้าใจ</div></div>
+<!-- TOAST BOX -->
+<div class="tb" id="toastBox"></div>
+
+<!-- MODAL: RESOURCES -->
+<div class="moOv" id="mRes">
+  <div class="mo">
+    <div class="mo-hdr"><div style="font-weight:700;font-size:1.05rem;" id="mResT">จัดการลิงก์</div><button class="btn btn-g btn-sm" onclick="closeM('mRes')">✕</button></div>
+    <div class="mo-con">
+      <div id="mResB" style="margin-bottom:16px;"></div>
+      <div style="background:var(--g0);padding:14px;border-radius:8px;border:1px dashed var(--gb);">
+        <div class="lbl">เพิ่มลิงก์ใหม่</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <select class="fc" id="rType" style="width:100px;"><option value="doc">ใบงาน</option><option value="vid">วิดีโอ</option><option value="lab">การทดลอง</option><option value="lesson">บทเรียน</option><option value="link">อื่นๆ</option></select>
+          <input type="text" class="fc" id="rName" placeholder="ชื่อ (เช่น ใบงาน 1.1)" style="flex:1;">
+        </div>
+        <input type="url" class="fc" id="rUrl" placeholder="https://..." style="margin-bottom:10px;">
+        <button class="btn btn-p" style="width:100%;" onclick="App.addRes()">+ บันทึกสื่อ</button>
+      </div>
     </div>
-    <div id="tgPanel" style="display:none;margin-top:14px;"></div>
-    <div id="tgBack" style="display:none;margin-top:10px;"><button class="btn btn-g btn-sm" onclick="App.backTool()">← กลับเมนูหลัก</button></div>
   </div>
 </div>
 
-<div class="mbg" id="mRes">
-  <div class="mo" style="max-width:500px;">
-    <div class="mo-hdr"><span class="mo-title" id="mResT">จัดการลิงก์</span><button class="mo-x" onclick="closeM('mRes')">X</button></div>
-    <div id="mResB" style="max-height:220px;overflow-y:auto;margin-bottom:12px;"></div>
-    <div class="dvd"></div>
-    <div class="lbl" style="margin-bottom:10px;">เพิ่มลิงก์ใหม่</div>
-    <div class="fg"><label class="lbl">ชื่อลิงก์</label><input type="text" class="fc" id="rName" placeholder="เช่น ใบงาน, คลิปทดลอง..."></div>
-    <div class="fg"><label class="lbl">URL</label><input type="url" class="fc" id="rUrl" placeholder="https://..."></div>
-    <div class="fg"><label class="lbl">ประเภท</label>
-      <select class="fc" id="rType">
-        <option value="doc">ใบงาน</option><option value="vid">วิดีโอ</option>
-        <option value="lab">การทดลอง</option><option value="lesson">บทเรียน</option><option value="link">อื่นๆ</option>
-      </select></div>
-    <button class="btn btn-p" style="width:100%;" onclick="App.addRes()">เพิ่มลิงก์</button>
+<!-- MODAL: MISSING -->
+<div class="moOv" id="mMiss">
+  <div class="mo">
+    <div class="mo-hdr"><div style="font-weight:700;font-size:1.05rem;" id="mMissT">รายชื่อค้างส่ง</div><button class="btn btn-g btn-sm" onclick="closeM('mMiss')">✕</button></div>
+    <div class="mo-con" id="mMissB"></div>
   </div>
 </div>
 
-<!-- SIDE PANEL -->
+<!-- MODAL: TEACHER TOOLS -->
+<div class="moOv" id="mTools">
+  <div class="mo">
+    <div class="mo-hdr">
+      <div style="font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:8px;">อำนวยการสอน</div>
+      <button class="btn btn-g btn-sm" onclick="closeM('mTools')">✕</button>
+    </div>
+    <div class="mo-con" style="padding:20px;">
+      <div id="tgMain">
+        <div class="tg-grid">
+          <div class="tg-c" onclick="App.tool('rand')"><div class="tg-i" data-ico="dice"></div><span style="font-weight:600;font-size:.85rem;">สุ่มชื่อ</span></div>
+          <div class="tg-c" onclick="App.tool('timer')"><div class="tg-i" data-ico="timer"></div><span style="font-weight:600;font-size:.85rem;">จับเวลา</span></div>
+          <div class="tg-c" onclick="App.tool('noise')"><div class="tg-i" data-ico="sound"></div><span style="font-weight:600;font-size:.85rem;">วัดเสียง</span></div>
+          <div class="tg-c" onclick="App.tool('group')"><div class="tg-i" data-ico="group"></div><span style="font-weight:600;font-size:.85rem;">จัดกลุ่ม</span></div>
+          <div class="tg-c" onclick="App.tool('poll')"><div class="tg-i" data-ico="poll"></div><span style="font-weight:600;font-size:.85rem;">โหวตเข้าใจ</span></div>
+          <div class="tg-c" onclick="App.tool('formula')"><div class="tg-i" data-ico="formula"></div><span style="font-weight:600;font-size:.85rem;">สูตรลัด</span></div>
+        </div>
+      </div>
+      <button id="tgBack" class="btn btn-g btn-sm" style="display:none;margin-bottom:14px;" onclick="App.backTool()">← กลับเมนูเครื่องมือ</button>
+      <div id="tgPanel" style="display:none;background:var(--g0);border:1px solid var(--gb);border-radius:12px;padding:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIDE PANEL: GRADE -->
+<div class="spOv" id="spOv" onclick="closeSP()"></div>
 <div class="sp" id="sideP">
   <div class="sp-hdr">
-    <div><div id="spN" style="font-weight:700;font-size:1.05rem;color:var(--t1);"></div><div id="spM" style="font-size:.74rem;color:var(--t3);margin-top:1px;"></div></div>
-    <button class="mo-x" onclick="closeSP()">X</button>
+    <div>
+      <div style="font-weight:700;font-size:1.2rem;color:var(--t1);" id="spN"></div>
+      <div style="font-size:.8rem;color:var(--t4);" id="spM"></div>
+    </div>
+    <button class="btn btn-g btn-sm" onclick="closeSP()">✕ ปิด</button>
   </div>
-  <div class="sp-body" id="spB"></div>
+  <div class="sp-con" id="spB"></div>
 </div>
 
 <!-- PAGE: HOME -->
 <div id="pg-home" class="page active">
-  <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative;z-index:1;">
-    <div style="position:absolute;top:18px;right:18px;">
-      <div class="th-sw">
-        <button class="th-btn on" id="h-dk" onclick="setTh('dark')" title="โหมดมืด">มืด</button>
-        <button class="th-btn" id="h-lt" onclick="setTh('light')" title="โหมดสว่าง">สว่าง</button>
-        <button class="th-btn" id="h-au" onclick="setTh('auto')" title="ตามระบบ">Auto</button>
-      </div>
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-c">
+      <div class="h-ico" id="homeLogo"></div>
+      <h1 style="font-size:1.8rem;font-weight:700;color:var(--t1);letter-spacing:-.5px;margin-bottom:6px;">ระบบติดตามการเรียน</h1>
+      <p style="color:var(--t3);font-size:.95rem;max-width:400px;margin:0 auto;">กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี โรงเรียนสนมวิทยาคาร</p>
     </div>
-    <div class="home-logo" id="homeLogo"></div>
-    <h1 style="color:var(--t1);text-align:center;font-size:1.65rem;margin-bottom:5px;font-weight:700;letter-spacing:-.03em;">ระบบส่งงานและตรวจงานฟิสิกส์</h1>
-    <p style="color:var(--t3);margin-bottom:36px;font-size:.84rem;">สนมวิทยาคาร 2569 · ครูณัฐพล สุขยานุดิษฐ</p>
-    <div style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center;">
-      <div class="hc" id="nav-stu" role="button" tabindex="0" aria-label="เข้าสู่ระบบนักเรียน">
-        <div class="hc-ico" id="ico-stu"></div>
-        <div style="font-weight:700;font-size:1rem;color:var(--t1);margin-bottom:3px;">นักเรียน</div>
-        <div style="color:var(--t3);font-size:.75rem;">ส่งงานและดูคะแนน</div>
-      </div>
-      <div class="hc" id="nav-tc" role="button" tabindex="0" aria-label="เข้าสู่ระบบครูผู้สอน">
-        <div class="hc-ico hc-ico-ph5" id="ico-tc"></div>
-        <div style="font-weight:700;font-size:1rem;color:var(--t1);margin-bottom:3px;">ครูผู้สอน</div>
-        <div style="color:var(--t3);font-size:.75rem;">จัดการงานและตรวจคะแนน</div>
-      </div>
+  </div>
+  <div class="con" style="padding-top:0;">
+    <div class="sj-grid">
+      <div class="sj-c" id="nav-stu"><div class="sj-i" id="ico-stu" style="background:var(--ac-bg);color:var(--ac);"></div><div style="font-weight:700;font-size:1.1rem;color:var(--t1);">นักเรียน</div><div style="font-size:.78rem;color:var(--t3);margin-top:4px;">เช็คงาน & ส่งงาน</div></div>
+      <div class="sj-c" id="nav-tc"><div class="sj-i" id="ico-tc" style="background:var(--ok-b);color:var(--ok);"></div><div style="font-weight:700;font-size:1.1rem;color:var(--t1);">ครูผู้สอน</div><div style="font-size:.78rem;color:var(--t3);margin-top:4px;">ตรวจงาน & จัดการ</div></div>
     </div>
   </div>
 </div>
@@ -436,66 +343,65 @@ tr:hover td{background:var(--g0);}tr:last-child td{border-bottom:none;}td{color:
 <!-- PAGE: STUDENT -->
 <div id="pg-stu" class="page">
   <div class="topbar">
-    <div><div class="tb-title">ส่งงานวิชาฟิสิกส์</div><div class="tb-sub">สนมวิทยาคาร 2569</div></div>
-    <div class="tb-acts">
-      <div class="th-sw"><button class="th-btn" id="s-dk" onclick="setTh('dark')">มืด</button><button class="th-btn" id="s-lt" onclick="setTh('light')">สว่าง</button><button class="th-btn" id="s-au" onclick="setTh('auto')">Auto</button></div>
-      <button class="btn btn-g btn-sm" onclick="App.fetch(true)">รีเฟรช</button>
-      <button class="btn btn-g btn-sm" onclick="App.go('pg-home')">หน้าแรก</button>
-    </div>
+    <div class="tb-title">ส่งงานวิชาฟิสิกส์</div>
+    <div class="tb-acts"><div class="th-sw"><button class="th-btn" id="s-dk" onclick="setTh('dark')">มืด</button><button class="th-btn" id="s-lt" onclick="setTh('light')">สว่าง</button><button class="th-btn" id="s-au" onclick="setTh('auto')">Auto</button></div><button class="btn btn-o btn-sm" onclick="App.go('pg-home')">ออก</button></div>
   </div>
-  <div class="con" style="max-width:720px;">
-    <div class="step-bar"><div class="step active" id="st1">1 เลือกวิชา</div><div class="step" id="st2">2 ห้องเรียน</div><div class="step" id="st3">3 ชื่อของคุณ</div><div class="step" id="st4">4 แดชบอร์ด</div></div>
+  <div class="con">
+    <div class="st">
+      <div class="st-i" id="st1">1</div><div class="st-i" id="st2">2</div><div class="st-i" id="st3">3</div><div class="st-i" id="st4">4</div>
+    </div>
 
     <div class="gc" id="ss1">
-      <div class="sec-title">เลือกวิชา</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
-        <div class="sj-c" data-subj="ฟิสิกส์ 3" role="button" tabindex="0"><div class="sj-ico" id="sj-ico-3"></div><div style="font-weight:700;font-size:1rem;color:var(--ac);">ฟิสิกส์ 3</div><div style="font-size:.75rem;color:var(--t3);margin-top:2px;">ม.5</div></div>
-        <div class="sj-c" data-subj="ฟิสิกส์ 5" role="button" tabindex="0"><div class="sj-ico sj-ico-ph5" id="sj-ico-5"></div><div style="font-weight:700;font-size:1rem;color:var(--ph5);">ฟิสิกส์ 5</div><div style="font-size:.75rem;color:var(--t3);margin-top:2px;">ม.6</div></div>
+      <div class="sec-title">เลือกรายวิชา</div>
+      <div class="sj-grid">
+        <div class="sj-c p3" data-subj="ฟิสิกส์ 3"><div class="sj-i" id="sj-ico-3"></div><div style="font-weight:700;">ฟิสิกส์ 3 (ม.5)</div></div>
+        <div class="sj-c p5" data-subj="ฟิสิกส์ 5"><div class="sj-i" id="sj-ico-5"></div><div style="font-weight:700;">ฟิสิกส์ 5 (ม.6)</div></div>
       </div>
     </div>
 
     <div class="gc" id="ss2" style="display:none;">
-      <div class="sec-title">เลือกห้องเรียน</div>
-      <div id="roomList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:9px;"></div>
-      <button class="btn btn-o btn-sm" style="margin-top:12px;" onclick="App.step(1)">← ย้อนกลับ</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><div class="sec-title" style="margin:0;">เลือกห้องเรียน</div><button class="btn btn-g btn-sm" onclick="App.step(1)">← กลับ</button></div>
+      <div class="sg" id="roomList"></div>
     </div>
 
     <div class="gc" id="ss3" style="display:none;">
-      <div class="sec-title">เลือกชื่อของคุณ</div>
-      <select class="fc" id="stuSel" style="margin-bottom:14px;font-size:.92rem;padding:11px;"><option value="">— เลือกชื่อ-นามสกุล —</option></select>
-      <div style="display:flex;gap:10px;"><button class="btn btn-o" onclick="App.step(2)">← ย้อนกลับ</button><button class="btn btn-p" style="flex:1;" onclick="App.confStu()">เข้าสู่แดชบอร์ด →</button></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><div class="sec-title" style="margin:0;">เลือกชื่อ-นามสกุล</div><button class="btn btn-g btn-sm" onclick="App.step(2)">← กลับ</button></div>
+      <select class="fc" id="stuSel" style="margin-bottom:16px;font-weight:600;font-size:1rem;"></select>
+      <button class="btn btn-p btn-lg" onclick="App.confStu()">ตกลง เข้าสู่ระบบ</button>
     </div>
 
     <div id="ss4" style="display:none;">
-      <div class="gc">
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px;border-bottom:1px solid var(--gb);padding-bottom:13px;">
-          <div><div class="lbl">แดชบอร์ดนักเรียน</div><div style="font-size:1.25rem;font-weight:700;color:var(--cy);margin-top:2px;letter-spacing:-.02em;" id="dName"></div></div>
-          <button class="btn btn-g btn-sm" onclick="App.step(3)">เปลี่ยนชื่อ</button>
-        </div>
-        <div class="sg">
-          <div class="sc-card"><div class="sc-num" id="dTotal">0</div><div class="sc-lbl">งานทั้งหมด</div></div>
-          <div class="sc-card" style="background:var(--ok-b);border-color:var(--ok-bd);"><div class="sc-num" style="color:var(--ok)" id="dDone">0</div><div class="sc-lbl" style="color:var(--ok)">ส่งแล้ว</div></div>
-          <div class="sc-card" style="background:var(--er-b);border-color:var(--er-bd);"><div class="sc-num" style="color:var(--er)" id="dMiss">0</div><div class="sc-lbl" style="color:var(--er)">ค้างส่ง</div></div>
-          <div class="sc-card" style="background:var(--in-b);border-color:var(--in-bd);"><div class="sc-num" style="color:var(--cy)" id="dScore">0</div><div class="sc-lbl">คะแนนรวม</div></div>
-        </div>
-        <div style="padding:10px 12px;background:var(--g0);border-radius:8px;border:1px solid var(--gb);">
-          <div style="display:flex;justify-content:space-between;font-size:.76rem;font-weight:600;color:var(--t3);margin-bottom:4px;"><span>ความคืบหน้า</span><span id="dPct">0%</span></div>
-          <div class="pw"><div class="pf" id="dBar" style="width:0%"></div></div>
+      <div class="gc" style="background:var(--ac-bg);border-color:var(--ac);text-align:center;">
+        <div style="font-size:.85rem;color:var(--t2);font-weight:600;margin-bottom:4px;">ยินดีต้อนรับ</div>
+        <div style="font-size:1.25rem;font-weight:700;color:var(--ac);" id="dName"></div>
+        <div style="display:flex;justify-content:center;gap:12px;margin-top:12px;">
+          <button class="btn btn-p btn-sm" onclick="App.fetch(true)">รีเฟรชข้อมูล</button>
+          <button class="btn btn-g btn-sm" onclick="App.step(1)">เปลี่ยนชื่อ</button>
         </div>
       </div>
+      
+      <div class="sg">
+        <div class="sc-card"><div class="sc-num" style="color:var(--cy);" id="dTotal">0</div><div class="sc-lbl">งานทั้งหมด</div></div>
+        <div class="sc-card" style="background:var(--ok-b);border-color:var(--ok-bd);"><div class="sc-num" style="color:var(--ok);" id="dDone">0</div><div class="sc-lbl">ส่งแล้ว</div></div>
+        <div class="sc-card" style="background:var(--er-b);border-color:var(--er-bd);"><div class="sc-num" style="color:var(--er);" id="dMiss">0</div><div class="sc-lbl">ค้างส่ง</div></div>
+      </div>
+      <div class="gc">
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;margin-bottom:6px;"><span>ความคืบหน้า</span><span id="dPct" style="color:var(--ac)">0%</span></div>
+        <div class="pw" style="height:10px;border-radius:5px;"><div class="pf" id="dBar" style="width:0%"></div></div>
+      </div>
 
-      <div class="gc" id="examCard" style="display:none;">
-        <div class="sec-title">คะแนนรวมตลอดภาคเรียน</div>
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:12px;">
-          <div class="sc-card"><div class="sc-num" id="exP" style="font-size:1.4rem;color:var(--t1)">-</div><div class="sc-lbl">เก็บก่อนกลางภาค /25</div></div>
-          <div class="sc-card"><div class="sc-num" id="exM" style="font-size:1.4rem;color:var(--t1)">-</div><div class="sc-lbl">สอบกลางภาค /20</div></div>
-          <div class="sc-card"><div class="sc-num" id="exPo" style="font-size:1.4rem;color:var(--t1)">-</div><div class="sc-lbl">เก็บหลังกลางภาค /25</div></div>
-          <div class="sc-card"><div class="sc-num" id="exF" style="font-size:1.4rem;color:var(--t1)">-</div><div class="sc-lbl">สอบปลายภาค /30</div></div>
+      <!-- EXAM CARD -->
+      <div class="gc" id="examCard" style="display:none;background:var(--ph5-b);border-color:rgba(244,63,94,.3);">
+        <div class="sec-title" style="color:var(--ph5);">คะแนนสอบ / คะแนนเก็บ (100)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;"><div style="font-size:.74rem;color:var(--t3);">ก่อนกลางภาค (25)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exP">-</div></div>
+          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;"><div style="font-size:.74rem;color:var(--t3);">กลางภาค (20)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exM">-</div></div>
+          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;"><div style="font-size:.74rem;color:var(--t3);">หลังกลางภาค (25)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exPo">-</div></div>
+          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;"><div style="font-size:.74rem;color:var(--t3);">ปลายภาค (30)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exF">-</div></div>
         </div>
-        <div class="exam-total-box">
-          <div style="font-size:.75rem;font-weight:600;color:var(--ph5);margin-bottom:3px;">คะแนนรวมทั้งหมด</div>
-          <div style="font-size:2.1rem;font-weight:700;color:var(--ph5);letter-spacing:-.04em;" id="exT">-</div>
-          <div style="font-size:.74rem;color:var(--t3);">จาก 100 คะแนน</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;background:var(--g1);padding:12px;border-radius:8px;">
+          <span style="font-weight:700;font-size:.9rem;color:var(--t1);">รวมสุทธิ</span>
+          <div><span style="font-size:1.6rem;font-weight:700;color:var(--ph5);letter-spacing:-1px;" id="exT">-</span><span style="color:var(--t3);font-size:.8rem;font-weight:700;"> / 100</span></div>
         </div>
       </div>
 
@@ -512,8 +418,8 @@ tr:hover td{background:var(--g0);}tr:last-child td{border-bottom:none;}td{color:
       <div style="text-align:center;margin:10px 0;color:var(--t4);font-weight:700;font-size:.8rem;">— หรือ —</div>
       <div class="fg"><label class="lbl">อัปโหลดไฟล์งาน</label>
         <div style="border:1.5px dashed var(--gbs);padding:16px;text-align:center;border-radius:12px;">
-          <input type="file" class="fc" id="fileIn" style="border:none;background:transparent;color:var(--t2);">
-          <div style="font-size:.72rem;color:var(--t4);margin-top:5px;">รองรับไฟล์ไม่เกิน 20MB</div>
+          <input type="file" class="fc" id="fileIn" multiple accept="image/*,.pdf,.doc,.docx" style="border:none;background:transparent;color:var(--t2);">
+          <div style="font-size:.72rem;color:var(--t4);margin-top:5px;">แนบได้ 1-5 ไฟล์ (รวมไม่เกิน 20MB) <br>หากเป็นรูปภาพระบบจะต่อให้เป็นไฟล์เดียวอัตโนมัติ</div>
         </div></div>
       <div style="display:flex;gap:10px;margin-top:16px;">
         <button class="btn btn-o btn-lg" style="flex:1;" onclick="App.step(4)">ยกเลิก</button>
@@ -643,7 +549,7 @@ let S={
   asns:[],subs:[],grds:[],exams:[],subj:'',room:'',stu:'',asn:'',tab:'ฟิสิกส์ 3',
   siMap:new Map(),giMap:new Map(),exMap:new Map(),
   scaMap:new Map(),scuMap:new Map(),scoreMap:new Map(),
-  rId:null,rName:'',_dbt:null,
+  rId:null,rName:'',_dbt:null,_cached:false,
   tmrIv:null,tmrOn:false,tmrSec:0,tmrInit:false,tmrDown:true,
   noStream:null,noAnim:null,poll:{y:0,m:0,n:0},randIv:null
 };
@@ -742,23 +648,36 @@ var App={
     t.style.display='block';
     window.scrollTo({top:0,behavior:'smooth'});
   },
-  fetch:async(show=false)=>{
-    if(show)UI.load(true);
+  fetch:async(show=false, forceLoad=false)=>{
+    if(forceLoad)UI.load(true);
+    else if(show)UI.toast('กำลังอัปเดตข้อมูล...','wn');
+    try {
+      if(!S._cached) {
+         const cached = localStorage.getItem('appDataCache');
+         if (cached) {
+            const d = JSON.parse(cached);
+            S.asns=d.asns||[];
+            const valid=new Set(S.asns.map(a=>a.name));
+            const sm={};(d.subs||[]).forEach(s=>{if(valid.has(s.assignment))sm[`${s.subject}|${s.room}|${s.student}|${s.assignment}`]=s;});
+            S.subs=Object.values(sm); S.grds=(d.grds||[]).filter(g=>valid.has(g.assignment)); S.exams=d.exams||[];
+            rebuildIdx(); App.refresh(); S._cached = true;
+         }
+      }
+    } catch(e){}
     try{
       const d=await API.call('getAll');
-      if(d._n){if(show)UI.toast('เซิร์ฟเวอร์ไม่ตอบ — ตรวจ Deploy และสิทธิ์ Sheet','er');if(show)UI.load(false);return;}
+      if(d._n){if(show||forceLoad)UI.toast('เซิร์ฟเวอร์ไม่ตอบ — ตรวจ Deploy และสิทธิ์ Sheet','er');if(forceLoad)UI.load(false);return;}
       if(d.error)throw new Error(d.error);
+      try { localStorage.setItem('appDataCache', JSON.stringify(d)); } catch(e){}
       S.asns=d.asns||[];
       const valid=new Set(S.asns.map(a=>a.name));
       const sm={};(d.subs||[]).forEach(s=>{if(valid.has(s.assignment))sm[`${s.subject}|${s.room}|${s.student}|${s.assignment}`]=s;});
-      S.subs=Object.values(sm);
-      S.grds=(d.grds||[]).filter(g=>valid.has(g.assignment));
-      S.exams=d.exams||[];
+      S.subs=Object.values(sm); S.grds=(d.grds||[]).filter(g=>valid.has(g.assignment)); S.exams=d.exams||[];
       rebuildIdx();
-      if(show)UI.toast('อัปเดตเรียบร้อย','ok');
+      if(show||forceLoad)UI.toast('อัปเดตข้อมูลล่าสุดแล้ว','ok');
       App.refresh();
-    }catch(e){UI.toast('เชื่อมต่อล้มเหลว: '+e,'er');}
-    if(show)UI.load(false);
+    }catch(e){if(show||forceLoad)UI.toast('เชื่อมต่อล้มเหลว: '+e,'er');}
+    if(forceLoad)UI.load(false);
   },
   refresh:()=>{if(S.stu)App.renderStuDash();App.renderTcDash();},
 
@@ -802,28 +721,73 @@ var App={
       html+=`<div class="ch-blk"><div class="ch-hdr" onclick="togCh(this)"><div class="ch-title">บทที่ ${ch}<span class="bd bd-bl">${items.length} งาน</span>${chD===items.length?'<span class="bd bd-ok">ครบ</span>':'<span class="bd bd-er">ค้าง '+(items.length-chD)+'</span>'}</div><div class="ch-meta"><span style="font-size:.74rem;color:var(--t3);">${chD}/${items.length}</span><span class="ch-arr">▾</span></div></div><div class="ch-body">${items.map(a=>{
         const sub=subs.find(s=>s.assignment===a.name),grd=grds.find(g=>g.assignment===a.name);
         const res=Res.load(a.id);
-        return `<div class="ai cl" onclick="App.prepSub('${a.name.replace(/'/g,"\\'")}','${a.id}')"><div class="ai-info"><div class="ai-name">${a.name}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}${sub?'<br><span style="color:var(--ok);font-weight:600;">ส่งแล้ว '+(sub.submittedAt||'')+'</span>':''}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div style="text-align:right;flex-shrink:0;margin-left:10px;">${sub?'<span class="bd bd-ok">ส่งแล้ว</span>':'<span class="bd bd-er">ค้างส่ง</span>'}<div style="font-size:.76rem;margin-top:5px;color:var(--t3);">${grd?'<b style="color:var(--cy)">'+grd.score+'</b>/'+a.maxScore:'-/'+a.maxScore}</div></div></div>`;
+        return `<div class="ai cl" onclick="App.prepSub('${a.id}')"><div class="ai-info"><div class="ai-name">${a.name}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}${sub?'<br><span style="color:var(--ok);font-weight:600;">ส่งแล้ว '+(sub.submittedAt||'')+'</span>':''}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div style="text-align:right;flex-shrink:0;margin-left:10px;">${sub?'<span class="bd bd-ok">ส่งแล้ว</span>':'<span class="bd bd-er">ค้างส่ง</span>'}<div style="font-size:.76rem;margin-top:5px;color:var(--t3);">${grd?'<b style="color:var(--cy)">'+grd.score+'</b>/'+a.maxScore:'-/'+a.maxScore}</div></div></div>`;
       }).join('')}</div></div>`;
     });
     UI.h('stuAcc',html||'<div style="text-align:center;padding:18px;color:var(--t3)">ยังไม่มีชิ้นงาน</div>');
   },
 
-  prepSub:(name,id)=>{
-    S.asn=name;UI.h('subAsnName',name);UI.sv('linkIn','');UI.sv('fileIn','');
+  prepSub:id=>{
+    const a=S.asns.find(x=>x.id===id);if(!a)return;
+    S.asn=a.name;UI.h('subAsnName',a.name);UI.sv('linkIn','');UI.sv('fileIn','');
     const links=Res.load(id);
     UI.h('subResLinks',links.length?'<div class="res-highlight"><div class="lbl" style="margin-bottom:6px;">สื่อประกอบการเรียน</div>'+links.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':'');
     App.step(5);
   },
+  mergeImages: async (files) => {
+    return new Promise((resolve) => {
+      const imgElements = []; let loaded = 0;
+      for (let i = 0; i < files.length; i++) {
+        const img = new Image();
+        img.onload = () => {
+          loaded++;
+          if (loaded === files.length) {
+            let totalHeight = 0, maxWidth = 1200;
+            imgElements.forEach(im => {
+              let scale = im.width > maxWidth ? maxWidth / im.width : 1;
+              im.scaledWidth = im.width * scale; im.scaledHeight = im.height * scale;
+              totalHeight += im.scaledHeight;
+            });
+            const canvas = document.createElement('canvas');
+            canvas.width = maxWidth; canvas.height = totalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = "white"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            let currentY = 0;
+            imgElements.forEach(im => {
+              const x = (maxWidth - im.scaledWidth) / 2;
+              ctx.drawImage(im, x, currentY, im.scaledWidth, im.scaledHeight);
+              currentY += im.scaledHeight;
+            });
+            resolve(canvas.toDataURL('image/jpeg', 0.85));
+          }
+        };
+        const reader = new FileReader();
+        reader.onload = e => { img.src = e.target.result; };
+        reader.readAsDataURL(files[i]);
+        imgElements.push(img);
+      }
+    });
+  },
   subWork:async()=>{
-    const link=UI.v('linkIn'),file=$('fileIn').files[0];
-    if(!link&&!file)return UI.toast('กรุณาใส่ลิงก์หรือเลือกไฟล์งาน','wn');
+    const link=UI.v('linkIn'),files=$('fileIn').files;
+    if(!link&&files.length===0)return UI.toast('กรุณาใส่ลิงก์หรือเลือกไฟล์งาน','wn');
+    if(files.length>5)return UI.toast('เลือกไฟล์ได้ไม่เกิน 5 ไฟล์','er');
     UI.load(true);
     const p={subject:S.subj,room:S.room,student:S.stu,assignment:S.asn,link};
-    if(file){
-      if(file.size>20*1024*1024){UI.load(false);return UI.toast('ไฟล์ใหญ่เกิน 20MB','er');}
-      const rd=new FileReader();
-      rd.onload=async e=>{p.fileData=e.target.result;p.fileName=file.name;p.fileMime=file.type;await App._doSub(p);};
-      rd.readAsDataURL(file);
+    if(files.length>0){
+      let totalSize=0,allImages=true;
+      for(let i=0;i<files.length;i++){totalSize+=files[i].size;if(!files[i].type.startsWith('image/'))allImages=false;}
+      if(totalSize>20*1024*1024){UI.load(false);return UI.toast('ขนาดไฟล์รวมใหญ่เกิน 20MB','er');}
+      if(files.length===1||!allImages){
+        if(files.length>1&&!allImages){UI.load(false);return UI.toast('การแนบหลายไฟล์รองรับเฉพาะรูปภาพเท่านั้น','er');}
+        const file=files[0],rd=new FileReader();
+        rd.onload=async e=>{p.fileData=e.target.result;p.fileName=file.name;p.fileMime=file.type;await App._doSub(p);};
+        rd.readAsDataURL(file);
+      }else{
+        App.mergeImages(files).then(async merged=>{
+          p.fileData=merged;p.fileName="merged_images.jpg";p.fileMime="image/jpeg";await App._doSub(p);
+        }).catch(()=>{UI.load(false);UI.toast('เกิดข้อผิดพลาดในการรวมรูปภาพ','er');});
+      }
     }else await App._doSub(p);
   },
   _doSub:async p=>{
@@ -867,14 +831,14 @@ var App={
       html+=`<div class="ch-blk"><div class="ch-hdr" onclick="togCh(this)"><div class="ch-title">บทที่ ${ch}<span class="bd bd-bl">${items.length} งาน</span></div><span class="ch-arr">▾</span></div><div class="ch-body">${items.map(a=>{
         const done=S.scaMap.get(`${S.tab}|${a.name}`)||0,miss=tot-done,pct=tot?Math.round(done/tot*100):0;
         const res=Res.load(a.id);
-        return `<div class="ai" style="flex-direction:column;align-items:stretch;gap:9px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="ai-info"><div class="ai-name">${a.name}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div class="ai-acts">${miss>0?'<span class="miss-bd" onclick="App.showMiss(\''+a.name.replace(/'/g,"\\'")+'\')">ค้าง '+miss+' คน</span>':'<span class="bd bd-ok">ครบ</span>'}<button class="btn btn-g btn-sm" onclick="App.openRes(\''+a.id.replace(/'/g,"\\'")+'\',\''+a.name.replace(/'/g,"\\'")+'\')">ลิงก์</button><button class="btn btn-g btn-sm" onclick='App.editAsn(${JSON.stringify(a).replace(/'/g,"&apos;")})'>แก้ไข</button><button class="btn btn-d btn-sm" onclick="App.delAsn('${a.id}')">ลบ</button></div></div><div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--t3);margin-bottom:3px;"><span>ส่งแล้ว ${done}/${tot} คน</span><span>${pct}%</span></div><div class="pw"><div class="pf" style="width:${pct}%"></div></div></div></div>`;
+        return `<div class="ai" style="flex-direction:column;align-items:stretch;gap:9px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="ai-info"><div class="ai-name">${a.name}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div class="ai-acts">${miss>0?`<span class="miss-bd" onclick="App.showMiss('${a.id}')">ค้าง ${miss} คน</span>`:'<span class="bd bd-ok">ครบ</span>'}<button class="btn btn-g btn-sm" onclick="App.openRes('${a.id}')">ลิงก์</button><button class="btn btn-g btn-sm" onclick="App.editAsn('${a.id}')">แก้ไข</button><button class="btn btn-d btn-sm" onclick="App.delAsn('${a.id}')">ลบ</button></div></div><div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--t3);margin-bottom:3px;"><span>ส่งแล้ว ${done}/${tot} คน</span><span>${pct}%</span></div><div class="pw"><div class="pf" style="width:${pct}%"></div></div></div></div>`;
       }).join('')}</div></div>`;
     });
     UI.h('tcAcc',html||'<div style="text-align:center;padding:18px;color:var(--t3);">ยังไม่มีชิ้นงาน</div>');
     App.renderTbl();
   },
   togForm:()=>{const f=$('asnForm');if(f.style.display==='none'||!f.style.display){UI.sv('asId','');UI.sv('asNm','');UI.sv('asSc','10');UI.sv('asDt','');UI.sv('asDsc','');UI.sv('asCh','1');UI.show('asnForm');}else UI.hide('asnForm');},
-  editAsn:a=>{UI.show('asnForm');UI.sv('asId',a.id);UI.sv('asNm',a.name);UI.sv('asSc',a.maxScore);UI.sv('asDt',a.dueDate);UI.sv('asDsc',a.desc);UI.sv('asCh',a.chapter||'1');$('asnForm').scrollIntoView({behavior:'smooth',block:'center'});},
+  editAsn:id=>{const a=S.asns.find(x=>x.id===id);if(!a)return;UI.show('asnForm');UI.sv('asId',a.id);UI.sv('asNm',a.name);UI.sv('asSc',a.maxScore);UI.sv('asDt',a.dueDate);UI.sv('asDsc',a.desc);UI.sv('asCh',a.chapter||'1');$('asnForm').scrollIntoView({behavior:'smooth',block:'center'});},
   saveAsn:async()=>{
     if(!UI.v('asNm'))return UI.toast('กรุณาระบุชื่องานด้วยครับ','wn');
     const p={id:UI.v('asId'),subject:S.tab,name:UI.v('asNm'),maxScore:UI.v('asSc'),dueDate:UI.v('asDt'),desc:UI.v('asDsc'),chapter:UI.v('asCh')};
@@ -890,7 +854,7 @@ var App={
   },
 
   /* RESOURCE */
-  openRes:(id,name)=>{S.rId=id;S.rName=name;UI.h('mResT','จัดการลิงก์: '+name);App.renderRes();UI.sv('rName','');UI.sv('rUrl','');openM('mRes');},
+  openRes:id=>{const a=S.asns.find(x=>x.id===id);if(!a)return;S.rId=id;S.rName=a.name;UI.h('mResT','จัดการลิงก์: '+a.name);App.renderRes();UI.sv('rName','');UI.sv('rUrl','');openM('mRes');},
   renderRes:()=>{
     const lnks=Res.load(S.rId);
     UI.h('mResB',lnks.length===0?'<div style="text-align:center;padding:12px;color:var(--t3);font-size:.82rem;">ยังไม่มีลิงก์ประกอบ</div>':
@@ -906,7 +870,8 @@ var App={
   delRes:i=>{Res.del(S.rId,i);App.renderRes();App.renderTcDash();UI.toast('ลบลิงก์แล้ว','ok');},
 
   /* MISSING */
-  showMiss:name=>{
+  showMiss:id=>{
+    const a=S.asns.find(x=>x.id===id);if(!a)return;const name=a.name;
     const rf=UI.v('roomF');UI.h('mMissT','ยังไม่ส่ง: '+name);let html='';
     Object.entries(STUDENTS[S.tab]).forEach(([room,stus])=>{
       if(rf&&room!==rf)return;
@@ -933,7 +898,7 @@ var App={
         const miss=Math.max(0,asns.length-done),pct=asns.length?Math.round(done/asns.length*100):0;
         if(stf==='m'&&miss===0)return;if(stf==='c'&&miss>0)return;
         const hasU=S.subs.some(s=>s.subject===S.tab&&s.room===room&&s.student===stu&&!S.giMap.has(`${s.subject}|${s.room}|${s.student}|${s.assignment}`));
-        rows.push(`<tr onclick="App.openPanel('${room}','${stu.replace(/'/g,"\\'")}')"><td style="font-weight:700;color:var(--t1);">${room}</td><td style="color:var(--t1);">${stu}${hasU?` <span class="bd bd-wn" style="font-size:.65rem;">รอตรวจ</span>`:''}</td><td style="color:var(--ok);font-weight:700;">${done}/${asns.length}</td><td style="color:${miss>0?'var(--er)':'var(--ok)'};font-weight:700;">${miss}</td><td><div style="display:flex;align-items:center;gap:5px;"><div class="pw" style="width:42px;"><div class="pf" style="width:${pct}%"></div></div><span style="font-size:.72rem;color:var(--t3);">${pct}%</span></div></td><td style="color:var(--cy);font-weight:700;">${score}</td><td style="color:${exam?'var(--ph5)':'var(--t4)'};font-weight:700;">${exam?exam.total+'/100':'-'}</td></tr>`);
+        rows.push(`<tr onclick="App.openPanel('${room}','${stu.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')"><td style="font-weight:700;color:var(--t1);">${room}</td><td style="color:var(--t1);">${stu}${hasU?` <span class="bd bd-wn" style="font-size:.65rem;">รอตรวจ</span>`:''}</td><td style="color:var(--ok);font-weight:700;">${done}/${asns.length}</td><td style="color:${miss>0?'var(--er)':'var(--ok)'};font-weight:700;">${miss}</td><td><div style="display:flex;align-items:center;gap:5px;"><div class="pw" style="width:42px;"><div class="pf" style="width:${pct}%"></div></div><span style="font-size:.72rem;color:var(--t3);">${pct}%</span></div></td><td style="color:var(--cy);font-weight:700;">${score}</td><td style="color:${exam?'var(--ph5)':'var(--t4)'};font-weight:700;">${exam?exam.total+'/100':'-'}</td></tr>`);
       });
     });
     UI.h('tcTbl',rows.join('')||'<tr><td colspan="7" style="text-align:center;padding:18px;color:var(--t3);">ไม่พบข้อมูล</td></tr>');
@@ -946,7 +911,7 @@ var App={
     const subs=S.subs.filter(s=>s.subject===S.tab&&s.room===room&&s.student===stu);
     const grds=S.grds.filter(g=>g.subject===S.tab&&g.room===room&&g.student===stu);
     const exam=S.exMap.get(`${S.tab}|${room}|${stu}`);
-    let html='<div class="exam-blk"><div class="exam-blk-title">คะแนนรวม (100 คะแนน)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px;"><div><label class="lbl">เก็บก่อนกลางภาค /25</label><input type="number" id="epre" class="fc" min="0" max="25" value="'+(exam?exam.preMid:'')+'" placeholder="0-25" oninput="App.prevEx()"></div><div><label class="lbl">สอบกลางภาค /20</label><input type="number" id="emid" class="fc" min="0" max="20" value="'+(exam?exam.midExam:'')+'" placeholder="0-20" oninput="App.prevEx()"></div><div><label class="lbl">เก็บหลังกลางภาค /25</label><input type="number" id="epost" class="fc" min="0" max="25" value="'+(exam?exam.postMid:'')+'" placeholder="0-25" oninput="App.prevEx()"></div><div><label class="lbl">สอบปลายภาค /30</label><input type="number" id="efin" class="fc" min="0" max="30" value="'+(exam?exam.finalExam:'')+'" placeholder="0-30" oninput="App.prevEx()"></div></div><div class="ph5-panel" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:9px;"><span style="font-weight:700;font-size:.82rem;color:var(--ph5);">รวม</span><span style="font-weight:700;font-size:1.35rem;color:var(--ph5);letter-spacing:-.03em;" id="etot">'+(exam?exam.total:0)+'</span><span style="font-size:.76rem;color:var(--t3);">/ 100</span></div><button class="btn btn-5" style="width:100%;font-size:.82rem;" onclick="App.saveEx(\''+room+'\',\''+stu.replace(/'/g,"\\'")+'\')">บันทึกคะแนนรวม</button></div>';
+    let html='<div class="exam-blk"><div class="exam-blk-title">คะแนนรวม (100 คะแนน)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px;"><div><label class="lbl">เก็บก่อนกลางภาค /25</label><input type="number" id="epre" class="fc" min="0" max="25" value="'+(exam?exam.preMid:'')+'" placeholder="0-25" oninput="App.prevEx()"></div><div><label class="lbl">สอบกลางภาค /20</label><input type="number" id="emid" class="fc" min="0" max="20" value="'+(exam?exam.midExam:'')+'" placeholder="0-20" oninput="App.prevEx()"></div><div><label class="lbl">เก็บหลังกลางภาค /25</label><input type="number" id="epost" class="fc" min="0" max="25" value="'+(exam?exam.postMid:'')+'" placeholder="0-25" oninput="App.prevEx()"></div><div><label class="lbl">สอบปลายภาค /30</label><input type="number" id="efin" class="fc" min="0" max="30" value="'+(exam?exam.finalExam:'')+'" placeholder="0-30" oninput="App.prevEx()"></div></div><div class="ph5-panel" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:9px;"><span style="font-weight:700;font-size:.82rem;color:var(--ph5);">รวม</span><span style="font-weight:700;font-size:1.35rem;color:var(--ph5);letter-spacing:-.03em;" id="etot">'+(exam?exam.total:0)+'</span><span style="font-size:.76rem;color:var(--t3);">/ 100</span></div><button class="btn btn-5" style="width:100%;font-size:.82rem;" onclick="App.saveEx(\''+room+'\',\''+stu.replace(/'/g,"\\'").replace(/"/g,"&quot;")+'\')">บันทึกคะแนนรวม</button></div>';
     const chs={};asns.forEach(a=>{const c=a.chapter||'1';if(!chs[c])chs[c]=[];chs[c].push(a);});
     Object.keys(chs).sort((a,b)=>+a-+b).forEach(ch=>{
       const items=chs[ch];
@@ -960,14 +925,16 @@ var App={
         if(sub&&!grd){dc='dot-wn';dl='รอตรวจ';rowCls='unmarked';}
         else if(sub&&grd){const isN=sub.submittedAt&&grd.gradedAt&&sub.submittedAt>grd.gradedAt;dc=isN?'dot-cy':'dot-ok';dl=isN?'ส่งใหม่หลังตรวจ!':'ตรวจแล้ว';rowCls=isN?'resubmitted':'graded';}
         const stH=sub?`<div class="sub-box sub"><span style="font-weight:700;color:var(--ok);">OK</span><div><div style="font-size:.8rem;font-weight:700;color:var(--ok);">ส่งแล้ว — ${sub.submittedAt||'-'}</div>${sub.fileName?`<a href="${sub.fileUrl}" target="_blank" class="sub-lnk">ไฟล์: ${sub.fileName}</a>`:''}${sub.link?`<a href="${sub.link}" target="_blank" class="sub-lnk">ลิงก์งาน</a>`:''}</div></div>`:`<div class="sub-box mis"><span style="font-weight:700;color:var(--er);">X</span><div style="font-size:.8rem;font-weight:700;color:var(--er);">ยังไม่ส่งงาน</div></div>`;
-        return `<div class="asn-row ${rowCls}"><div class="asn-name">${dc?`<span class="dot ${dc}" title="${dl}"></span>`:''}${a.name}<span class="asn-max">(${a.maxScore} คะแนน)</span>${dc==='dot-cy'?` <span class="bd bd-new" style="font-size:.64rem;">ส่งใหม่!</span>`:dc==='dot-wn'&&sub?` <span class="bd bd-wn" style="font-size:.64rem;">รอตรวจ</span>`:''}</div>${stH}${sub?`<div class="grd-sec"><div class="lbl" style="margin-bottom:6px;">ให้คะแนน</div><div class="qsw">${scores.map(s=>`<button class="qsb${grd&&Number(grd.score)===s?' on':''}" onclick="App.qsc('g_${a.id}','${s}',this)">${s}</button>`).join('')}</div><div style="display:flex;gap:7px;align-items:center;"><input type="number" id="g_${a.id}" class="fc" value="${grd?grd.score:''}" min="0" max="${maxS}" style="width:68px;text-align:center;font-weight:700;color:var(--cy);font-size:.98rem;"><input type="text" id="c_${a.id}" class="fc" value="${grd?grd.comment:''}" placeholder="ข้อเสนอแนะ..." style="flex:1;"><button class="btn btn-p btn-sm" onclick="App.saveGrd('${room}','${stu.replace(/'/g,"\\'")}','${a.name.replace(/'/g,"\\'")}','${a.id}','${a.maxScore}')">บันทึก</button></div>${grd?`<div style="font-size:.68rem;color:var(--t4);margin-top:4px;">ตรวจล่าสุด: ${grd.gradedAt||'-'}</div>`:''}</div>`:''}</div>`;
+        return `<div class="asn-row ${rowCls}"><div class="asn-name">${dc?`<span class="dot ${dc}" title="${dl}"></span>`:''}${a.name}<span class="asn-max">(${a.maxScore} คะแนน)</span>${dc==='dot-cy'?` <span class="bd bd-new" style="font-size:.64rem;">ส่งใหม่!</span>`:dc==='dot-wn'&&sub?` <span class="bd bd-wn" style="font-size:.64rem;">รอตรวจ</span>`:''}</div>${stH}${sub?`<div class="grd-sec"><div class="lbl" style="margin-bottom:6px;">ให้คะแนน</div><div class="qsw">${scores.map(s=>`<button class="qsb${grd&&Number(grd.score)===s?' on':''}" onclick="App.qsc('g_${a.id}','${s}',this)">${s}</button>`).join('')}</div><div style="display:flex;gap:7px;align-items:center;"><input type="number" id="g_${a.id}" class="fc" value="${grd?grd.score:''}" min="0" max="${maxS}" style="width:68px;text-align:center;font-weight:700;color:var(--cy);font-size:.98rem;"><input type="text" id="c_${a.id}" class="fc" value="${grd?grd.comment:''}" placeholder="ข้อเสนอแนะ..." style="flex:1;"><button class="btn btn-p btn-sm" onclick="App.saveGrd('${room}','${stu.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${a.id}')">บันทึก</button></div>${grd?`<div style="font-size:.68rem;color:var(--t4);margin-top:4px;">ตรวจล่าสุด: ${grd.gradedAt||'-'}</div>`:''}</div>`:''}</div>`;
       }).join('')}</div></div>`;
     });
     UI.h('spB',html);
     $('sideP').classList.add('open');$('spOv').classList.add('open');
   },
   qsc:(inputId,val,btn)=>{UI.sv(inputId,val);btn.closest('.qsw').querySelectorAll('.qsb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');},
-  saveGrd:(room,stu,name,asnId,maxScore)=>{
+  saveGrd:(room,stu,asnId)=>{
+    const a=S.asns.find(x=>x.id===asnId);if(!a)return;
+    const name=a.name,maxScore=a.maxScore;
     const score=UI.v('g_'+asnId),comment=UI.v('c_'+asnId),now=new Date().toLocaleString('th-TH');
     let ex=S.grds.find(g=>g.subject===S.tab&&g.room===room&&g.student===stu&&g.assignment===name);
     const old=ex?Number(ex.score)||0:0;
