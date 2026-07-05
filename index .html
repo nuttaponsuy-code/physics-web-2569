@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบฟิสิกส์</title>
+    <!-- ตกแต่งหน้าตาเว็บให้ดูทันสมัยแบบ Dark Mode -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a2e;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #16213e;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            border: 1px solid #0f3460;
+        }
+        h1 { color: #4facfe; margin-top: 0;}
+        button {
+            background: linear-gradient(45deg, #e94560, #d13050);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+        }
+        button:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(233, 69, 96, 0.6); }
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #0f3460;
+            border-radius: 12px;
+            display: none; 
+            text-align: left;
+        }
+        .success-text { color: #4facfe; font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>⚛️ ระบบฟิสิกส์ v2.0</h1>
+        <p>ทดสอบหน้าเว็บจากเครื่องคอมพิวเตอร์ ดึงข้อมูลจาก Google Sheets</p>
+        
+        <button onclick="testAPI()">🚀 ทดสอบดึงข้อมูล</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // 🔴🔴🔴 สำคัญมาก: นำลิงก์ Web App URL (ยาวๆ) ของครู มาใส่ในเครื่องหมายคำพูดด้านล่างนี้ 🔴🔴🔴
+        const API_URL = "https://script.google.com/macros/s/AKfycbwSiibW8oJxLZf9fdirgwsFWDA7pZoF-Favz2eeYCPCrsyRxDaHWly3L8Gvk1aR9MY5Vw/exec";
+
+        // ฟังก์ชันนี้จะทำงานเมื่อกดปุ่ม
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = "⏳ กำลังวิ่งไปขอดึงข้อมูลจาก Google Sheets...";
+
+            try {
+                // คำสั่ง fetch คือตัวเอก! มันทำหน้าที่วิ่งไปหาลิงก์ API ของเรา
+                const response = await fetch(API_URL);
+                const data = await response.json(); // แปลงข้อความกลับมาเป็นข้อมูลที่นำไปใช้ต่อได้
+
+                // นำข้อมูลที่ได้ มาจัดเรียงแสดงผลบนหน้าเว็บ
+                resultDiv.innerHTML = `
+                    <div class="success-text">ดึงข้อมูลสำเร็จ! ✅</div>
+                    <p><b>ข้อความจากหลังบ้าน:</b> ${data.message}</p>
+                    <p><b>เวลาที่บันทึก:</b> ${data.timestamp}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<div style="color: #e94560;">❌ เกิดข้อผิดพลาด: ${error.message}</div>`;
+            }
+        }
+    </script>
+
+</body>
+</html>
