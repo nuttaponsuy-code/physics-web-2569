@@ -421,7 +421,7 @@ tr { cursor: pointer; transition: background .15s; }
   <div class="mo">
     <div class="mo-hdr"><div style="font-weight:700;font-size:1.05rem;">แชร์คะแนนของฉัน 📸</div><button class="btn btn-g btn-sm" onclick="closeM('mShare')">✕</button></div>
     <div class="mo-con">
-      <div id="shareCanvasWrap"><canvas id="shareCanvas" width="720" height="1280"></canvas></div>
+      <div id="shareCanvasWrap"><canvas id="shareCanvas" width="720" height="1560"></canvas></div>
       <div class="avatar-pick">
         <img id="avatarPrev" class="avatar-preview" src="" style="display:none;">
         <div style="flex:1;">
@@ -534,7 +534,7 @@ tr { cursor: pointer; transition: background .15s; }
         </div>
         <div class="score-block sb-exam">
           <div class="score-block-num" id="dExamBig">-</div>
-          <div class="score-block-sub">คะแนนรวม 100<br>(ครูกรอกเอง แยกจากคะแนนเก็บ)</div>
+          <div class="score-block-sub" id="dExamSub">คะแนนรวม 100<br>(ครูกรอกเอง แยกจากคะแนนเก็บ)</div>
         </div>
       </div>
       <div class="cat-brk" id="dCatBrk"></div>
@@ -551,19 +551,21 @@ tr { cursor: pointer; transition: background .15s; }
 
 
       <!-- EXAM CARD -->
-      <div class="gc" id="examCard" style="display:none;background:var(--ph5-b);border-color:rgba(244,63,94,.3);">
-        <div class="sec-title" style="color:var(--ph5);">คะแนนสอบ / คะแนนเก็บ (100)</div>
+      <div class="gc" id="examCard" style="background:var(--ph5-b);border-color:rgba(244,63,94,.3);">
+        <div class="sec-title" style="color:var(--ph5);">คะแนนสอบ / คะแนนเก็บ (100) — ครูกรอกเอง</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;"><div style="font-size:.74rem;color:var(--t3);">ก่อนกลางภาค (25)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exP">-</div></div>
-          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;"><div style="font-size:.74rem;color:var(--t3);">กลางภาค (20)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exM">-</div></div>
-          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;"><div style="font-size:.74rem;color:var(--t3);">หลังกลางภาค (25)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exPo">-</div></div>
-          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;"><div style="font-size:.74rem;color:var(--t3);">ปลายภาค (30)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exF">-</div></div>
+          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;min-height:58px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:.74rem;color:var(--t3);">เก็บก่อนกลางภาค (25)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exP">-</div></div>
+          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;min-height:58px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:.74rem;color:var(--t3);">สอบกลางภาค (20)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exM">-</div></div>
+          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;min-height:58px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:.74rem;color:var(--t3);">เก็บหลังกลางภาค (25)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exPo">-</div></div>
+          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;min-height:58px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:.74rem;color:var(--t3);">สอบปลายภาค (30)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exF">-</div></div>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;background:var(--g1);padding:12px;border-radius:8px;">
           <span style="font-weight:700;font-size:.9rem;color:var(--t1);">รวมสุทธิ</span>
-          <div><span style="font-size:1.6rem;font-weight:700;color:var(--ph5);letter-spacing:-1px;" id="exT">-</span><span style="color:var(--t3);font-size:.8rem;font-weight:700;"> / 100</span></div>
+          <div><span style="font-size:1.6rem;font-weight:700;color:var(--ph5);letter-spacing:-1px;" id="exT">-</span><span style="color:var(--t3);font-size:.8rem;font-weight:700;" id="exTMax"> / 100</span></div>
         </div>
+        <div style="font-size:.68rem;color:var(--t4);margin-top:8px;text-align:center;">*ส่วนคะแนนสอบนี้ครูเป็นผู้กรอกเอง แยกต่างหากจากคะแนนเก็บชิ้นงานด้านบน</div>
       </div>
+
 
 
       <div class="gc"><div class="sec-title">รายการงานแยกตามบท</div><div id="stuAcc"></div></div>
@@ -694,6 +696,22 @@ var RES_LBL={doc:'ใบงาน',vid:'วิดีโอ',lab:'การทด
 function resLbl(t){return RES_LBL[t]||t||'ลิงก์';}
 var CAT_LBL={pre:'ก่อนกลางภาค',post:'หลังกลางภาค',other:'ทั่วไป'};
 function catLbl(c){return CAT_LBL[c]||CAT_LBL.other;}
+/* สรุปสถานะคะแนนสอบของนักเรียน 1 คน — แยก "ยังไม่กรอก" ออกจาก "กรอกแล้วได้ 0"
+   และคำนวณสัดส่วน (ratio) เฉพาะจากส่วนที่กรอกแล้วเท่านั้น เพื่อความเป็นธรรมตอนวิเคราะห์/แสดงผล */
+function examStat(ex){
+  if(!ex)return{hasAny:false,complete:false,enteredCount:0,total:0,maxEntered:0,ratio:null};
+  const fields=[[ex.preMid,25],[ex.midExam,20],[ex.postMid,25],[ex.finalExam,30]];
+  let sum=0,maxEntered=0,count=0;
+  fields.forEach(([v,m])=>{ if(v!=null&&v!==''){ sum+=Number(v); maxEntered+=m; count++; } });
+  return {
+    hasAny: count>0,
+    complete: count===4,
+    enteredCount: count,
+    total: sum,
+    maxEntered,
+    ratio: count>0 ? sum/maxEntered : null
+  };
+}
 
 
 /* THEME */
@@ -914,12 +932,36 @@ var App={
     });
     const hasCat=catStats.pre.max>0||catStats.post.max>0;
     UI.h('dCatBrk',hasCat?
-      `<div class="cat-brk-c"><div class="cat-brk-n">${catStats.pre.score}/${catStats.pre.max}</div><div class="cat-brk-l">ก่อนกลางภาค</div></div><div class="cat-brk-c"><div class="cat-brk-n">${catStats.post.score}/${catStats.post.max}</div><div class="cat-brk-l">หลังกลางภาค</div></div>`:'');
+      `<div class="cat-brk-c"><div class="cat-brk-n">${catStats.pre.score}/${catStats.pre.max}</div><div class="cat-brk-l">เก็บก่อนกลางภาค (ชิ้นงาน)</div></div><div class="cat-brk-c"><div class="cat-brk-n">${catStats.post.score}/${catStats.post.max}</div><div class="cat-brk-l">เก็บหลังกลางภาค (ชิ้นงาน)</div></div>`:'');
     const ex=S.exMap.get(`${S.subj}|${S.room}|${S.stu}`);
-    UI.h('dExamBig',ex&&ex.total!=null?ex.total:'-');
-    const ec=$('examCard');
-    if(ex){ec.style.display='block';UI.h('exP',ex.preMid!=null?ex.preMid:'-');UI.h('exM',ex.midExam!=null?ex.midExam:'-');UI.h('exPo',ex.postMid!=null?ex.postMid:'-');UI.h('exF',ex.finalExam!=null?ex.finalExam:'-');UI.h('exT',ex.total!=null?ex.total:'-');}
-    else ec.style.display='none';
+    const exSt=examStat(ex);
+    UI.h('dExamBig',exSt.hasAny?exSt.total:'-');
+    const dExamSub=$('dExamSub');
+    if(dExamSub)dExamSub.innerHTML=exSt.hasAny&&!exSt.complete
+      ?'คะแนนรวม 100<br>(กรอกแล้ว '+exSt.enteredCount+'/4 ส่วน — ครูกรอกเอง)'
+      :'คะแนนรวม 100<br>(ครูกรอกเอง แยกจากคะแนนเก็บ)';
+    const EX_EMPTY='ยังไม่ได้เก็บ<br>คะแนนส่วนนี้';
+    const setExField=(id,val,max)=>{
+      const el=$(id);if(!el)return;
+      if(ex&&val!=null&&val!==''){
+        el.innerHTML=val+' <span style="font-size:.62em;color:var(--t4);font-weight:600;">/'+max+'</span>';
+        el.style.fontSize='1.1rem';el.style.fontWeight='700';el.style.color='var(--t1)';
+      }else{
+        el.innerHTML=EX_EMPTY;
+        el.style.fontSize='.68rem';el.style.fontWeight='600';el.style.color='var(--t4)';
+      }
+    };
+    setExField('exP',ex?ex.preMid:null,25);
+    setExField('exM',ex?ex.midExam:null,20);
+    setExField('exPo',ex?ex.postMid:null,25);
+    setExField('exF',ex?ex.finalExam:null,30);
+    if(exSt.hasAny){
+      const elT=$('exT');if(elT){elT.textContent=exSt.total;elT.style.fontSize=exSt.complete?'1.6rem':'1.15rem';elT.style.color='var(--ph5)';}
+      UI.h('exTMax',exSt.complete?' / 100':' (กรอกแล้ว '+exSt.enteredCount+'/4 ส่วน)');
+    }else{
+      const elT=$('exT');if(elT){elT.textContent='ยังไม่มีข้อมูล';elT.style.fontSize='.9rem';elT.style.color='var(--t4)';}
+      UI.h('exTMax','');
+    }
     const chs={};asns.forEach(a=>{const c=a.chapter||'1';if(!chs[c])chs[c]=[];chs[c].push(a);});
     let html='';
     Object.keys(chs).sort((a,b)=>+a-+b).forEach(ch=>{
@@ -1134,7 +1176,7 @@ var App={
     const subs=S.subs.filter(s=>s.subject===S.tab&&s.room===room&&s.student===stu);
     const grds=S.grds.filter(g=>g.subject===S.tab&&g.room===room&&g.student===stu);
     const exam=S.exMap.get(`${S.tab}|${room}|${stu}`);
-    let html='<div class="exam-blk"><div class="exam-blk-title">คะแนนรวม (100 คะแนน)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px;"><div><label class="lbl">เก็บก่อนกลางภาค /25</label><input type="number" id="epre" class="fc" min="0" max="25" value="'+(exam?exam.preMid:'')+'" placeholder="0-25" oninput="App.prevEx()"></div><div><label class="lbl">สอบกลางภาค /20</label><input type="number" id="emid" class="fc" min="0" max="20" value="'+(exam?exam.midExam:'')+'" placeholder="0-20" oninput="App.prevEx()"></div><div><label class="lbl">เก็บหลังกลางภาค /25</label><input type="number" id="epost" class="fc" min="0" max="25" value="'+(exam?exam.postMid:'')+'" placeholder="0-25" oninput="App.prevEx()"></div><div><label class="lbl">สอบปลายภาค /30</label><input type="number" id="efin" class="fc" min="0" max="30" value="'+(exam?exam.finalExam:'')+'" placeholder="0-30" oninput="App.prevEx()"></div></div><div class="ph5-panel" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:9px;"><span style="font-weight:700;font-size:.82rem;color:var(--ph5);">รวม</span><span style="font-weight:700;font-size:1.35rem;color:var(--ph5);letter-spacing:-.03em;" id="etot">'+(exam?exam.total:0)+'</span><span style="font-size:.76rem;color:var(--t3);">/ 100</span></div><button class="btn btn-5" style="width:100%;font-size:.82rem;" onclick="App.saveEx(\''+room+'\',\''+stu.replace(/'/g,"\\'").replace(/"/g,"&quot;")+'\')">บันทึกคะแนนรวม</button></div>';
+    let html='<div class="exam-blk"><div class="exam-blk-title">คะแนนรวม (100 คะแนน)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px;"><div><label class="lbl">เก็บก่อนกลางภาค /25</label><input type="number" id="epre" class="fc" min="0" max="25" value="'+(exam&&exam.preMid!=null?exam.preMid:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div><div><label class="lbl">สอบกลางภาค /20</label><input type="number" id="emid" class="fc" min="0" max="20" value="'+(exam&&exam.midExam!=null?exam.midExam:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div><div><label class="lbl">เก็บหลังกลางภาค /25</label><input type="number" id="epost" class="fc" min="0" max="25" value="'+(exam&&exam.postMid!=null?exam.postMid:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div><div><label class="lbl">สอบปลายภาค /30</label><input type="number" id="efin" class="fc" min="0" max="30" value="'+(exam&&exam.finalExam!=null?exam.finalExam:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div></div><div class="ph5-panel" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:5px;"><span style="font-weight:700;font-size:.82rem;color:var(--ph5);">รวมเท่าที่กรอก</span><div><span style="font-weight:700;font-size:1.35rem;color:var(--ph5);letter-spacing:-.03em;" id="etot">'+(exam&&exam.total!=null?exam.total:0)+'</span><span style="font-size:.76rem;color:var(--t3);">/ 100</span></div></div><div style="font-size:.68rem;color:var(--t4);margin-bottom:9px;" id="etotNote">ช่องไหนเว้นว่างไว้ ระบบจะถือว่า "ยังไม่กรอก" ไม่ใช่ 0 คะแนน — ไม่นำมารวมหรือคิดวิเคราะห์ให้นักเรียน</div><button class="btn btn-5" style="width:100%;font-size:.82rem;" onclick="App.saveEx(\''+room+'\',\''+stu.replace(/'/g,"\\'").replace(/"/g,"&quot;")+'\')">บันทึกคะแนนรวม</button></div>';
     const chs={};asns.forEach(a=>{const c=a.chapter||'1';if(!chs[c])chs[c]=[];chs[c].push(a);});
     Object.keys(chs).sort((a,b)=>+a-+b).forEach(ch=>{
       const items=chs[ch];
@@ -1172,9 +1214,22 @@ var App={
       .then(r=>{if(r.success){UI.toast('บันทึกคะแนนสำเร็จ','ok');App.renderTbl();}else if(r.error)UI.toast(r.error,'er');})
       .catch(function(){UI.toast('การเชื่อมต่อขัดข้อง','er');});
   },
-  prevEx:()=>{const v=id=>Number(UI.v(id))||0,t=v('epre')+v('emid')+v('epost')+v('efin');const el=$('etot');if(el)el.textContent=t;},
+  prevEx:()=>{
+    const raw=id=>{const v=UI.v(id).trim();return v===''?null:Number(v);};
+    const vals=[raw('epre'),raw('emid'),raw('epost'),raw('efin')];
+    const entered=vals.filter(v=>v!=null);
+    const t=entered.length?entered.reduce((a,b)=>a+b,0):0;
+    const el=$('etot');if(el)el.textContent=t;
+    const note=$('etotNote');
+    if(note){
+      if(entered.length===4)note.textContent='กรอกครบทั้ง 4 ส่วนแล้ว ✅';
+      else if(entered.length===0)note.textContent='ยังไม่ได้กรอกคะแนนสอบส่วนใดเลย';
+      else note.textContent='กรอกแล้ว '+entered.length+'/4 ส่วน — ช่องที่เว้นว่างจะไม่ถูกนับเป็น 0 ครับ';
+    }
+  },
   saveEx:async(room,stu)=>{
-    const preMid=UI.v('epre')||0,midExam=UI.v('emid')||0,postMid=UI.v('epost')||0,finalExam=UI.v('efin')||0;
+    const raw=id=>{const v=UI.v(id).trim();return v===''?null:Number(v);};
+    const preMid=raw('epre'),midExam=raw('emid'),postMid=raw('epost'),finalExam=raw('efin');
     UI.toast('กำลังบันทึก...','wn');
     const r=await API.call('saveExamScore',{subject:S.tab,room,student:stu,preMid,midExam,postMid,finalExam});
     if(r._n){UI.toast('การเชื่อมต่อหลุด','er');return;}
@@ -1182,7 +1237,8 @@ var App={
       const k=`${S.tab}|${room}|${stu}`,obj={subject:S.tab,room,student:stu,preMid,midExam,postMid,finalExam,total:r.total};
       S.exMap.set(k,obj);const i=S.exams.findIndex(e=>e.subject===S.tab&&e.room===room&&e.student===stu);
       if(i>=0)S.exams[i]=obj;else S.exams.push(obj);
-      UI.toast('บันทึกคะแนนรวม ('+r.total+'/100)','ok');App.renderTbl();
+      UI.toast(r.complete?('บันทึกคะแนนรวมครบแล้ว ('+r.total+'/100)'):('บันทึกแล้ว — กรอกครบ '+r.enteredCount+'/4 ส่วน (รวมเท่าที่มี '+r.total+' คะแนน)'),'ok');
+      App.renderTbl();
     }else UI.toast((r.error||'บันทึกไม่สำเร็จ'),'er');
   },
 
@@ -1316,6 +1372,25 @@ var App={
     else if(doneRatio<0.75)tier=TEASE_MSGS.mid;
     return tier[Math.floor(Math.random()*tier.length)];
   },
+  /* วิเคราะห์ภาพรวม (คะแนนเก็บ + คะแนนสอบเท่าที่กรอกแล้ว + อัตราส่งงาน) แล้วให้คำแนะนำ+กำลังใจแบบสุ่ม
+     หมายเหตุ: exSt คือผลจาก examStat(ex) — ใช้ ratio ที่คำนวณเฉพาะส่วนที่ครูกรอกแล้วเท่านั้น
+     ไม่เอาช่องที่ยังไม่กรอกมาคิดเป็น 0 เพื่อความเป็นธรรมกับนักเรียน */
+  _analysisFor:(scoreRatio,exSt,doneRatio)=>{
+    const examRatio=exSt?exSt.ratio:null;
+    const parts=[doneRatio];
+    if(scoreRatio!=null)parts.push(scoreRatio);
+    if(examRatio!=null)parts.push(examRatio);
+    const overall=parts.reduce((a,b)=>a+b,0)/parts.length;
+    let tier='hi';
+    if(overall<0.4)tier='low';
+    else if(overall<0.65)tier='mid';
+    else if(overall<0.85)tier='good';
+    const msg=ANALYSIS_MSGS[tier][Math.floor(Math.random()*ANALYSIS_MSGS[tier].length)];
+    let examNote='';
+    if(!exSt||!exSt.hasAny)examNote=' (ยังไม่มีคะแนนสอบให้วิเคราะห์ ลองถามครูดูนะ)';
+    else if(!exSt.complete)examNote=' (คำนวณจากคะแนนสอบเท่าที่กรอกแล้ว '+exSt.enteredCount+'/4 ส่วน)';
+    return msg+examNote;
+  },
   drawShareCanvas:()=>{
     const cv=$('shareCanvas');if(!cv)return;const ctx=cv.getContext('2d');
     const W=cv.width,H=cv.height;
@@ -1326,7 +1401,10 @@ var App={
     const maxTotal=asns.reduce((s,a)=>s+(Number(a.maxScore)||0),0);
     const done=subs.length,total=asns.length||1;
     const doneRatio=done/total;
+    const scoreRatio=maxTotal?score/maxTotal:null;
     const ex=S.exMap.get(`${S.subj}|${S.room}|${S.stu}`);
+    const exSt=examStat(ex);
+    const examRatio=exSt.ratio;
 
     ctx.clearRect(0,0,W,H);
     ctx.textAlign='center';
@@ -1341,11 +1419,11 @@ var App={
       grad.addColorStop(0,'#0a2540');grad.addColorStop(.5,'#123a63');grad.addColorStop(1,'#3a1155');
       ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
       ctx.globalAlpha=.15;
-      ctx.fillStyle='#64d2ff';ctx.beginPath();ctx.arc(W*0.85,H*0.16,180,0,7);ctx.fill();
-      ctx.fillStyle='#bf5af2';ctx.beginPath();ctx.arc(W*0.12,H*0.34,220,0,7);ctx.fill();
+      ctx.fillStyle='#64d2ff';ctx.beginPath();ctx.arc(W*0.85,H*0.14,180,0,7);ctx.fill();
+      ctx.fillStyle='#bf5af2';ctx.beginPath();ctx.arc(W*0.12,H*0.28,220,0,7);ctx.fill();
       ctx.globalAlpha=1;
       ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 24px Kanit, sans-serif';
-      App._wrapText(ctx,'📷 แนบรูปตัวเองเพื่อให้การ์ดดูเหมือน Strava',W/2,H*0.34,520,32);
+      App._wrapText(ctx,'📷 แนบรูปตัวเองเพื่อให้การ์ดดูเหมือน Strava',W/2,H*0.28,520,32);
     }
 
     /* === gradient มืดด้านบน (ให้ badge อ่านง่าย) === */
@@ -1353,13 +1431,24 @@ var App={
     topG.addColorStop(0,'rgba(0,0,0,.55)');topG.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=topG;ctx.fillRect(0,0,W,180);
 
+    /* === ตำแหน่งบล็อกด้านล่างทั้งหมด (คำนวณจากล่างขึ้นบน) === */
+    const footerY=H-34;
+    const anaH=176, anaBottom=H-60, anaTop=anaBottom-anaH;
+    const gap=20;
+    const quoteH=168, quoteBottom=anaTop-gap, quoteTop=quoteBottom-quoteH;
+    const exMiniH=200, exMiniBottom=quoteTop-gap, exMiniTop=exMiniBottom-exMiniH;
+    const statH=130, statBottom=exMiniTop-gap, statTop=statBottom-statH;
+    const nameY=statTop-34;
+    const captionY=nameY-42;
+
     /* === gradient มืดด้านล่าง (สำหรับวางสถิติ แบบสรุปกิจกรรม Strava) === */
-    const botG=ctx.createLinearGradient(0,H*0.5,0,H);
+    const gStart=captionY-90;
+    const botG=ctx.createLinearGradient(0,gStart,0,H);
     botG.addColorStop(0,'rgba(0,0,0,0)');
-    botG.addColorStop(.4,'rgba(0,0,0,.55)');
-    botG.addColorStop(.75,'rgba(0,0,0,.82)');
-    botG.addColorStop(1,'rgba(0,0,0,.95)');
-    ctx.fillStyle=botG;ctx.fillRect(0,H*0.5,W,H*0.5);
+    botG.addColorStop(.3,'rgba(0,0,0,.5)');
+    botG.addColorStop(.6,'rgba(0,0,0,.78)');
+    botG.addColorStop(1,'rgba(0,0,0,.96)');
+    ctx.fillStyle=botG;ctx.fillRect(0,gStart,W,H-gStart);
 
     /* === badge บนซ้าย: วิชา/ห้อง === */
     ctx.textAlign='left';
@@ -1368,21 +1457,20 @@ var App={
     ctx.fillText('⚛️ '+S.subj+' • '+S.room,50,61);
     ctx.textAlign='center';
 
-    /* === ชื่อนักเรียน (เหนือแถวสถิติ) === */
-    const nameY=H-414;
+    /* === ชื่อนักเรียน === */
     ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=8;
     ctx.fillStyle='rgba(255,255,255,.8)';ctx.font='600 22px Kanit, sans-serif';
-    ctx.fillText('รายงานคะแนนของ',W/2,nameY-42);
+    ctx.fillText('รายงานคะแนนของ',W/2,captionY);
     ctx.fillStyle='#fff';ctx.font='700 44px Kanit, sans-serif';
     ctx.shadowBlur=10;
     ctx.fillText(S.stu||'-',W/2,nameY);
     ctx.shadowBlur=0;ctx.shadowColor='transparent';
 
     /* === แถวสถิติแบบ Strava: คะแนนเก็บ | คะแนนรวม(ครู) | ส่งงานแล้ว === */
-    const statTop=H-386,statH=130,statMidY=statTop+statH*0.62;
+    const statMidY=statTop+statH*0.62;
     const cols=[
       {big:String(score),unit:'/'+maxTotal,label:'คะแนนเก็บ'},
-      {big: ex&&ex.total!=null?String(ex.total):'—',unit: ex&&ex.total!=null?'/100':'ยังไม่กรอก',label:'คะแนนรวม (ครู)'},
+      {big: exSt.hasAny?String(exSt.total):'—',unit: exSt.hasAny?(exSt.complete?'/100':'('+exSt.enteredCount+'/4 ส่วน)'):'ยังไม่กรอก',label:'คะแนนรวม (ครู)'},
       {big:Math.round(doneRatio*100)+'%',unit:'',label:'ส่งงานแล้ว '+done+'/'+total}
     ];
     const colX=[W/2-213,W/2,W/2+213];
@@ -1402,20 +1490,53 @@ var App={
       ctx.beginPath();ctx.moveTo(dx,statTop+16);ctx.lineTo(dx,statTop+statH-16);ctx.stroke();
     });
 
+    /* === กล่องคะแนนสอบรายส่วน 4 ช่อง (ครูกรอกเอง) === */
+    ctx.fillStyle='rgba(255,255,255,.1)';App._rr(ctx,W/2-320,exMiniTop,640,exMiniH,20);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='700 20px Kanit, sans-serif';
+    ctx.fillText('📋 คะแนนสอบรายส่วน (ครูกรอกเอง)',W/2,exMiniTop+34);
+    const exCells=[
+      {l:'เก็บก่อนกลาง',v:ex?ex.preMid:null,m:25},
+      {l:'สอบกลางภาค',v:ex?ex.midExam:null,m:20},
+      {l:'เก็บหลังกลาง',v:ex?ex.postMid:null,m:25},
+      {l:'สอบปลายภาค',v:ex?ex.finalExam:null,m:30}
+    ];
+    const ecX=[W/2-160,W/2+160],ecY=[exMiniTop+80,exMiniTop+150];
+    exCells.forEach((c,i)=>{
+      const cx=ecX[i%2],cy=ecY[Math.floor(i/2)];
+      if(ex&&c.v!=null&&c.v!==''){
+        ctx.fillStyle='#fff';ctx.font='700 26px Kanit, sans-serif';
+        const txt=c.v+'/'+c.m;
+        ctx.fillText(txt,cx,cy);
+      }else{
+        ctx.fillStyle='rgba(255,255,255,.45)';ctx.font='600 16px Kanit, sans-serif';
+        ctx.fillText('ยังไม่กรอก',cx,cy);
+      }
+      ctx.fillStyle='rgba(255,255,255,.6)';ctx.font='600 15px Kanit, sans-serif';
+      ctx.fillText(c.l,cx,cy+22);
+    });
+
     /* === การ์ดคำคม + ข้อความกวนๆ === */
-    const qy=H-234,qh=176;
-    ctx.fillStyle='rgba(255,255,255,.12)';App._rr(ctx,W/2-320,qy,640,qh,20);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.12)';App._rr(ctx,W/2-320,quoteTop,640,quoteH,20);ctx.fill();
     ctx.fillStyle='#fff';ctx.font='italic 600 24px Kanit, sans-serif';
-    App._wrapText(ctx,'"'+S.shareQuote.q+'"',W/2,qy+42,580,32);
+    App._wrapText(ctx,'"'+S.shareQuote.q+'"',W/2,quoteTop+42,580,32);
     ctx.fillStyle='#bf5af2';ctx.font='700 20px Kanit, sans-serif';
-    ctx.fillText('— '+S.shareQuote.a,W/2,qy+108);
+    ctx.fillText('— '+S.shareQuote.a,W/2,quoteTop+108);
     const tease=App._teaseFor(doneRatio);
     ctx.fillStyle='#ff9f0a';ctx.font='700 23px Kanit, sans-serif';
-    App._wrapText(ctx,tease,W/2,qy+142,600,28);
+    App._wrapText(ctx,tease,W/2,quoteTop+142,600,28);
+
+    /* === กล่องวิเคราะห์ผลการเรียน + ข้อความให้กำลังใจ (จากระบบ) === */
+    ctx.fillStyle='rgba(48,209,88,.14)';App._rr(ctx,W/2-320,anaTop,640,anaH,20);ctx.fill();
+    ctx.strokeStyle='rgba(48,209,88,.4)';ctx.lineWidth=1.5;App._rr(ctx,W/2-320,anaTop,640,anaH,20);ctx.stroke();
+    ctx.fillStyle='#30d158';ctx.font='700 20px Kanit, sans-serif';
+    ctx.fillText('🔍 คำแนะนำจากระบบ',W/2,anaTop+34);
+    const analysis=App._analysisFor(scoreRatio,exSt,doneRatio);
+    ctx.fillStyle='#fff';ctx.font='600 21px Kanit, sans-serif';
+    App._wrapText(ctx,analysis,W/2,anaTop+70,580,29);
 
     /* === footer === */
     ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 18px Kanit, sans-serif';
-    ctx.fillText('ระบบติดตามการเรียน • ครูณัฐพล สุขยานุดิษฐ • ร.ร.สนมวิทยาคาร',W/2,H-34);
+    ctx.fillText('ระบบติดตามการเรียน • ครูณัฐพล สุขยานุดิษฐ • ร.ร.สนมวิทยาคาร',W/2,footerY);
   },
   _rr:(ctx,x,y,w,h,r)=>{ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();},
   _wrapText:(ctx,text,x,y,maxW,lh)=>{
@@ -1517,6 +1638,29 @@ const TEASE_MSGS={
     'ส่งงานครบขนาดนี้ พลังงานจลน์ต้องยกให้เธอเลย ⚡',
     'ขยันจนฟิสิกส์อิจฉา งานนี้ครูปลื้ม 🏆',
     'นักเรียนโมเดลตัวอย่าง ส่งงานไวกว่าคลื่นแม่เหล็กไฟฟ้า ✨'
+  ]
+};
+/* ข้อความวิเคราะห์ผลการเรียน + ให้กำลังใจ (โทนจริงใจ สร้างสรรค์ ไม่ใช่ล้อเล่น) */
+const ANALYSIS_MSGS={
+  low:[
+    'ตอนนี้คะแนนโดยรวมยังค่อนข้างน้อย ลองเริ่มจากส่งงานที่ค้างอยู่ให้ครบก่อน แล้วค่อยๆ ไล่ทบทวนทีละบท ไม่ต้องรีบ ครูพร้อมช่วยเสมอ',
+    'ยังมีจุดที่ต้องพัฒนาอีกพอสมควร ลองแบ่งเวลาทบทวนวันละนิด และรีบส่งงานที่ค้างไว้ก่อนนะ ทุกคนเริ่มจากจุดนี้ได้เสมอ',
+    'คะแนนตอนนี้ยังไม่ถึงเป้า แต่ยังมีเวลาปรับปรุงอีกเยอะ ลองเข้าไปถามครูหรือเพื่อนในจุดที่ไม่เข้าใจดูนะ'
+  ],
+  mid:[
+    'ภาพรวมทำได้ในระดับหนึ่งแล้ว ยังพอมีช่องว่างให้พัฒนาอีกนิด ลองส่งงานที่เหลือให้ครบและทบทวนจุดที่ไม่มั่นใจเพิ่มอีกหน่อย',
+    'กำลังไปได้ดี แต่ยังไม่สุด ลองเพิ่มความสม่ำเสมอในการส่งงานอีกนิด คะแนนจะขยับขึ้นได้อีกแน่นอน',
+    'อยู่ในระดับกลางๆ ถ้าตั้งใจอีกนิดในช่วงที่เหลือ มีโอกาสขยับขึ้นไปอีกระดับได้สบายๆ'
+  ],
+  good:[
+    'ทำได้ดีทีเดียว! ทั้งคะแนนเก็บและการส่งงานอยู่ในเกณฑ์น่าพอใจ รักษามาตรฐานแบบนี้ไว้ต่อไปนะ',
+    'โดยรวมอยู่ในระดับดี ใกล้ถึงจุดที่ยอดเยี่ยมแล้ว ลองเก็บรายละเอียดเล็กๆ น้อยๆ ที่เหลือให้ครบ',
+    'มาถูกทางแล้ว! คะแนนอยู่ในเกณฑ์ดี แค่รักษาความสม่ำเสมอต่อไปก็จะยิ่งดีขึ้นเรื่อยๆ'
+  ],
+  hi:[
+    'ยอดเยี่ยมมาก! ทั้งคะแนนเก็บ คะแนนสอบ และอัตราส่งงานอยู่ในระดับดีเยี่ยมทั้งหมด รักษาความสม่ำเสมอแบบนี้ไว้นะ',
+    'เก่งมากจริงๆ ผลงานอยู่ในระดับต้นๆ ของห้องเลย ภูมิใจในตัวเองได้เต็มที่ แล้วรักษามาตรฐานนี้ไว้ต่อไป',
+    'สุดยอด! ทุกด้านอยู่ในเกณฑ์ดีเยี่ยม เป็นตัวอย่างที่ดีให้เพื่อนๆ ได้เลย เก่งแบบนี้ต่อไปเรื่อยๆ นะ'
   ]
 };
 
