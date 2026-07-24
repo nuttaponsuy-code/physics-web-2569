@@ -102,6 +102,7 @@ select.fc { appearance: none; background-image: url('data:image/svg+xml;utf8,<sv
 .btn-lg { padding: 14px 20px; font-size: 1rem; width: 100%; }
 .btn-3 { background: var(--ph3); color: #fff; }
 .btn-5 { background: var(--ph5); color: #fff; }
+.btn-ig { background: linear-gradient(45deg, #f9ce34 0%, #ee2a7b 45%, #6228d7 100%); color: #fff; box-shadow: 0 6px 16px rgba(238,42,123,.35); }
 
 
 /* TABS (segmented control) */
@@ -308,6 +309,34 @@ tr { cursor: pointer; transition: background .15s; }
 .fm-grid { display: grid; grid-template-columns: 1fr; gap: 8px; max-height: 350px; overflow-y: auto; padding-right: 5px; }
 .fm-item { padding: 10px; background: var(--g1); border: 1px solid var(--gb); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
 .fm-sym { font-family: monospace; font-weight: 700; color: var(--cy); font-size: .95rem; }
+
+/* === NEW: FULLSCREEN TIMER === */
+.tmr-fs { position: fixed; inset: 0; background: #000; color: #fff; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 400; }
+.tmr-fs.open { display: flex; }
+.tmr-fs-lbl { font-size: 1rem; letter-spacing: .1em; color: rgba(255,255,255,.5); font-weight: 600; margin-bottom: 10px; text-transform: uppercase; }
+.tmr-fs-num { font-size: 20vw; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; line-height: 1; }
+.tmr-fs-exit { position: absolute; top: max(env(safe-area-inset-top),20px); right: 20px; }
+.tmr-fs-ctl { display: flex; gap: 12px; margin-top: 34px; }
+.wl-badge { display: inline-flex; align-items: center; gap: 5px; font-size: .72rem; color: var(--ok); background: var(--ok-b); border: 1px solid var(--ok-bd); padding: 3px 9px; border-radius: var(--r-pill); font-weight: 700; margin-top: 10px; }
+
+/* === NEW: SHARE CARD / SCORE === */
+.score-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.score-block { border-radius: var(--r-md); padding: 16px 12px; text-align: center; }
+.score-block.sb-collect { background: linear-gradient(135deg, var(--ac-bg), rgba(10,132,255,.06)); border: 1px solid var(--ac); }
+.score-block.sb-exam { background: linear-gradient(135deg, var(--ph5-b), rgba(255,55,95,.06)); border: 1px solid rgba(244,63,94,.4); }
+.score-block-num { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+.sb-collect .score-block-num { color: var(--ac); }
+.sb-exam .score-block-num { color: var(--ph5); }
+.score-block-sub { font-size: .74rem; color: var(--t3); margin-top: 6px; font-weight: 600; line-height: 1.4; }
+.cat-brk { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 0; margin-bottom: 16px; }
+.cat-brk-c { background: var(--g1); border: 1px solid var(--gb); border-radius: 10px; padding: 10px; text-align: center; }
+.cat-brk-n { font-size: 1.15rem; font-weight: 700; color: var(--t1); }
+.cat-brk-l { font-size: .68rem; color: var(--t3); margin-top: 2px; }
+.bd-cat { background: rgba(100,210,255,.14); color: var(--cy); }
+#shareCanvasWrap { display: flex; justify-content: center; margin-bottom: 14px; background: #000; border-radius: 14px; overflow: hidden; }
+#shareCanvas { width: 100%; max-width: 340px; height: auto; display: block; }
+.avatar-pick { display: flex; align-items: center; gap: 12px; background: var(--in-b); border: 1px solid var(--in-bd); border-radius: 10px; padding: 10px; margin-bottom: 12px; }
+.avatar-preview { width: 46px; height: 46px; border-radius: 50%; background: var(--g0); border: 1px solid var(--gb); object-fit: cover; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -319,6 +348,19 @@ tr { cursor: pointer; transition: background .15s; }
 
 <!-- TOAST BOX -->
 <div class="tb" id="toastBox"></div>
+
+<!-- FULLSCREEN TIMER OVERLAY -->
+<div class="tmr-fs" id="tmrFS">
+  <button class="btn btn-g tmr-fs-exit" id="tmrFSExitBtn">ออกจากเต็มจอ ✕</button>
+  <div class="tmr-fs-lbl">เวลาที่เหลือ</div>
+  <div class="tmr-fs-num" id="tmrFSNum">5:00</div>
+  <div class="tmr-fs-ctl">
+    <button class="btn btn-ok btn-lg" onclick="App.tmrStart()">เริ่ม</button>
+    <button class="btn btn-g btn-lg" onclick="App.tmrPause()">หยุด</button>
+    <button class="btn btn-d btn-lg" onclick="App.tmrReset()">รีเซต</button>
+  </div>
+  <div class="wl-badge" id="wlBadge" style="display:none;">🔒 หน้าจอจะไม่ดับระหว่างจับเวลา</div>
+</div>
 
 
 <!-- MODAL: RESOURCES -->
@@ -370,6 +412,35 @@ tr { cursor: pointer; transition: background .15s; }
       </div>
       <button id="tgBack" class="btn btn-g btn-sm" style="display:none;margin-bottom:14px;" onclick="App.backTool()">← กลับเมนูเครื่องมือ</button>
       <div id="tgPanel" style="display:none;background:var(--g0);border:1px solid var(--gb);border-radius:12px;padding:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SHARE SCORE -->
+<div class="moOv" id="mShare">
+  <div class="mo">
+    <div class="mo-hdr"><div style="font-weight:700;font-size:1.05rem;">แชร์คะแนนของฉัน 📸</div><button class="btn btn-g btn-sm" onclick="closeM('mShare')">✕</button></div>
+    <div class="mo-con">
+      <div id="shareCanvasWrap"><canvas id="shareCanvas" width="720" height="1280"></canvas></div>
+      <div class="avatar-pick">
+        <img id="avatarPrev" class="avatar-preview" src="" style="display:none;">
+        <div style="flex:1;">
+          <div class="lbl" style="margin-bottom:4px;">แนบรูปเป็นพื้นหลังการ์ด (แนะนำ — เหมือน Strava)</div>
+          <input type="file" class="fc" id="avatarIn" accept="image/*" style="padding:7px 10px;font-size:.8rem;">
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <button class="btn btn-g" style="flex:1;" onclick="App.reshuffleQuote()">🎲 สุ่มคำคมใหม่</button>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-p btn-lg" style="flex:1;" onclick="App.downloadShare()">⬇️ บันทึกรูป</button>
+        <button class="btn btn-3 btn-lg" style="flex:1;" onclick="App.nativeShare()">📤 แชร์เลย</button>
+      </div>
+      <button class="btn btn-ig btn-lg" style="width:100%;margin-top:8px;" onclick="App.shareToInstagramStories()">📸 แชร์ไป Instagram Stories</button>
+      <div style="font-size:.7rem;color:var(--t4);margin-top:8px;line-height:1.6;text-align:center;">
+        iPhone: กดแล้วเปิดแอป IG พร้อมรูปให้เลยในหน้า Story (ต้องติดตั้ง Instagram ไว้ก่อน)<br>
+        Android: จะเปิดเมนูแชร์ของเครื่อง ให้เลือก Instagram แล้วเลือกโพสต์ลง Story/ฟีดได้เอง
+      </div>
     </div>
   </div>
 </div>
@@ -449,11 +520,24 @@ tr { cursor: pointer; transition: background .15s; }
       <div class="gc" style="background:var(--ac-bg);border-color:var(--ac);text-align:center;">
         <div style="font-size:.85rem;color:var(--t2);font-weight:600;margin-bottom:4px;">ยินดีต้อนรับ</div>
         <div style="font-size:1.25rem;font-weight:700;color:var(--ac);" id="dName"></div>
-        <div style="display:flex;justify-content:center;gap:12px;margin-top:12px;">
+        <div style="display:flex;justify-content:center;gap:12px;margin-top:12px;flex-wrap:wrap;">
           <button class="btn btn-p btn-sm" onclick="App.fetch(true)">รีเฟรชข้อมูล</button>
           <button class="btn btn-g btn-sm" onclick="App.step(3)">เปลี่ยนชื่อ</button>
+          <button class="btn btn-3 btn-sm" onclick="App.openShare()">แชร์คะแนน 📸</button>
         </div>
       </div>
+
+      <div class="score-dual">
+        <div class="score-block sb-collect">
+          <div class="score-block-num" id="dScoreBig">0</div>
+          <div class="score-block-sub">คะแนนเก็บจากชิ้นงาน<br>(จาก <span id="dScoreMax">0</span> คะแนน • <span id="dScorePct">0%</span>)</div>
+        </div>
+        <div class="score-block sb-exam">
+          <div class="score-block-num" id="dExamBig">-</div>
+          <div class="score-block-sub">คะแนนรวม 100<br>(ครูกรอกเอง แยกจากคะแนนเก็บ)</div>
+        </div>
+      </div>
+      <div class="cat-brk" id="dCatBrk"></div>
       
       <div class="sg">
         <div class="sc-card"><div class="sc-num" style="color:var(--cy);" id="dTotal">0</div><div class="sc-lbl">งานทั้งหมด</div></div>
@@ -555,6 +639,7 @@ tr { cursor: pointer; transition: background .15s; }
           <div class="fg"><label class="lbl">บทที่</label><select class="fc" id="asCh"><option value="1">บทที่ 1</option><option value="2">บทที่ 2</option><option value="3">บทที่ 3</option><option value="4">บทที่ 4</option><option value="5">บทที่ 5</option><option value="6">บทที่ 6</option></select></div>
           <div class="fg"><label class="lbl">คะแนนเต็ม</label><input type="number" class="fc" id="asSc" value="10"></div>
           <div class="fg"><label class="lbl">กำหนดส่ง</label><input type="date" class="fc" id="asDt"></div>
+          <div class="fg"><label class="lbl">ช่วงคะแนนเก็บ</label><select class="fc" id="asCat"><option value="pre">ก่อนกลางภาค</option><option value="post">หลังกลางภาค</option><option value="other">ไม่ระบุ / ทั่วไป</option></select></div>
           <div class="fg" style="grid-column:1/-1;"><label class="lbl">คำอธิบาย</label><input type="text" class="fc" id="asDsc" placeholder="(ไม่บังคับ)"></div>
         </div>
         <div style="display:flex;gap:9px;margin-top:9px;">
@@ -607,6 +692,8 @@ var Ico={
 };
 var RES_LBL={doc:'ใบงาน',vid:'วิดีโอ',lab:'การทดลอง',lesson:'บทเรียน',link:'อื่นๆ'};
 function resLbl(t){return RES_LBL[t]||t||'ลิงก์';}
+var CAT_LBL={pre:'ก่อนกลางภาค',post:'หลังกลางภาค',other:'ทั่วไป'};
+function catLbl(c){return CAT_LBL[c]||CAT_LBL.other;}
 
 
 /* THEME */
@@ -636,8 +723,9 @@ let S={
   siMap:new Map(),giMap:new Map(),exMap:new Map(),
   scaMap:new Map(),scuMap:new Map(),scoreMap:new Map(),
   rId:null,rName:'',_dbt:null,_cached:false,
-  tmrIv:null,tmrOn:false,tmrSec:0,tmrInit:false,tmrDown:true,
-  noStream:null,noAnim:null,poll:{y:0,m:0,n:0},randIv:null
+  tmrIv:null,tmrOn:false,tmrSec:0,tmrInit:false,tmrDown:true,tmrFS:false,wakeLock:null,
+  noStream:null,noAnim:null,poll:{y:0,m:0,n:0},randIv:null,
+  shareQuote:null,avatarImg:null
 };
 
 
@@ -809,10 +897,26 @@ var App={
     const subs=S.subs.filter(s=>s.subject===S.subj&&s.room===S.room&&s.student===S.stu);
     const grds=S.grds.filter(g=>g.subject===S.subj&&g.room===S.room&&g.student===S.stu);
     const done=subs.length,miss=asns.length-done,score=grds.reduce((s,g)=>s+(Number(g.score)||0),0);
-    UI.h('dTotal',asns.length);UI.h('dDone',done);UI.h('dMiss',miss);UI.h('dScore',score);
+    const maxTotal=asns.reduce((s,a)=>s+(Number(a.maxScore)||0),0);
+    UI.h('dTotal',asns.length);UI.h('dDone',done);UI.h('dMiss',miss);
+    UI.h('dScoreBig',score);UI.h('dScoreMax',maxTotal);
+    UI.h('dScorePct',maxTotal?Math.round(score/maxTotal*100)+'%':'0%');
     const pct=asns.length?Math.round(done/asns.length*100):0;
     $('dPct').textContent=pct+'%';$('dBar').style.width=pct+'%';
+    // category breakdown (pre/post midterm)
+    const catStats={};['pre','post'].forEach(c=>{catStats[c]={score:0,max:0};});
+    asns.forEach(a=>{
+      const c=a.category==='pre'||a.category==='post'?a.category:null;
+      if(!c)return;
+      catStats[c].max+=Number(a.maxScore)||0;
+      const g=grds.find(x=>x.assignment===a.name);
+      if(g)catStats[c].score+=Number(g.score)||0;
+    });
+    const hasCat=catStats.pre.max>0||catStats.post.max>0;
+    UI.h('dCatBrk',hasCat?
+      `<div class="cat-brk-c"><div class="cat-brk-n">${catStats.pre.score}/${catStats.pre.max}</div><div class="cat-brk-l">ก่อนกลางภาค</div></div><div class="cat-brk-c"><div class="cat-brk-n">${catStats.post.score}/${catStats.post.max}</div><div class="cat-brk-l">หลังกลางภาค</div></div>`:'');
     const ex=S.exMap.get(`${S.subj}|${S.room}|${S.stu}`);
+    UI.h('dExamBig',ex&&ex.total!=null?ex.total:'-');
     const ec=$('examCard');
     if(ex){ec.style.display='block';UI.h('exP',ex.preMid!=null?ex.preMid:'-');UI.h('exM',ex.midExam!=null?ex.midExam:'-');UI.h('exPo',ex.postMid!=null?ex.postMid:'-');UI.h('exF',ex.finalExam!=null?ex.finalExam:'-');UI.h('exT',ex.total!=null?ex.total:'-');}
     else ec.style.display='none';
@@ -826,7 +930,8 @@ var App={
         const isL = sub ? isLate(sub.submittedAt, a.dueDate) : false;
         const subColor = isL ? 'var(--wn)' : 'var(--ok)';
         const subText = isL ? 'ส่งช้ากว่ากำหนด' : 'ส่งแล้ว';
-        return `<div class="ai cl" onclick="App.prepSub('${a.id}')"><div class="ai-info"><div class="ai-name">${a.name}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}${sub?`<br><span style="color:${subColor};font-weight:600;">${subText} `+(sub.submittedAt||'')+'</span>':''}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div style="text-align:right;flex-shrink:0;margin-left:10px;">${sub?`<span class="bd" style="background:rgba(${isL?'245,158,11':'16,185,129'},.1);color:${subColor};border-color:rgba(${isL?'245,158,11':'16,185,129'},.3)">${subText}</span>`:'<span class="bd bd-er">ค้างส่ง</span>'}<div style="font-size:.76rem;margin-top:5px;color:var(--t3);">${grd?'<b style="color:var(--cy)">'+grd.score+'</b>/'+a.maxScore:'-/'+a.maxScore}</div></div></div>`;
+        const catTag = (a.category==='pre'||a.category==='post') ? `<span class="bd bd-cat" style="font-size:.64rem;">${catLbl(a.category)}</span>` : '';
+        return `<div class="ai cl" onclick="App.prepSub('${a.id}')"><div class="ai-info"><div class="ai-name">${a.name}${catTag}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}${sub?`<br><span style="color:${subColor};font-weight:600;">${subText} `+(sub.submittedAt||'')+'</span>':''}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div style="text-align:right;flex-shrink:0;margin-left:10px;">${sub?`<span class="bd" style="background:rgba(${isL?'245,158,11':'16,185,129'},.1);color:${subColor};border-color:rgba(${isL?'245,158,11':'16,185,129'},.3)">${subText}</span>`:'<span class="bd bd-er">ค้างส่ง</span>'}<div style="font-size:.76rem;margin-top:5px;color:var(--t3);">${grd?'<b style="color:var(--cy)">'+grd.score+'</b>/'+a.maxScore:'-/'+a.maxScore}</div></div></div>`;
       }).join('')}</div></div>`;
     });
     UI.h('stuAcc',html||'<div style="text-align:center;padding:18px;color:var(--t3)">ยังไม่มีชิ้นงาน</div>');
@@ -938,20 +1043,27 @@ var App={
       html+=`<div class="ch-blk"><div class="ch-hdr" onclick="togCh(this)"><div class="ch-title">บทที่ ${ch}<span class="bd bd-bl">${items.length} งาน</span></div><span class="ch-arr">▾</span></div><div class="ch-body">${items.map(a=>{
         const done=S.scaMap.get(`${S.tab}|${a.name}`)||0,miss=tot-done,pct=tot?Math.round(done/tot*100):0;
         const res=Res.load(a.id);
-        return `<div class="ai" style="flex-direction:column;align-items:stretch;gap:9px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="ai-info"><div class="ai-name">${a.name}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div class="ai-acts">${miss>0?`<span class="miss-bd" onclick="App.showMiss('${a.id}')">ค้าง ${miss} คน</span>`:'<span class="bd bd-ok">ครบ</span>'}<button class="btn btn-g btn-sm" onclick="App.openRes('${a.id}')">ลิงก์</button><button class="btn btn-g btn-sm" onclick="App.editAsn('${a.id}')">แก้ไข</button><button class="btn btn-d btn-sm" onclick="App.delAsn('${a.id}')">ลบ</button></div></div><div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--t3);margin-bottom:3px;"><span>ส่งแล้ว ${done}/${tot} คน</span><span>${pct}%</span></div><div class="pw"><div class="pf" style="width:${pct}%"></div></div></div></div>`;
+        const catTag = (a.category==='pre'||a.category==='post') ? `<span class="bd bd-cat" style="font-size:.64rem;">${catLbl(a.category)}</span>` : '';
+        return `<div class="ai" style="flex-direction:column;align-items:stretch;gap:9px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="ai-info"><div class="ai-name">${a.name}${catTag}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div class="ai-acts">${miss>0?`<span class="miss-bd" onclick="App.showMiss('${a.id}')">ค้าง ${miss} คน</span>`:'<span class="bd bd-ok">ครบ</span>'}<button class="btn btn-g btn-sm" onclick="App.openRes('${a.id}')">ลิงก์</button><button class="btn btn-g btn-sm" onclick="App.editAsn('${a.id}')">แก้ไข</button><button class="btn btn-d btn-sm" onclick="App.delAsn('${a.id}')">ลบ</button></div></div><div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--t3);margin-bottom:3px;"><span>ส่งแล้ว ${done}/${tot} คน</span><span>${pct}%</span></div><div class="pw"><div class="pf" style="width:${pct}%"></div></div></div></div>`;
       }).join('')}</div></div>`;
     });
     UI.h('tcAcc',html||'<div style="text-align:center;padding:18px;color:var(--t3);">ยังไม่มีชิ้นงาน</div>');
     App.renderTbl();
   },
-  togForm:()=>{const f=$('asnForm');if(f.style.display==='none'||!f.style.display){UI.sv('asId','');UI.sv('asNm','');UI.sv('asSc','10');UI.sv('asDt','');UI.sv('asDsc','');UI.sv('asCh','1');UI.show('asnForm');}else UI.hide('asnForm');},
-  editAsn:id=>{const a=S.asns.find(x=>x.id===id);if(!a)return;UI.show('asnForm');UI.sv('asId',a.id);UI.sv('asNm',a.name);UI.sv('asSc',a.maxScore);UI.sv('asDt',a.dueDate);UI.sv('asDsc',a.desc);UI.sv('asCh',a.chapter||'1');$('asnForm').scrollIntoView({behavior:'smooth',block:'center'});},
+  togForm:()=>{const f=$('asnForm');if(f.style.display==='none'||!f.style.display){UI.sv('asId','');UI.sv('asNm','');UI.sv('asSc','10');UI.sv('asDt','');UI.sv('asDsc','');UI.sv('asCh','1');UI.sv('asCat','other');UI.show('asnForm');}else UI.hide('asnForm');},
+  editAsn:id=>{const a=S.asns.find(x=>x.id===id);if(!a)return;UI.show('asnForm');UI.sv('asId',a.id);UI.sv('asNm',a.name);UI.sv('asSc',a.maxScore);UI.sv('asDt',a.dueDate);UI.sv('asDsc',a.desc);UI.sv('asCh',a.chapter||'1');UI.sv('asCat',a.category||'other');$('asnForm').scrollIntoView({behavior:'smooth',block:'center'});},
   saveAsn:async()=>{
     if(!UI.v('asNm'))return UI.toast('กรุณาระบุชื่องานด้วยครับ','wn');
-    const p={id:UI.v('asId'),subject:S.tab,name:UI.v('asNm'),maxScore:UI.v('asSc'),dueDate:UI.v('asDt'),desc:UI.v('asDsc'),chapter:UI.v('asCh')};
+    const p={id:UI.v('asId'),subject:S.tab,name:UI.v('asNm'),maxScore:UI.v('asSc'),dueDate:UI.v('asDt'),desc:UI.v('asDsc'),chapter:UI.v('asCh'),category:UI.v('asCat')};
     UI.hide('asnForm');UI.toast('กำลังบันทึก...','wn');
     const r=await API.call('saveAssignment',p);
-    if(r.success){UI.toast('บันทึกสำเร็จ','ok');await App.fetch(true);}else UI.toast((r.error||'เกิดข้อผิดพลาด'),'er');
+    if(r.success){UI.toast('บันทึกสำเร็จ','ok');
+      // เก็บ category ไว้ในเครื่องด้วย เผื่อ backend ยังไม่มีคอลัมน์นี้
+      try{const m=JSON.parse(localStorage.getItem('asnCatMap')||'{}');m[p.name]=p.category;localStorage.setItem('asnCatMap',JSON.stringify(m));}catch(e){}
+      await App.fetch(true);
+      S.asns.forEach(a=>{ if(!a.category){ try{const m=JSON.parse(localStorage.getItem('asnCatMap')||'{}'); if(m[a.name])a.category=m[a.name]; }catch(e){} } });
+      App.refresh();
+    }else UI.toast((r.error||'เกิดข้อผิดพลาด'),'er');
   },
   delAsn:async id=>{
     if(!confirm('ยืนยันการลบชิ้นงานนี้?'))return;
@@ -1037,7 +1149,8 @@ var App={
         else if(sub&&grd){const isN=sub.submittedAt&&grd.gradedAt&&sub.submittedAt>grd.gradedAt;dc=isN?'dot-cy':'dot-ok';dl=isN?'ส่งใหม่หลังตรวจ!':'ตรวจแล้ว';rowCls=isN?'resubmitted':'graded';}
         const isL=sub?isLate(sub.submittedAt,a.dueDate):false;const subColor=isL?'var(--wn)':'var(--ok)';const subText=isL?'ส่งช้ากว่ากำหนด':'ส่งแล้ว';
         const stH=sub?`<div class="sub-box sub" style="border-color:rgba(${isL?'245,158,11':'16,185,129'},0.3);background:rgba(${isL?'245,158,11':'16,185,129'},0.1);"><span style="font-weight:700;color:${subColor};">${isL?'LATE':'OK'}</span><div><div style="font-size:.8rem;font-weight:700;color:${subColor};">${subText} — ${sub.submittedAt||'-'}</div>${sub.fileName?`<a href="${sub.fileUrl}" target="_blank" class="sub-lnk">ไฟล์: ${sub.fileName}</a>`:''}${sub.link?`<a href="${sub.link}" target="_blank" class="sub-lnk">ลิงก์งาน</a>`:''}</div></div>`:`<div class="sub-box mis"><span style="font-weight:700;color:var(--er);">X</span><div style="font-size:.8rem;font-weight:700;color:var(--er);">ยังไม่ส่งงาน</div></div>`;
-        return `<div class="asn-row ${rowCls}"><div class="asn-name">${dc?`<span class="dot ${dc}" title="${dl}"></span>`:''}${a.name}<span class="asn-max">(${a.maxScore} คะแนน)</span>${dc==='dot-cy'?` <span class="bd bd-new" style="font-size:.64rem;">ส่งใหม่!</span>`:dc==='dot-wn'&&sub?` <span class="bd bd-wn" style="font-size:.64rem;">รอตรวจ</span>`:''}</div>${stH}${sub?`<div class="grd-sec"><div class="lbl" style="margin-bottom:6px;">ให้คะแนน</div><div class="qsw">${scores.map(s=>`<button class="qsb${grd&&Number(grd.score)===s?' on':''}" onclick="App.qsc('g_${a.id}','${s}',this)">${s}</button>`).join('')}</div><div style="display:flex;gap:7px;align-items:center;"><input type="number" id="g_${a.id}" class="fc" value="${grd?grd.score:''}" min="0" max="${maxS}" style="width:68px;text-align:center;font-weight:700;color:var(--cy);font-size:.98rem;"><input type="text" id="c_${a.id}" class="fc" value="${grd?grd.comment:''}" placeholder="ข้อเสนอแนะ..." style="flex:1;"><button class="btn btn-p btn-sm" onclick="App.saveGrd('${room}','${stu.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${a.id}')">บันทึก</button></div>${grd?`<div style="font-size:.68rem;color:var(--t4);margin-top:4px;">ตรวจล่าสุด: ${grd.gradedAt||'-'}</div>`:''}</div>`:''}</div>`;
+        const catTag = (a.category==='pre'||a.category==='post') ? `<span class="bd bd-cat" style="font-size:.6rem;">${catLbl(a.category)}</span>` : '';
+        return `<div class="asn-row ${rowCls}"><div class="asn-name">${dc?`<span class="dot ${dc}" title="${dl}"></span>`:''}${a.name}<span class="asn-max">(${a.maxScore} คะแนน)</span>${catTag}${dc==='dot-cy'?` <span class="bd bd-new" style="font-size:.64rem;">ส่งใหม่!</span>`:dc==='dot-wn'&&sub?` <span class="bd bd-wn" style="font-size:.64rem;">รอตรวจ</span>`:''}</div>${stH}${sub?`<div class="grd-sec"><div class="lbl" style="margin-bottom:6px;">ให้คะแนน</div><div class="qsw">${scores.map(s=>`<button class="qsb${grd&&Number(grd.score)===s?' on':''}" onclick="App.qsc('g_${a.id}','${s}',this)">${s}</button>`).join('')}</div><div style="display:flex;gap:7px;align-items:center;"><input type="number" id="g_${a.id}" class="fc" value="${grd?grd.score:''}" min="0" max="${maxS}" style="width:68px;text-align:center;font-weight:700;color:var(--cy);font-size:.98rem;"><input type="text" id="c_${a.id}" class="fc" value="${grd?grd.comment:''}" placeholder="ข้อเสนอแนะ..." style="flex:1;"><button class="btn btn-p btn-sm" onclick="App.saveGrd('${room}','${stu.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${a.id}')">บันทึก</button></div>${grd?`<div style="font-size:.68rem;color:var(--t4);margin-top:4px;">ตรวจล่าสุด: ${grd.gradedAt||'-'}</div>`:''}</div>`:''}</div>`;
       }).join('')}</div></div>`;
     });
     UI.h('spB',html);
@@ -1082,7 +1195,7 @@ var App={
       p.innerHTML='<div class="lbl" style="margin-bottom:10px;">สุ่มเรียกชื่อนักเรียน</div><select class="fc" id="randRm" style="margin-bottom:10px;font-weight:700;">'+Object.keys(STUDENTS[S.tab]).map(function(r){return '<option>'+r+'</option>';}).join('')+'</select><div id="randDisp">พร้อมสุ่ม!</div><button class="btn btn-p btn-lg" onclick="App.doRand()">สุ่มเลย</button>';
     }else if(t==='timer'){
       S.tmrInit=false;S.tmrOn=false;clearInterval(S.tmrIv);
-      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">จับเวลา</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;"><input type="number" class="fc" id="tmrIn" value="5" min="1" max="90" style="width:70px;text-align:center;"><span style="color:var(--t3);font-size:.82rem;">นาที</span><select class="fc" id="tmrMd" style="flex:1;"><option value="down">นับถอยหลัง</option><option value="up">นับขึ้น</option></select></div><div class="timer-d" id="tmrDisp">5:00</div><div style="display:flex;gap:8px;"><button class="btn btn-ok" style="flex:1;" onclick="App.tmrStart()">เริ่ม</button><button class="btn btn-g" style="flex:1;" onclick="App.tmrPause()">หยุด</button><button class="btn btn-d" style="flex:1;" onclick="App.tmrReset()">รีเซต</button></div>';
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">จับเวลา</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;"><input type="number" class="fc" id="tmrIn" value="5" min="1" max="90" style="width:70px;text-align:center;"><span style="color:var(--t3);font-size:.82rem;">นาที</span><select class="fc" id="tmrMd" style="flex:1;"><option value="down">นับถอยหลัง</option><option value="up">นับขึ้น</option></select></div><div class="timer-d" id="tmrDisp">5:00</div><div style="display:flex;gap:8px;"><button class="btn btn-ok" style="flex:1;" onclick="App.tmrStart()">เริ่ม</button><button class="btn btn-g" style="flex:1;" onclick="App.tmrPause()">หยุด</button><button class="btn btn-d" style="flex:1;" onclick="App.tmrReset()">รีเซต</button></div><button class="btn btn-o btn-lg" style="margin-top:10px;" onclick="App.tmrFullscreen()">⛶ เต็มจอ (กันจอดับ)</button><div class="wl-badge" id="wlBadgeSm" style="display:none;">🔒 หน้าจอจะไม่ดับระหว่างจับเวลา</div>';
     }else if(t==='formula'){
       const list=FM[S.tab]||[];
       p.innerHTML='<div class="lbl" style="margin-bottom:8px;">สูตร '+S.tab+'</div><div class="fm-grid">'+list.map(function(f){return '<div class="fm-item"><span class="fm-sym">'+f.s+'</span><span style="font-size:.74rem;color:var(--t3);">'+f.d+'</span></div>';}).join('')+'</div>';
@@ -1095,23 +1208,67 @@ var App={
       p.innerHTML='<div class="lbl" style="margin-bottom:10px;">โหวตความเข้าใจ</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:12px;"><div style="text-align:center;cursor:pointer;padding:14px;background:var(--ok-b);border:1.5px solid var(--ok-bd);border-radius:12px;" onclick="App.vote(\'y\',this)"><div style="font-weight:700;font-size:1.1rem;color:var(--ok);">Y</div><div style="font-weight:700;color:var(--ok);margin-top:5px;" id="py">0</div><div style="font-size:.72rem;color:var(--t3);">เข้าใจ</div></div><div style="text-align:center;cursor:pointer;padding:14px;background:var(--wn-b);border:1.5px solid var(--wn-bd);border-radius:12px;" onclick="App.vote(\'m\',this)"><div style="font-weight:700;font-size:1.1rem;color:var(--wn);">?</div><div style="font-weight:700;color:var(--wn);margin-top:5px;" id="pm">0</div><div style="font-size:.72rem;color:var(--t3);">ยังงง</div></div><div style="text-align:center;cursor:pointer;padding:14px;background:var(--er-b);border:1.5px solid var(--er-bd);border-radius:12px;" onclick="App.vote(\'n\',this)"><div style="font-weight:700;font-size:1.1rem;color:var(--er);">N</div><div style="font-weight:700;color:var(--er);margin-top:5px;" id="pn">0</div><div style="font-size:.72rem;color:var(--t3);">ไม่เข้าใจ</div></div></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:.8rem;color:var(--t3);">รวม:</span><span id="ptot" style="font-weight:700;color:var(--cy);">0</span><span style="font-size:.8rem;color:var(--t3);">โหวต</span></div><button class="btn btn-g btn-sm" onclick="App.resetPoll()">รีเซตผล</button>';
     }
   },
-  backTool:()=>{App.stopNoise();clearInterval(S.tmrIv);S.tmrOn=false;$('tgMain').style.display='grid';$('tgPanel').style.display='none';$('tgBack').style.display='none';UI.h('tgPanel','');},
+  backTool:()=>{App.stopNoise();App.tmrExitFS();clearInterval(S.tmrIv);S.tmrOn=false;App.releaseWakeLock();$('tgMain').style.display='grid';$('tgPanel').style.display='none';$('tgBack').style.display='none';UI.h('tgPanel','');},
   doRand:()=>{
     const list=STUDENTS[S.tab][UI.v('randRm')];if(!list)return;
     clearInterval(S.randIv);let ticks=0;
     S.randIv=setInterval(function(){var el=$('randDisp');if(!el)return;var nm=list[Math.floor(Math.random()*list.length)];el.textContent=nm;if(++ticks>28){clearInterval(S.randIv);el.textContent='>> '+nm+' <<';}},55);
   },
+
+  /* === TIMER: WAKE LOCK + FULLSCREEN === */
+  requestWakeLock:async()=>{
+    try{
+      if('wakeLock' in navigator){
+        S.wakeLock=await navigator.wakeLock.request('screen');
+        S.wakeLock.addEventListener('release',()=>{S.wakeLock=null;App._wlUI(false);});
+        App._wlUI(true);
+      }
+    }catch(e){console.warn('wakeLock',e);}
+  },
+  releaseWakeLock:()=>{
+    if(S.wakeLock){try{S.wakeLock.release();}catch(e){}S.wakeLock=null;}
+    App._wlUI(false);
+  },
+  _wlUI:on=>{
+    const b1=$('wlBadge'),b2=$('wlBadgeSm');
+    if(b1)b1.style.display=on?'inline-flex':'none';
+    if(b2)b2.style.display=on?'inline-flex':'none';
+  },
+  tmrFullscreen:async()=>{
+    const el=$('tmrFS');if(!el)return;
+    el.classList.add('open');S.tmrFS=true;
+    try{
+      if(el.requestFullscreen)await el.requestFullscreen();
+      else if(el.webkitRequestFullscreen)await el.webkitRequestFullscreen();
+    }catch(e){/* บางอุปกรณ์ (เช่น iPhone Safari) ไม่รองรับเต็มจอ - ใช้โหมดคลุมหน้าจอแทนได้เลย */}
+    App.tmrSyncFS();
+    if(!S.tmrOn)App.tmrStart();
+    else App.requestWakeLock();
+  },
+  tmrExitFS:()=>{
+    const el=$('tmrFS');if(el)el.classList.remove('open');S.tmrFS=false;
+    try{if(document.fullscreenElement)document.exitFullscreen();else if(document.webkitFullscreenElement)document.webkitExitFullscreen();}catch(e){}
+  },
+  tmrSyncFS:()=>{
+    const src=$('tmrDisp'),dst=$('tmrFSNum');
+    if(dst)dst.textContent=src?src.textContent:(S.tmrDown?App._fmtSec(S.tmrSec):App._fmtSec(S.tmrSec));
+  },
+  _fmtSec:sec=>{const m=Math.floor(sec/60),s=sec%60;return `${m}:${String(s).padStart(2,'0')}`;},
   tmrStart:()=>{
     if(S.tmrOn)return;
     if(!S.tmrInit){const m=parseInt(UI.v('tmrIn'))||5,md=UI.v('tmrMd');S.tmrSec=md==='down'?m*60:0;S.tmrDown=md==='down';S.tmrInit=true;}
     S.tmrOn=true;
+    App.requestWakeLock();
     S.tmrIv=setInterval(()=>{
-      if(S.tmrDown){if(S.tmrSec<=0){clearInterval(S.tmrIv);S.tmrOn=false;UI.toast('⏰ หมดเวลาแล้ว!','wn');return;}S.tmrSec--;}else S.tmrSec++;
-      const m=Math.floor(S.tmrSec/60),s=S.tmrSec%60;const el=$('tmrDisp');if(el)el.textContent=`${m}:${String(s).padStart(2,'0')}`;
+      if(S.tmrDown){if(S.tmrSec<=0){clearInterval(S.tmrIv);S.tmrOn=false;App.releaseWakeLock();UI.toast('⏰ หมดเวลาแล้ว!','wn');return;}S.tmrSec--;}else S.tmrSec++;
+      const txt=App._fmtSec(S.tmrSec);
+      const el=$('tmrDisp');if(el)el.textContent=txt;
+      const fel=$('tmrFSNum');if(fel)fel.textContent=txt;
     },1000);
   },
-  tmrPause:()=>{clearInterval(S.tmrIv);S.tmrOn=false;},
-  tmrReset:()=>{clearInterval(S.tmrIv);S.tmrOn=false;S.tmrInit=false;const m=parseInt(UI.v('tmrIn'))||5;const el=$('tmrDisp');if(el)el.textContent=`${m}:00`;S.tmrSec=0;},
+  tmrPause:()=>{clearInterval(S.tmrIv);S.tmrOn=false;App.releaseWakeLock();},
+  tmrReset:()=>{clearInterval(S.tmrIv);S.tmrOn=false;S.tmrInit=false;App.releaseWakeLock();const m=parseInt(UI.v('tmrIn'))||5;const el=$('tmrDisp');if(el)el.textContent=`${m}:00`;const fel=$('tmrFSNum');if(fel)fel.textContent=`${m}:00`;S.tmrSec=0;},
+
   startNoise:async()=>{
     try{
       const stream=await navigator.mediaDevices.getUserMedia({audio:true});S.noStream=stream;
@@ -1136,7 +1293,231 @@ var App={
     UI.h('grpRes',`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;">${groups.map((g,i)=>`<div style="background:var(--g0);border:1px solid var(--gb);border-radius:8px;padding:9px;"><div style="font-weight:700;color:var(--cy);font-size:.76rem;margin-bottom:5px;">กลุ่ม ${i+1}</div>${g.map(n=>`<div style="font-size:.76rem;color:var(--t2);padding:1px 0;">• ${n}</div>`).join('')}</div>`).join('')}</div>`);
   },
   vote:(t,el)=>{S.poll[t]=(S.poll[t]||0)+1;const tot=S.poll.y+S.poll.m+S.poll.n;UI.h('py',S.poll.y);UI.h('pm',S.poll.m);UI.h('pn',S.poll.n);UI.h('ptot',tot);el.style.transform='scale(1.06)';setTimeout(()=>el.style.transform='',200);},
-  resetPoll:()=>{S.poll={y:0,m:0,n:0};UI.h('py',0);UI.h('pm',0);UI.h('pn',0);UI.h('ptot',0);}
+  resetPoll:()=>{S.poll={y:0,m:0,n:0};UI.h('py',0);UI.h('pm',0);UI.h('pn',0);UI.h('ptot',0);},
+
+  /* === SHARE SCORE CARD === */
+  openShare:()=>{
+    S.avatarImg=null;
+    const av=$('avatarPrev');if(av){av.style.display='none';av.src='';}
+    UI.sv('avatarIn','');
+    S.shareQuote=App._pickQuote();
+    App.drawShareCanvas();
+    openM('mShare');
+  },
+  reshuffleQuote:()=>{S.shareQuote=App._pickQuote(true);App.drawShareCanvas();},
+  _pickQuote:(forceNew)=>{
+    let q=SCI_QUOTES[Math.floor(Math.random()*SCI_QUOTES.length)];
+    if(forceNew&&S.shareQuote){let tries=0;while(q.q===S.shareQuote.q&&tries<8){q=SCI_QUOTES[Math.floor(Math.random()*SCI_QUOTES.length)];tries++;}}
+    return q;
+  },
+  _teaseFor:(doneRatio)=>{
+    let tier=TEASE_MSGS.hi;
+    if(doneRatio<0.4)tier=TEASE_MSGS.lo;
+    else if(doneRatio<0.75)tier=TEASE_MSGS.mid;
+    return tier[Math.floor(Math.random()*tier.length)];
+  },
+  drawShareCanvas:()=>{
+    const cv=$('shareCanvas');if(!cv)return;const ctx=cv.getContext('2d');
+    const W=cv.width,H=cv.height;
+    const asns=S.asns.filter(a=>a.subject===S.subj);
+    const subs=S.subs.filter(s=>s.subject===S.subj&&s.room===S.room&&s.student===S.stu);
+    const grds=S.grds.filter(g=>g.subject===S.subj&&g.room===S.room&&g.student===S.stu);
+    const score=grds.reduce((s,g)=>s+(Number(g.score)||0),0);
+    const maxTotal=asns.reduce((s,a)=>s+(Number(a.maxScore)||0),0);
+    const done=subs.length,total=asns.length||1;
+    const doneRatio=done/total;
+    const ex=S.exMap.get(`${S.subj}|${S.room}|${S.stu}`);
+
+    ctx.clearRect(0,0,W,H);
+    ctx.textAlign='center';
+
+    /* === พื้นหลัง: รูปที่นักเรียนเลือก (แบบ Strava) หรือ gradient สำรอง === */
+    if(S.avatarImg){
+      const iw=S.avatarImg.width,ih=S.avatarImg.height;
+      const s=Math.max(W/iw,H/ih),dw=iw*s,dh=ih*s;
+      ctx.drawImage(S.avatarImg,(W-dw)/2,(H-dh)/2,dw,dh);
+    }else{
+      const grad=ctx.createLinearGradient(0,0,W,H);
+      grad.addColorStop(0,'#0a2540');grad.addColorStop(.5,'#123a63');grad.addColorStop(1,'#3a1155');
+      ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+      ctx.globalAlpha=.15;
+      ctx.fillStyle='#64d2ff';ctx.beginPath();ctx.arc(W*0.85,H*0.16,180,0,7);ctx.fill();
+      ctx.fillStyle='#bf5af2';ctx.beginPath();ctx.arc(W*0.12,H*0.34,220,0,7);ctx.fill();
+      ctx.globalAlpha=1;
+      ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 24px Kanit, sans-serif';
+      App._wrapText(ctx,'📷 แนบรูปตัวเองเพื่อให้การ์ดดูเหมือน Strava',W/2,H*0.34,520,32);
+    }
+
+    /* === gradient มืดด้านบน (ให้ badge อ่านง่าย) === */
+    const topG=ctx.createLinearGradient(0,0,0,180);
+    topG.addColorStop(0,'rgba(0,0,0,.55)');topG.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=topG;ctx.fillRect(0,0,W,180);
+
+    /* === gradient มืดด้านล่าง (สำหรับวางสถิติ แบบสรุปกิจกรรม Strava) === */
+    const botG=ctx.createLinearGradient(0,H*0.5,0,H);
+    botG.addColorStop(0,'rgba(0,0,0,0)');
+    botG.addColorStop(.4,'rgba(0,0,0,.55)');
+    botG.addColorStop(.75,'rgba(0,0,0,.82)');
+    botG.addColorStop(1,'rgba(0,0,0,.95)');
+    ctx.fillStyle=botG;ctx.fillRect(0,H*0.5,W,H*0.5);
+
+    /* === badge บนซ้าย: วิชา/ห้อง === */
+    ctx.textAlign='left';
+    ctx.fillStyle='rgba(0,0,0,.4)';App._rr(ctx,32,32,Math.min(360,20+ (S.subj+' • '+S.room).length*13),46,23);ctx.fill();
+    ctx.fillStyle='#fff';ctx.font='700 22px Kanit, sans-serif';
+    ctx.fillText('⚛️ '+S.subj+' • '+S.room,50,61);
+    ctx.textAlign='center';
+
+    /* === ชื่อนักเรียน (เหนือแถวสถิติ) === */
+    const nameY=H-414;
+    ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=8;
+    ctx.fillStyle='rgba(255,255,255,.8)';ctx.font='600 22px Kanit, sans-serif';
+    ctx.fillText('รายงานคะแนนของ',W/2,nameY-42);
+    ctx.fillStyle='#fff';ctx.font='700 44px Kanit, sans-serif';
+    ctx.shadowBlur=10;
+    ctx.fillText(S.stu||'-',W/2,nameY);
+    ctx.shadowBlur=0;ctx.shadowColor='transparent';
+
+    /* === แถวสถิติแบบ Strava: คะแนนเก็บ | คะแนนรวม(ครู) | ส่งงานแล้ว === */
+    const statTop=H-386,statH=130,statMidY=statTop+statH*0.62;
+    const cols=[
+      {big:String(score),unit:'/'+maxTotal,label:'คะแนนเก็บ'},
+      {big: ex&&ex.total!=null?String(ex.total):'—',unit: ex&&ex.total!=null?'/100':'ยังไม่กรอก',label:'คะแนนรวม (ครู)'},
+      {big:Math.round(doneRatio*100)+'%',unit:'',label:'ส่งงานแล้ว '+done+'/'+total}
+    ];
+    const colX=[W/2-213,W/2,W/2+213];
+    ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=8;
+    cols.forEach((c,i)=>{
+      ctx.fillStyle='#fff';ctx.font='700 46px Kanit, sans-serif';
+      ctx.fillText(c.big,colX[i],statMidY);
+      const bw=ctx.measureText(c.big).width;
+      if(c.unit){ctx.font='600 20px Kanit, sans-serif';ctx.fillStyle='rgba(255,255,255,.7)';ctx.fillText(c.unit,colX[i]+bw/2+26,statMidY);}
+      ctx.fillStyle='rgba(255,255,255,.68)';ctx.font='600 19px Kanit, sans-serif';
+      ctx.fillText(c.label,colX[i],statTop+statH-8);
+    });
+    ctx.shadowBlur=0;ctx.shadowColor='transparent';
+    // เส้นแบ่งคอลัมน์
+    ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=2;
+    [(colX[0]+colX[1])/2,(colX[1]+colX[2])/2].forEach(dx=>{
+      ctx.beginPath();ctx.moveTo(dx,statTop+16);ctx.lineTo(dx,statTop+statH-16);ctx.stroke();
+    });
+
+    /* === การ์ดคำคม + ข้อความกวนๆ === */
+    const qy=H-234,qh=176;
+    ctx.fillStyle='rgba(255,255,255,.12)';App._rr(ctx,W/2-320,qy,640,qh,20);ctx.fill();
+    ctx.fillStyle='#fff';ctx.font='italic 600 24px Kanit, sans-serif';
+    App._wrapText(ctx,'"'+S.shareQuote.q+'"',W/2,qy+42,580,32);
+    ctx.fillStyle='#bf5af2';ctx.font='700 20px Kanit, sans-serif';
+    ctx.fillText('— '+S.shareQuote.a,W/2,qy+108);
+    const tease=App._teaseFor(doneRatio);
+    ctx.fillStyle='#ff9f0a';ctx.font='700 23px Kanit, sans-serif';
+    App._wrapText(ctx,tease,W/2,qy+142,600,28);
+
+    /* === footer === */
+    ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 18px Kanit, sans-serif';
+    ctx.fillText('ระบบติดตามการเรียน • ครูณัฐพล สุขยานุดิษฐ • ร.ร.สนมวิทยาคาร',W/2,H-34);
+  },
+  _rr:(ctx,x,y,w,h,r)=>{ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();},
+  _wrapText:(ctx,text,x,y,maxW,lh)=>{
+    const words=text.split(' ');let line='',yy=y;
+    for(let i=0;i<words.length;i++){
+      const test=line+words[i]+' ';
+      if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,yy);line=words[i]+' ';yy+=lh;}
+      else line=test;
+    }
+    ctx.fillText(line,x,yy);
+  },
+  downloadShare:()=>{
+    const cv=$('shareCanvas');if(!cv)return;
+    const a=document.createElement('a');
+    a.href=cv.toDataURL('image/png');
+    a.download='คะแนนของฉัน_'+(S.stu||'student')+'.png';
+    a.click();
+    UI.toast('บันทึกรูปแล้ว','ok');
+  },
+  nativeShare:async()=>{
+    const cv=$('shareCanvas');if(!cv)return;
+    cv.toBlob(async blob=>{
+      if(!blob)return UI.toast('สร้างรูปไม่สำเร็จ','er');
+      const file=new File([blob],'คะแนนของฉัน.png',{type:'image/png'});
+      try{
+        if(navigator.canShare&&navigator.canShare({files:[file]})){
+          await navigator.share({files:[file],title:'คะแนนฟิสิกส์ของฉัน',text:'มาดูคะแนนฟิสิกส์ของฉันสิ!'});
+        }else{
+          App.downloadShare();
+          UI.toast('อุปกรณ์นี้แชร์ไฟล์โดยตรงไม่ได้ ระบบดาวน์โหลดรูปให้แทน','wn');
+        }
+      }catch(e){ if(e.name!=='AbortError') UI.toast('แชร์ไม่สำเร็จ','er'); }
+    },'image/png');
+  },
+  /* แชร์ตรงไปหน้า Instagram Stories
+     - iPhone: คัดลอกรูปเข้า clipboard แล้วเปิดแอป IG ด้วย URL scheme ทางการของ Instagram
+       (instagram-stories://share) รูปจะถูกดึงเข้า Story ให้อัตโนมัติ ต้องติดตั้งแอป IG ไว้ก่อน
+     - Android/อื่นๆ: เว็บไม่สามารถส่งรูปตรงเข้าแอป IG ได้ (ข้อจำกัดของ Android/เบราว์เซอร์)
+       จึงใช้เมนูแชร์ของเครื่อง (Web Share) แทน ซึ่งจะมี Instagram ให้เลือกถ้าติดตั้งไว้ */
+  shareToInstagramStories:async()=>{
+    const cv=$('shareCanvas');if(!cv)return;
+    const isIOS=/iP(hone|od|ad)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+    cv.toBlob(async blob=>{
+      if(!blob)return UI.toast('สร้างรูปไม่สำเร็จ','er');
+      if(isIOS){
+        try{
+          if(!navigator.clipboard||!window.ClipboardItem)throw new Error('no-clipboard');
+          await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+          UI.toast('คัดลอกรูปแล้ว กำลังเปิด Instagram Stories...','ok');
+          let leftPage=false;
+          const onHide=()=>{leftPage=true;};
+          document.addEventListener('visibilitychange',onHide,{once:true});
+          window.location.href='instagram-stories://share?source_application='+IG_APP_ID;
+          setTimeout(()=>{
+            document.removeEventListener('visibilitychange',onHide);
+            if(!leftPage){
+              UI.toast('เปิด Instagram ไม่สำเร็จ (อาจไม่ได้ติดตั้งแอป) — ลองปุ่ม "แชร์เลย" แทนครับ','wn');
+            }
+          },1800);
+        }catch(e){
+          UI.toast('เบราว์เซอร์นี้ยังไม่รองรับการคัดลอกรูปอัตโนมัติ — ลองปุ่ม "แชร์เลย" แล้วเลือก Instagram แทนครับ','wn');
+        }
+      }else{
+        UI.toast('เปิดเมนูแชร์ของเครื่อง — เลือก Instagram แล้วโพสต์ลง Story/ฟีดได้เลย','wn');
+        App.nativeShare();
+      }
+    },'image/png');
+  }
+};
+
+/* ใส่ Facebook App ID ของโรงเรียน/ครู (ถ้ามี) เพื่อให้ deep-link ไป Instagram Stories สมบูรณ์ตามมาตรฐานของ Meta
+   ถ้าไม่มีก็ปล่อยว่างไว้ได้ — ส่วนใหญ่ยังเปิด Story composer พร้อมรูปให้ได้ตามปกติ */
+const IG_APP_ID='';
+
+/* คำคมนักวิทยาศาสตร์ (สุ่มแปะในการ์ดแชร์คะแนน) */
+const SCI_QUOTES=[
+  {q:'จินตนาการสำคัญกว่าความรู้',a:'อัลเบิร์ต ไอน์สไตน์'},
+  {q:'ฉันไม่ได้ล้มเหลว ฉันแค่เจอวิธีที่ใช้ไม่ได้ตั้งหลายพันวิธี',a:'โทมัส เอดิสัน'},
+  {q:'ถ้าฉันมองเห็นได้ไกล ก็เพราะยืนอยู่บนบ่าของยักษ์',a:'ไอแซก นิวตัน'},
+  {q:'ในชีวิตนี้ไม่มีอะไรน่ากลัว มีแต่สิ่งที่ต้องทำความเข้าใจ',a:'มารี กูรี'},
+  {q:'วิทยาศาสตร์คือการจัดระเบียบความรู้อย่างมีเหตุผล',a:'เฮอร์เบิร์ต สเปนเซอร์'},
+  {q:'ความอยากรู้อยากเห็นสำคัญกว่าความรู้ที่มีอยู่แล้ว',a:'อัลเบิร์ต ไอน์สไตน์'},
+  {q:'อย่าเพียงแค่เรียนรู้สิ่งต่างๆ จงเรียนรู้ที่จะคิด',a:'อัลเบิร์ต ไอน์สไตน์'},
+  {q:'ธรรมชาติไม่เคยโกหก มีแต่มนุษย์ที่ยังตีความมันผิด',a:'กาลิเลโอ กาลิเลอี'},
+];
+/* ข้อความกวนๆ ตามอัตราส่งงาน (โทนล้อเล่น ไม่ใช่ดูถูก) */
+const TEASE_MSGS={
+  lo:[
+    'งานค้างเยอะขนาดนี้ แรงโน้มถ่วงยังฉุดไม่ทันเลยเธอ 😂',
+    'ถ้าความขยันมีหน่วยเป็นนิวตัน อันนี้ยังเป็น 0 อยู่นะ 🙃',
+    'สปีดส่งงานช้ากว่าแสงในสุญญากาศไปนิดนึง 🐢'
+  ],
+  mid:[
+    'มาไกลระดับหนึ่งแล้ว อีกนิดเดียวถึงจุดสมดุลพอดี ⚖️',
+    'โมเมนตัมกำลังมา ส่งต่ออีกหน่อยน้าา 🚀',
+    'ครึ่งทางแล้ว! อย่าเพิ่งหยุดที่จุดสมดุลนะ 😄'
+  ],
+  hi:[
+    'ส่งงานครบขนาดนี้ พลังงานจลน์ต้องยกให้เธอเลย ⚡',
+    'ขยันจนฟิสิกส์อิจฉา งานนี้ครูปลื้ม 🏆',
+    'นักเรียนโมเดลตัวอย่าง ส่งงานไวกว่าคลื่นแม่เหล็กไฟฟ้า ✨'
+  ]
 };
 
 
@@ -1180,6 +1561,30 @@ function bindNav(){
   if(btnLogin)btnLogin.addEventListener('click',function(){App.login();});
   if(btnHome)btnHome.addEventListener('click',function(){App.go('pg-home');});
   if(pwIn)pwIn.addEventListener('keydown',function(e){if(e.key==='Enter')App.login();});
+
+  var tmrFSExitBtn=$('tmrFSExitBtn');
+  if(tmrFSExitBtn)tmrFSExitBtn.addEventListener('click',function(){App.tmrExitFS();});
+  document.addEventListener('fullscreenchange',function(){
+    if(!document.fullscreenElement && S.tmrFS){ $('tmrFS').classList.remove('open'); S.tmrFS=false; }
+  });
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='visible' && S.tmrOn && !S.wakeLock){ App.requestWakeLock(); }
+  });
+  var avatarIn=$('avatarIn');
+  if(avatarIn)avatarIn.addEventListener('change',function(e){
+    const f=e.target.files&&e.target.files[0];if(!f)return;
+    const rd=new FileReader();
+    rd.onload=function(ev){
+      const img=new Image();
+      img.onload=function(){
+        S.avatarImg=img;
+        const av=$('avatarPrev');if(av){av.src=ev.target.result;av.style.display='block';}
+        App.drawShareCanvas();
+      };
+      img.src=ev.target.result;
+    };
+    rd.readAsDataURL(f);
+  });
 }
 
 
