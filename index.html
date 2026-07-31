@@ -6,7 +6,7 @@
 <title>ระบบส่งงานฟิสิกส์ ครูณัฐพล สุขยานุดิษฐ  โรงเรียนสนมวิทยาคาร</title>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* CSS VARIABLES (Muted/Dark vs Light Theme) */ 
+/* CSS VARIABLES (Muted/Dark vs Light Theme) */
 :root {
   /* Liquid Glass — dark */
   --wallpaper: #000000;
@@ -333,10 +333,35 @@ tr { cursor: pointer; transition: background .15s; }
 .cat-brk-n { font-size: 1.15rem; font-weight: 700; color: var(--t1); }
 .cat-brk-l { font-size: .68rem; color: var(--t3); margin-top: 2px; }
 .bd-cat { background: rgba(100,210,255,.14); color: var(--cy); }
-#shareCanvasWrap { display: flex; justify-content: center; margin-bottom: 14px; background: #000; border-radius: 14px; overflow: hidden; min-width: 0; }
-#shareCanvas { width: 100%; max-width: 360px; height: auto; display: block; min-width: 0; flex-shrink: 1; }
+#shareCanvasWrap { width: 100%; max-width: 360px; aspect-ratio: 720 / 1560; margin: 0 auto 14px; background: #000; border-radius: 14px; overflow: hidden; }
+#shareCanvas { width: 100%; height: 100%; display: block; }
 .avatar-pick { display: flex; align-items: center; gap: 12px; background: var(--in-b); border: 1px solid var(--in-bd); border-radius: 10px; padding: 10px; margin-bottom: 12px; }
 .avatar-preview { width: 46px; height: 46px; border-radius: 50%; background: var(--g0); border: 1px solid var(--gb); object-fit: cover; flex-shrink: 0; }
+
+/* === PRESENTATION MODE (โหมดนำเสนอผลงาน) === */
+.pr-hero { text-align: center; padding: 44px 20px 36px; border-radius: var(--r-lg); background: linear-gradient(135deg, var(--ac-bg), var(--ph3-b)); border: 1px solid var(--ac); margin-bottom: 22px; }
+.pr-hero-logo { width: 68px; height: 68px; background: linear-gradient(150deg, var(--ac), var(--cy)); color: #fff; border-radius: 22px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; box-shadow: 0 14px 32px var(--ac-bg); }
+.pr-hero-logo svg { width: 36px; height: 36px; }
+.pr-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.pr-stat-c { background: var(--g1); border: 1px solid var(--gb); border-radius: var(--r-md); padding: 20px 14px; text-align: center; box-shadow: var(--sh-1); }
+.pr-stat-n { font-size: 2rem; font-weight: 700; color: var(--ac); letter-spacing: -0.03em; line-height: 1; }
+.pr-stat-l { font-size: .8rem; color: var(--t3); margin-top: 8px; font-weight: 600; }
+.pr-feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px; }
+.pr-feat-c { background: var(--g1); border: 1px solid var(--gb); border-radius: var(--r-md); padding: 18px; box-shadow: var(--sh-1); }
+.pr-feat-i { font-size: 1.6rem; margin-bottom: 8px; }
+.pr-feat-t { font-weight: 700; font-size: .95rem; color: var(--t1); margin-bottom: 4px; }
+.pr-feat-d { font-size: .8rem; color: var(--t3); line-height: 1.5; }
+.pr-room-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.pr-room-lbl { width: 150px; flex-shrink: 0; font-size: .82rem; font-weight: 600; color: var(--t2); }
+.pr-room-bar { flex: 1; }
+.pr-room-pct { width: 52px; flex-shrink: 0; text-align: right; font-size: .82rem; font-weight: 700; color: var(--ac); }
+@media print {
+  .topbar, .th-sw, .btn { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  .gc, .pr-stat-c, .pr-feat-c { box-shadow: none !important; border: 1px solid #ccc !important; background: #fff !important; }
+  .con { padding: 0 !important; max-width: 100% !important; }
+  .pr-hero { background: #f5f5f7 !important; border-color: #ccc !important; }
+}
 </style>
 </head>
 <body>
@@ -397,7 +422,7 @@ tr { cursor: pointer; transition: background .15s; }
   <div class="mo">
     <div class="mo-hdr">
       <div style="font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:8px;">อำนวยการสอน</div>
-      <button class="btn btn-g btn-sm" onclick="closeM('mTools')">✕</button>
+      <button class="btn btn-g btn-sm" onclick="App.closeTools()">✕</button>
     </div>
     <div class="mo-con" style="padding:20px;">
       <div id="tgMain">
@@ -408,6 +433,7 @@ tr { cursor: pointer; transition: background .15s; }
           <div class="tg-c" onclick="App.tool('group')"><div class="tg-i" data-ico="group"></div><span style="font-weight:600;font-size:.85rem;">จัดกลุ่ม</span></div>
           <div class="tg-c" onclick="App.tool('poll')"><div class="tg-i" data-ico="poll"></div><span style="font-weight:600;font-size:.85rem;">โหวตเข้าใจ</span></div>
           <div class="tg-c" onclick="App.tool('formula')"><div class="tg-i" data-ico="formula"></div><span style="font-weight:600;font-size:.85rem;">สูตรลัด</span></div>
+          <div class="tg-c" onclick="App.tool('msgboard')"><div class="tg-i" data-ico="chat"></div><span style="font-weight:600;font-size:.85rem;">กระดานข้อความ</span></div>
         </div>
       </div>
       <button id="tgBack" class="btn btn-g btn-sm" style="display:none;margin-bottom:14px;" onclick="App.backTool()">← กลับเมนูเครื่องมือ</button>
@@ -441,6 +467,19 @@ tr { cursor: pointer; transition: background .15s; }
         iPhone: กดแล้วเปิดแอป IG พร้อมรูปให้เลยในหน้า Story (ต้องติดตั้ง Instagram ไว้ก่อน)<br>
         Android: จะเปิดเมนูแชร์ของเครื่อง ให้เลือก Instagram แล้วเลือกโพสต์ลง Story/ฟีดได้เอง
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SEND MESSAGE TO TEACHER (กระดานข้อความสด) -->
+<div class="moOv" id="mMsgSend">
+  <div class="mo">
+    <div class="mo-hdr"><div style="font-weight:700;font-size:1.05rem;">💬 ส่งข้อความถึงครู</div><button class="btn btn-g btn-sm" onclick="closeM('mMsgSend')">✕</button></div>
+    <div class="mo-con">
+      <div style="font-size:.78rem;color:var(--t3);margin-bottom:10px;">ข้อความจะขึ้นจอครูแบบสดในระบบอำนวยการสอน ใช้ถามคำถามหรือแจ้งสิ่งที่ไม่เข้าใจระหว่างเรียนได้เลยครับ</div>
+      <textarea id="msgText" class="fc" rows="4" maxlength="300" placeholder="พิมพ์ข้อความ เช่น คำถามเกี่ยวกับบทเรียน..." style="resize:vertical;" oninput="UI.h('msgCharCount',this.value.length)"></textarea>
+      <div style="text-align:right;font-size:.7rem;color:var(--t4);margin:4px 0 14px;"><span id="msgCharCount">0</span>/300</div>
+      <button class="btn btn-p btn-lg" onclick="App.sendMsg()">ส่งข้อความ</button>
     </div>
   </div>
 </div>
@@ -524,6 +563,7 @@ tr { cursor: pointer; transition: background .15s; }
           <button class="btn btn-p btn-sm" onclick="App.fetch(true)">รีเฟรชข้อมูล</button>
           <button class="btn btn-g btn-sm" onclick="App.step(3)">เปลี่ยนชื่อ</button>
           <button class="btn btn-3 btn-sm" onclick="App.openShare()">แชร์คะแนน 📸</button>
+          <button class="btn btn-g btn-sm" onclick="App.openMsgSend()">💬 ส่งข้อความถึงครู</button>
         </div>
       </div>
 
@@ -617,6 +657,7 @@ tr { cursor: pointer; transition: background .15s; }
       <div class="th-sw"><button class="th-btn" id="t-dk" onclick="setTh('dark')">มืด</button><button class="th-btn" id="t-lt" onclick="setTh('light')">สว่าง</button><button class="th-btn" id="t-au" onclick="setTh('auto')">Auto</button></div>
       <button class="btn btn-g btn-sm" onclick="App.fetch(true)">รีเฟรช</button>
       <button class="btn btn-g btn-sm" onclick="openM('mTools')">อำนวยการสอน</button>
+      <button class="btn btn-3 btn-sm" onclick="App.goPresent()">📊 โหมดนำเสนอ</button>
       <button class="btn btn-g btn-sm" onclick="API.export()">CSV</button>
       <button class="btn btn-o btn-sm" onclick="App.go('pg-home')">ออก</button>
     </div>
@@ -666,6 +707,20 @@ tr { cursor: pointer; transition: background .15s; }
     </div>
   </div>
 </div>
+
+<!-- PAGE: PRESENTATION MODE (โหมดนำเสนอผลงาน) -->
+<div id="pg-present" class="page">
+  <div class="topbar">
+    <div class="tb-title">โหมดนำเสนอผลงาน</div>
+    <div class="tb-acts">
+      <button class="btn btn-g btn-sm" onclick="App.fetch(true).then(App.renderPresent)">รีเฟรช</button>
+      <button class="btn btn-p btn-sm" onclick="window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
+      <button class="btn btn-o btn-sm" onclick="App.go('pg-tc')">← กลับ</button>
+    </div>
+  </div>
+  <div class="con" id="presentCon"></div>
+</div>
+
 <script>
 const STUDENTS={'ฟิสิกส์ 3':{'ม.5/1':['นายกนกศักดิ์ สีงาม','นายชยกร สมพันธ์','นายต้นตระกูล บุดดา','นายธนวัฒน์ บุญแสน','นายธนายุทธ วังศรี','นายธีรภัทร์ รุ่งเรือง','นายปวริศร์ ดวงเนตร','นายภควัตร อรุณหอม','นายวรากร ภูพันนา','นายวัชรสินธุ์ เกษใส','นายศิวัช วิถุนัด','นายนพนันท์ จันทะอ่อน','นายวุฒิชัย แสงสี','นายสุรพรชัย เสียมทอง','นางสาวกมลชนก บุตตัสสะ','นางสาวกันต์ฤทัย บุญมะยา','นางสาวจันทร์เพ็ญ สอนคำจันทร์','นางสาวจุฑาพร วิศาลศาสตร์บำรุง','นางสาวณัฐรินยา เสน่หา','นางสาวณิชนันทร์ สืบทอง','นางสาวธนัฐนันท์ บุญปั้ว','นางสาวปภาวรินทร์ โฆสิตดุลย์','นางสาวปรียดา พิศภิรมย์','นางสาวปาลิตา โรมพันธ์','นางสาวพิชญธิดา กัลยะกิติ','นางสาวอุษามณี พันธ์อินทร์ป้อ','นางสาวศิริลักษณ์ พิศภิรมย์'],'ม.5/2':['นายณปกร สำอางค์','นายแทนคุณ เกษรจันทร์','นายธีรวัฒน์ เกตไสย','นายนันทพัฒน์ พุดลา','นายภัทรธร เผือกนอก','นายศุภวิชญ์ คมกล้า','นายสิทธิชัย สิมนาม','นายสิทธินนท์ จันทร์ชื่น','นายสุทธิศักดิ์ หงษ์กรรณ์','นายณัฎฐชัย สุทธิ','นายสรวิชญ์ แสงภักดี','นางสาวกุลธิดา รัตน์ทอง','นางสาวกรชนก สะสมทรัพย์','นางสาวกัญญารัตน์ ชัยยิ่ง','นางสาวกัญญารัตน์ แสงพลอย','นางสาวพิณณ์ประภา เกตไสย์','นางสาววันวิสา ดวงเดือน','นางสาววิกานดา พางาม','เด็กหญิงศุทธวดี สิมมาวงษ์','นางสาวศุภิสรา โปยทอง','นางสาวชุติมา คำหอม','เด็กหญิงนนทิญาภรณ์ ตรองจิตร','นางสาวกัญจน์จิรา แก้วดี','นางสาวณัฐณิชา บุญแจ้ง','นางสาวบุณยานุช บุญสุข','นางสาวเบญญาภา เสรีภาพ','นางสาวสิริกรณ์ ธรรมรักษา','นางสาวเพชรลดา ปรารถนา'],'ม.5/3':['นายกิตติพศ โสนทอง','นายไกรวิชญ์ ฟองนวล','นายชยานันท์ พันนุรัตน์','นายชลธิต เจริญเมือง','นายปฏิวัติ ผาสุข','นายพัศนัย ศรีกุล','นายอติกานต์ มงคลแผ้ว','นายอนันดา ทองขนาน','นายจิรชยนต์ หมื่นเจริญ','นายภาณุวัตร ทองงาม','นางสาวกัญญรัตน์ ผึ่งผาย','นางสาวขวัญจิรา ศรงาม','นางสาวชลธิชา นวนดี','นางสาวณัฐธัญญา ไชโย','นางสาวธัญวรัตน์ สะสม','นางสาวธิดารัตน์ บุญช่วย','นางสาวนพิมประภา อินทร์งาม','นางสาวปิยาพัชร แซ่เตียว','นางสาวพิมลวรรณ นิลจันทร์','นางสาวสุชานาถ สำอางค์','นางสาวสุชาวดี บำรุงนาม','นางสาวสุริวิภา แข่งขัน','นางสาวปัทมวรรณ สีเป้ง','นางสาวปัณฑิตา พินโต','นางสาวกนกขวัญ กะการดี','นางสาวธัญชนก สันทอง','นางสาวสุกัญญา พัดพรม']},'ฟิสิกส์ 5':{'ม.6/1':['นายฆนรุจ ชัยภักดี','นายภูวนาท พรมแดน','นายรัฐพล ทองมาก','นายเอกณกร เจริญพร','นายพชรนันต์ จันดารักษ์','นายภัทรกร ชะช้างรัมย์','นายเศรษฐศาสตร์ พรมตวง','นางสาวกานต์อุษา อินทร์สุข','นางสาวจิราภัทร ย่างสุข','นางสาวญดาวดี คำสีดา','นางสาวณัฐกมล ละม่อม','นางสาวธนพรพรรณ แก้วนนท์','นางสาวนันธิดา จันทร์ชื่น','นางสาวพรฝัน พวงพั่ว','นางสาววรรณิดา มุ่งกองกลาง','นางสาววริศรา โต๊ะสิงห์','นางสาววันวิสา แสงทอง','นางสาวสุธิดา วิชาดี','นางสาวกฤษฎาภา สาระติ','นางสาวกันย์ธิชา โคตรชัย','นางสาวช่อมุกดา เหลื่อมเพชร','นางสาวชีวา อิ่มเอก','นางสาวณัฐธิชาภรณ์ บุญเกตุ','นางสาววิศรุตา ศาลารัตน์','นางสาวศศิวรรณ วงษาเนาว์'],'ม.6/2':['นายกิตติ์ธวัช เจริญชาติ','นายชัยอุดม ยืนยง','นายณภัทร นูพิมพ์','นายเดชดนัย จันทร์ชื่น','นายโทนี่ สอนดี','นายพัชระสิน สำอางค์','นายชวิศ สอนดี','นายอดิเทพ ศรีนิล','นายอภิชาติ พนารักษ์','นายธนัญกร อินนอก','นายสุรศักดิ์ ชมภู่','นายอธิภูมิ สวัสดี','นายอัษฎายุธ แก้วขวัญ','นายอัษฎาวุธ แก้วขวัญ','นางสาวกฤษณา ม่วงทองหลาง','นางสาวชลิตา ศรีเมือง','นางสาวณัฐชยา สายสมุทร','นางสาวโปรดปราน เสริมรัก','นางสาวยศสรัล ล้วนงาม','นางสาวสุธาสินี ตระกูลสุข','นางสาวอัญชิษฐา พลชา','นางสาวอินธิรา ภูพันนา','นางสาวจิรัชญา แสนสุข','นางสาวธิดารัตน์ บุญเสริม','นางสาวธาดารัศมิ์ เพชรโคตร','นางสาวบุตรี วงเวียน'],'ม.6/3':['นายกฤศนล จึงวิเศษพงศ์','นายชิติพัทธ์ อุตรา','นายธนวิชญ์ ไทยตรง','นายธีระภัทร สมรูป','นายปัญญานันท์ บุญเพ็ง','นายภูมินทร์ สืบสังข์','นายศุภกร สวัสดี','นายสิรภัทร คมกล้า','นายอภิภู อินทร์แก้ว','นายเอกรงค์ โพธิ์มี','นายทินกร เจริญศิริ','นางสาวณัฏฐกานต์ เหล่าสกุล','นางสาวณัฐกุล ศรีสว่าง','นางสาวทิวากานต์ บุญหวัง','นางสาวธิดาแก้ว ภาสวัสดิ์','นางสาวนภาพร หีบแก้ว','นางสาวนริศรา ดีหมี','นางสาวนลินญา คมสัน','นางสาวบัณฑิตา ธรรมวัตร','นางสาวปุณยาพร พนารักษ์','นางสาวพัชริดา สุทแสง','นางสาวสุทธิดา ผัดสี','นางสาวหทัยขวัญ ทองมี','นางสาวไอลดา สมบูรณ์','นางสาวกมลทิพย์ แก้วพิลา','นางสาวอรปรีดา เงางาม']}};
 const FM={'ฟิสิกส์ 3':[{s:'F = ma',d:'กฎที่ 2 ของนิวตัน'},{s:'W = Fs cosθ',d:'งาน (Work)'},{s:'KE = ½mv²',d:'พลังงานจลน์'},{s:'PE = mgh',d:'พลังงานศักย์โน้มถ่วง'},{s:'P = W/t',d:'กำลัง (Power)'},{s:'p = mv',d:'โมเมนตัม'},{s:'J = FΔt = Δp',d:'แรงกระตุ้น'},{s:'v² = u² + 2as',d:'สมการการเคลื่อนที่'},{s:'g = 10 m/s²',d:'ค่าแรงโน้มถ่วง'},{s:'T = 2π√(L/g)',d:'คาบของลูกตุ้มนาฬิกา'}],'ฟิสิกส์ 5':[{s:'F = kQ₁Q₂/r²',d:'กฎของคูลอมบ์'},{s:'E = F/q',d:'สนามไฟฟ้า'},{s:'V = kQ/r',d:'ศักย์ไฟฟ้า'},{s:'C = Q/V',d:'ความจุไฟฟ้า'},{s:'I = Q/t',d:'กระแสไฟฟ้า'},{s:'V = IR',d:'กฎของโอห์ม'},{s:'P = IV = I²R',d:'กำลังไฟฟ้า'},{s:'F = qvB sinθ',d:'แรงบนประจุในสนามแม่เหล็ก'},{s:'ε = -ΔΦ/Δt',d:'กฎของฟาราเดย์'},{s:'k = 9×10⁹',d:'ค่าคงที่คูลอมบ์'}]};
@@ -685,7 +740,8 @@ var IcoPaths={
   formula:'<path d="M4 7h6M7 4v6M14 7l6 10M20 7L14 17"/>',
   sound:'<path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M16 9a4 4 0 0 1 0 6M18 7a7 7 0 0 1 0 10"/>',
   group:'<circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M4 19c0-3 2.5-5 5-5s5 2 5 5M13 19c0-2 1.5-4 3.5-4"/>',
-  poll:'<path d="M4 19V5M4 19h4M4 13h7M4 7h10"/><path d="M16 16l3-3-3-3"/>'
+  poll:'<path d="M4 19V5M4 19h4M4 13h7M4 7h10"/><path d="M16 16l3-3-3-3"/>',
+  chat:'<path d="M4 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/>'
 };
 var Ico={
   svg:function(n){var p=IcoPaths[n];return p?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>':'';},
@@ -743,7 +799,8 @@ let S={
   rId:null,rName:'',_dbt:null,_cached:false,
   tmrIv:null,tmrOn:false,tmrSec:0,tmrInit:false,tmrDown:true,tmrFS:false,wakeLock:null,
   noStream:null,noAnim:null,poll:{y:0,m:0,n:0},randIv:null,
-  shareQuote:null,avatarImg:null
+  shareQuote:null,avatarImg:null,
+  msgIv:null,msgCache:[]
 };
 
 
@@ -1093,6 +1150,85 @@ var App={
     App.renderTbl();
   },
   togForm:()=>{const f=$('asnForm');if(f.style.display==='none'||!f.style.display){UI.sv('asId','');UI.sv('asNm','');UI.sv('asSc','10');UI.sv('asDt','');UI.sv('asDsc','');UI.sv('asCh','1');UI.sv('asCat','other');UI.show('asnForm');}else UI.hide('asnForm');},
+
+  /* ==================== PRESENTATION MODE (โหมดนำเสนอผลงาน) ==================== */
+  goPresent:()=>{App.go('pg-present');App.renderPresent();},
+  renderPresent:async()=>{
+    const con=$('presentCon');if(!con)return;
+    const subjects=Object.keys(STUDENTS);
+    let totalAsn=0,totalStu=0,totalSub=0,totalScore=0,totalScoreMax=0;
+    const roomRows=[];
+    subjects.forEach(sub=>{
+      const asns=S.asns.filter(a=>a.subject===sub);
+      totalAsn+=asns.length;
+      const asnMax=asns.reduce((s,a)=>s+(Number(a.maxScore)||0),0);
+      Object.entries(STUDENTS[sub]).forEach(([room,stus])=>{
+        totalStu+=stus.length;
+        let roomDone=0;
+        stus.forEach(stu=>{
+          roomDone+=S.scuMap.get(`${sub}|${room}|${stu}`)||0;
+          totalScore+=S.scoreMap.get(`${sub}|${room}|${stu}`)||0;
+        });
+        totalScoreMax+=asnMax*stus.length;
+        totalSub+=roomDone;
+        const roomMax=asns.length*stus.length;
+        roomRows.push({label:sub+' • '+room,pct:roomMax?Math.round(roomDone/roomMax*100):0,done:roomDone,max:roomMax});
+      });
+    });
+    const overallPct=roomRows.reduce((s,r)=>s+r.max,0)?Math.round(totalSub/roomRows.reduce((s,r)=>s+r.max,0)*100):0;
+    const avgScorePct=totalScoreMax?Math.round(totalScore/totalScoreMax*100):0;
+
+    let msgTotal='-';
+    try{
+      const r=await API.call('getMessageStats',{});
+      if(r&&r.total!=null)msgTotal=r.total;
+    }catch(e){}
+
+    const stats=[
+      {n:totalStu,l:'นักเรียนทั้งหมด (2 รายวิชา)'},
+      {n:totalAsn,l:'ชิ้นงานที่มอบหมายทั้งหมด'},
+      {n:totalSub,l:'จำนวนครั้งที่ส่งงานสะสม'},
+      {n:overallPct+'%',l:'อัตราการส่งงานเฉลี่ยรวม'},
+      {n:avgScorePct+'%',l:'คะแนนเก็บเฉลี่ย (จากที่ตรวจแล้ว)'},
+      {n:msgTotal,l:'ข้อความในกระดานสดสะสม'}
+    ];
+
+    const features=[
+      {i:'📸',t:'แชร์คะแนนโซเชียลสไตล์ Strava',d:'นักเรียนแนบรูปตัวเอง สร้างการ์ดคะแนนพร้อมคำวิเคราะห์และให้กำลังใจอัตโนมัติ แชร์ได้ทั้ง Instagram Stories และแอปอื่นๆ'},
+      {i:'💬',t:'กระดานข้อความสด',d:'นักเรียนพิมพ์คำถามระหว่างเรียน ขึ้นจอครูแบบเกือบเรียลไทม์ ครูลบทีละข้อความหรือลบทั้งหมดได้'},
+      {i:'⏱️',t:'เครื่องมืออำนวยการสอน',d:'จับเวลาเต็มจอกันหน้าจอดับ สุ่มเรียกชื่อ จัดกลุ่มสุ่ม วัดระดับเสียง โหวตความเข้าใจ สูตรลัดประจำบท'},
+      {i:'📊',t:'ติดตามคะแนนแบบแยกส่วนชัดเจน',d:'แยกคะแนนเก็บจากชิ้นงานกับคะแนนสอบ 4 ช่วงเวลา (ก่อน/กลาง/หลังกลางภาค/ปลายภาค) ไม่ปนกัน'},
+      {i:'🔗',t:'จัดการสื่อการสอนต่อชิ้นงาน',d:'แนบลิงก์ใบงาน วิดีโอ การทดลอง หรือบทเรียนแยกตามชิ้นงานได้โดยตรง'},
+      {i:'📁',t:'ส่งออกข้อมูลเป็น CSV',d:'ดาวน์โหลดผลการตรวจงานทั้งหมดไปใช้งานต่อในโปรแกรมอื่นได้ทันที'}
+    ];
+
+    con.innerHTML=`
+      <div class="pr-hero">
+        <div class="pr-hero-logo">${Ico.svg('atom')}</div>
+        <h1 style="font-size:1.7rem;font-weight:700;color:var(--t1);letter-spacing:-.5px;margin-bottom:6px;">ระบบติดตามการเรียนวิชาฟิสิกส์</h1>
+        <p style="color:var(--t3);font-size:.92rem;">ครูณัฐพล สุขยานุดิษฐ • กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี<br>โรงเรียนสนมวิทยาคาร • สำนักงานเขตพื้นที่การศึกษามัธยมศึกษาสุรินทร์</p>
+      </div>
+
+      <div class="sec-title">ภาพรวมการใช้งานระบบ</div>
+      <div class="pr-stat-grid">
+        ${stats.map(s=>`<div class="pr-stat-c"><div class="pr-stat-n">${s.n}</div><div class="pr-stat-l">${s.l}</div></div>`).join('')}
+      </div>
+
+      <div class="sec-title">อัตราการส่งงานแยกตามห้องเรียน</div>
+      <div class="gc">
+        ${roomRows.map(r=>`<div class="pr-room-row"><div class="pr-room-lbl">${r.label}</div><div class="pr-room-bar pw" style="height:10px;border-radius:5px;"><div class="pf" style="width:${r.pct}%"></div></div><div class="pr-room-pct">${r.pct}%</div></div>`).join('')}
+      </div>
+
+      <div class="sec-title">จุดเด่นของระบบ</div>
+      <div class="pr-feat-grid">
+        ${features.map(f=>`<div class="pr-feat-c"><div class="pr-feat-i">${f.i}</div><div class="pr-feat-t">${f.t}</div><div class="pr-feat-d">${f.d}</div></div>`).join('')}
+      </div>
+
+      <div style="text-align:center;color:var(--t4);font-size:.74rem;line-height:1.7;margin:20px 0 8px;">
+        จัดทำและพัฒนาโดย ครูณัฐพล สุขยานุดิษฐ • โรงเรียนสนมวิทยาคาร<br>ข้อมูล ณ วันที่ ${new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'})}
+      </div>
+    `;
+  },
   editAsn:id=>{const a=S.asns.find(x=>x.id===id);if(!a)return;UI.show('asnForm');UI.sv('asId',a.id);UI.sv('asNm',a.name);UI.sv('asSc',a.maxScore);UI.sv('asDt',a.dueDate);UI.sv('asDsc',a.desc);UI.sv('asCh',a.chapter||'1');UI.sv('asCat',a.category||'other');$('asnForm').scrollIntoView({behavior:'smooth',block:'center'});},
   saveAsn:async()=>{
     if(!UI.v('asNm'))return UI.toast('กรุณาระบุชื่องานด้วยครับ','wn');
@@ -1262,9 +1398,51 @@ var App={
     }else if(t==='poll'){
       S.poll={y:0,m:0,n:0};
       p.innerHTML='<div class="lbl" style="margin-bottom:10px;">โหวตความเข้าใจ</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:12px;"><div style="text-align:center;cursor:pointer;padding:14px;background:var(--ok-b);border:1.5px solid var(--ok-bd);border-radius:12px;" onclick="App.vote(\'y\',this)"><div style="font-weight:700;font-size:1.1rem;color:var(--ok);">Y</div><div style="font-weight:700;color:var(--ok);margin-top:5px;" id="py">0</div><div style="font-size:.72rem;color:var(--t3);">เข้าใจ</div></div><div style="text-align:center;cursor:pointer;padding:14px;background:var(--wn-b);border:1.5px solid var(--wn-bd);border-radius:12px;" onclick="App.vote(\'m\',this)"><div style="font-weight:700;font-size:1.1rem;color:var(--wn);">?</div><div style="font-weight:700;color:var(--wn);margin-top:5px;" id="pm">0</div><div style="font-size:.72rem;color:var(--t3);">ยังงง</div></div><div style="text-align:center;cursor:pointer;padding:14px;background:var(--er-b);border:1.5px solid var(--er-bd);border-radius:12px;" onclick="App.vote(\'n\',this)"><div style="font-weight:700;font-size:1.1rem;color:var(--er);">N</div><div style="font-weight:700;color:var(--er);margin-top:5px;" id="pn">0</div><div style="font-size:.72rem;color:var(--t3);">ไม่เข้าใจ</div></div></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:.8rem;color:var(--t3);">รวม:</span><span id="ptot" style="font-weight:700;color:var(--cy);">0</span><span style="font-size:.8rem;color:var(--t3);">โหวต</span></div><button class="btn btn-g btn-sm" onclick="App.resetPoll()">รีเซตผล</button>';
+    }else if(t==='msgboard'){
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">กระดานข้อความสด</div><div style="display:flex;gap:8px;margin-bottom:10px;"><select class="fc" id="msgRm" style="flex:1;" onchange="App.refreshMsgBoard(true)">'+Object.keys(STUDENTS[S.tab]).map(function(r){return '<option>'+r+'</option>';}).join('')+'</select><button class="btn btn-d btn-sm" onclick="App.clearMsgBoard()">ลบทั้งหมด</button></div><div id="msgList" style="max-height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div><div style="font-size:.7rem;color:var(--t4);margin-top:8px;text-align:center;">🔄 อัปเดตอัตโนมัติทุก 4 วินาที ขณะเปิดหน้านี้ค้างไว้</div>';
+      App.refreshMsgBoard(true);
+      clearInterval(S.msgIv);
+      S.msgIv=setInterval(function(){App.refreshMsgBoard(false);},4000);
     }
   },
-  backTool:()=>{App.stopNoise();App.tmrExitFS();clearInterval(S.tmrIv);S.tmrOn=false;App.releaseWakeLock();$('tgMain').style.display='grid';$('tgPanel').style.display='none';$('tgBack').style.display='none';UI.h('tgPanel','');},
+  closeTools:()=>{App.backTool();closeM('mTools');},
+  _esc:(s)=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'),
+  openMsgSend:()=>{UI.sv('msgText','');UI.h('msgCharCount','0');openM('mMsgSend');},
+  sendMsg:async()=>{
+    const txt=UI.v('msgText').trim();
+    if(!txt)return UI.toast('พิมพ์ข้อความก่อนส่งครับ','wn');
+    if(txt.length>300)return UI.toast('ข้อความยาวเกินไป (ไม่เกิน 300 ตัวอักษร)','wn');
+    const r=await API.call('postMessage',{subject:S.subj,room:S.room,student:S.stu,message:txt});
+    if(r&&r.success){UI.toast('ส่งข้อความแล้ว ครูจะเห็นบนจอเลยครับ','ok');closeM('mMsgSend');}
+    else UI.toast((r&&r.error)||'ส่งข้อความไม่สำเร็จ','er');
+  },
+  refreshMsgBoard:async(showToastOnFail)=>{
+    const rm=UI.v('msgRm');if(!rm)return;
+    const r=await API.call('getMessages',{subject:S.tab,room:rm});
+    const list=$('msgList');if(!list)return; // ผู้ใช้อาจปิดแผงไปแล้วระหว่างรอ
+    if(!r||r.error){if(showToastOnFail)UI.toast('โหลดข้อความไม่สำเร็จ','er');return;}
+    const msgs=r.messages||[];S.msgCache=msgs;
+    UI.h('msgList',msgs.length?msgs.map(function(m){
+      return '<div style="background:var(--in-b);border:1px solid var(--in-bd);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">'
+        +'<div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:.82rem;color:var(--cy);margin-bottom:2px;">'+App._esc(m.student)+'</div>'
+        +'<div style="font-size:.92rem;color:var(--t1);word-break:break-word;white-space:pre-wrap;">'+App._esc(m.message)+'</div>'
+        +'<div style="font-size:.68rem;color:var(--t4);margin-top:4px;">'+App._esc(m.time)+'</div></div>'
+        +'<button class="btn btn-d btn-sm" onclick="App.delMsg(\''+m.id+'\')">ลบ</button></div>';
+    }).join(''):'<div style="text-align:center;padding:26px 10px;color:var(--t3);font-size:.85rem;">ยังไม่มีข้อความในห้องนี้<br>รอนักเรียนพิมพ์เข้ามาได้เลยครับ</div>');
+  },
+  delMsg:async(id)=>{
+    const r=await API.call('deleteMessage',{id});
+    if(r&&r.success)App.refreshMsgBoard(false);
+    else UI.toast((r&&r.error)||'ลบไม่สำเร็จ','er');
+  },
+  clearMsgBoard:async()=>{
+    const rm=UI.v('msgRm');if(!rm)return;
+    if(!confirm('ยืนยันลบข้อความทั้งหมดในห้อง '+rm+' หรือไม่?'))return;
+    const r=await API.call('clearMessages',{subject:S.tab,room:rm});
+    if(r&&r.success){UI.toast('ลบข้อความทั้งหมดแล้ว','ok');App.refreshMsgBoard(false);}
+    else UI.toast((r&&r.error)||'ลบไม่สำเร็จ','er');
+  },
+  backTool:()=>{App.stopNoise();App.tmrExitFS();clearInterval(S.tmrIv);S.tmrOn=false;App.releaseWakeLock();clearInterval(S.msgIv);S.msgIv=null;$('tgMain').style.display='grid';$('tgPanel').style.display='none';$('tgBack').style.display='none';UI.h('tgPanel','');},
   doRand:()=>{
     const list=STUDENTS[S.tab][UI.v('randRm')];if(!list)return;
     clearInterval(S.randIv);let ticks=0;
