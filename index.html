@@ -1,1895 +1,664 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ระบบส่งงานฟิสิกส์ ครูณัฐพล สุขยานุดิษฐ  โรงเรียนสนมวิทยาคาร</title>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-/* CSS VARIABLES (Muted/Dark vs Light Theme) */
-:root {
-  /* Liquid Glass — dark */
-  --wallpaper: #000000;
-  --mesh1: rgba(10,132,255,.28); --mesh2: rgba(191,90,242,.20); --mesh3: rgba(255,55,95,.14);
-  --g0: rgba(20,20,22,.62); --g1: rgba(36,36,40,.66); --gb: rgba(255,255,255,.09); --gbs: rgba(255,255,255,.16);
-  --t1: #f5f5f7; --t2: rgba(235,235,245,.82); --t3: rgba(235,235,245,.58); --t4: rgba(235,235,245,.38);
-  --ac: #0a84ff; --ac-h: #409cff; --ac-bg: rgba(10,132,255,.18);
-  --ok: #30d158; --ok-b: rgba(48,209,88,.16); --ok-bd: rgba(48,209,88,.35);
-  --er: #ff453a; --er-b: rgba(255,69,58,.16); --er-bd: rgba(255,69,58,.35);
-  --wn: #ff9f0a; --wn-b: rgba(255,159,10,.16); --wn-bd: rgba(255,159,10,.35);
-  --cy: #64d2ff; --cy-d: rgba(100,210,255,.18);
-  --ph3: #bf5af2; --ph3-b: rgba(191,90,242,.18);
-  --ph5: #ff375f; --ph5-b: rgba(255,55,95,.18);
-  --in-b: rgba(120,120,128,.16); --in-bd: rgba(120,120,128,.3);
-  --glass-blur: blur(28px) saturate(180%);
-  --glass-blur-lite: blur(16px) saturate(160%);
-  --r-lg: 26px; --r-md: 18px; --r-sm: 12px; --r-xs: 8px; --r-pill: 980px;
-  --sh-1: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.28);
-  --sh-2: 0 20px 50px rgba(0,0,0,.45);
-  --spring: cubic-bezier(.22,1,.36,1);
-  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Kanit", "Sukhumvit Set", sans-serif;
-}
-[data-theme="light"] {
-  --wallpaper: #eef1f6;
-  --mesh1: rgba(10,132,255,.16); --mesh2: rgba(175,82,222,.12); --mesh3: rgba(255,45,85,.10);
-  --g0: rgba(255,255,255,.55); --g1: rgba(255,255,255,.72); --gb: rgba(60,60,67,.12); --gbs: rgba(60,60,67,.2);
-  --t1: #1c1c1e; --t2: rgba(60,60,67,.85); --t3: rgba(60,60,67,.6); --t4: rgba(60,60,67,.4);
-  --ac: #007aff; --ac-h: #0062cc; --ac-bg: rgba(0,122,255,.12);
-  --ok: #34c759; --ok-b: rgba(52,199,89,.14); --ok-bd: rgba(52,199,89,.35);
-  --er: #ff3b30; --er-b: rgba(255,59,48,.12); --er-bd: rgba(255,59,48,.32);
-  --wn: #ff9500; --wn-b: rgba(255,149,0,.14); --wn-bd: rgba(255,149,0,.32);
-  --cy: #32ade6; --cy-d: rgba(50,173,230,.16);
-  --ph3: #af52de; --ph3-b: rgba(175,82,222,.14);
-  --ph5: #ff2d55; --ph5-b: rgba(255,45,85,.14);
-  --in-b: rgba(118,118,128,.1); --in-bd: rgba(118,118,128,.22);
-  --sh-1: 0 1px 2px rgba(60,60,67,.08), 0 8px 24px rgba(60,60,67,.10);
-  --sh-2: 0 20px 50px rgba(60,60,67,.18);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-ui); -webkit-tap-highlight-color: transparent; }
-html { scroll-behavior: smooth; }
-body {
-  background:
-    radial-gradient(1100px 700px at 12% -10%, var(--mesh1), transparent 60%),
-    radial-gradient(900px 650px at 110% 10%, var(--mesh2), transparent 55%),
-    radial-gradient(900px 700px at 50% 120%, var(--mesh3), transparent 55%),
-    var(--wallpaper);
-  background-attachment: fixed;
-  color: var(--t1); line-height: 1.5; font-size: 15px; overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-:focus-visible { outline: 2px solid var(--ac); outline-offset: 2px; border-radius: 6px; }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
-}
 
-
-/* LAYOUT */
-.topbar { background: var(--g1); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); padding: calc(env(safe-area-inset-top) + 12px) 16px 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid var(--gb); position: sticky; top: 0; z-index: 50; }
-.tb-title { font-size: 1.15rem; font-weight: 700; color: var(--t1); letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px; }
-.tb-acts { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.con { max-width: 900px; margin: 0 auto; padding: 18px 14px; padding-bottom: calc(env(safe-area-inset-bottom) + 80px); }
-
-
-/* CARDS & CONTAINERS */
-.gc { background: var(--g1); -webkit-backdrop-filter: var(--glass-blur-lite); backdrop-filter: var(--glass-blur-lite); border: 1px solid var(--gb); border-radius: var(--r-lg); padding: 18px; margin-bottom: 16px; box-shadow: var(--sh-1); position: relative; }
-.gc::before { content:''; position:absolute; inset:0; border-radius: var(--r-lg); padding:1px; background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0) 40%); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
-.sg { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 16px; }
-.sc-card { background: var(--g1); -webkit-backdrop-filter: var(--glass-blur-lite); backdrop-filter: var(--glass-blur-lite); border: 1px solid var(--gb); padding: 16px 12px; border-radius: var(--r-md); text-align: center; box-shadow: var(--sh-1); transition: transform .35s var(--spring); }
-.sc-card:hover { transform: translateY(-2px); }
-.sc-num { font-size: 1.7rem; font-weight: 700; color: var(--t1); line-height: 1.1; margin-bottom: 4px; letter-spacing: -.02em; }
-.sc-lbl { font-size: .78rem; color: var(--t3); font-weight: 500; }
-
-
-/* FORMS */
-.fg { margin-bottom: 14px; }
-.lbl { display: block; font-size: .84rem; color: var(--t2); font-weight: 600; margin-bottom: 6px; }
-.fc { width: 100%; background: var(--in-b); border: 1px solid var(--in-bd); color: var(--t1); padding: 11px 14px; border-radius: var(--r-sm); outline: none; font-size: .95rem; transition: border .2s, box-shadow .2s; }
-.fc:focus { border-color: var(--ac); box-shadow: 0 0 0 4px var(--ac-bg); }
-.fc::placeholder { color: var(--t4); }
-select.fc { appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill="%23888890" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 20px; padding-right: 34px; }
-
-
-/* BUTTONS */
-.btn { border: none; border-radius: var(--r-pill); padding: 9px 18px; font-size: .92rem; font-weight: 600; cursor: pointer; transition: transform .28s var(--spring), background .15s, opacity .15s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; -webkit-tap-highlight-color: transparent; }
-.btn:active { transform: scale(.94); }
-.btn-p { background: var(--ac); color: #fff; box-shadow: 0 6px 16px var(--ac-bg); }
-.btn-p:hover { background: var(--ac-h); }
-.btn-o { background: var(--in-b); border: 1px solid var(--ac); color: var(--ac); }
-.btn-g { background: var(--in-b); border: 1px solid var(--in-bd); color: var(--t1); }
-.btn-d { background: var(--er-b); color: var(--er); }
-.btn-ok { background: var(--ok-b); color: var(--ok); }
-.btn-sm { padding: 6px 13px; font-size: .8rem; }
-.btn-lg { padding: 14px 20px; font-size: 1rem; width: 100%; }
-.btn-3 { background: var(--ph3); color: #fff; }
-.btn-5 { background: var(--ph5); color: #fff; }
-.btn-ig { background: linear-gradient(45deg, #f9ce34 0%, #ee2a7b 45%, #6228d7 100%); color: #fff; box-shadow: 0 6px 16px rgba(238,42,123,.35); }
-
-
-/* TABS (segmented control) */
-.stab { background: transparent; color: var(--t3); border: none; padding: 9px 16px; border-radius: var(--r-pill); font-weight: 600; cursor: pointer; flex: 1; text-align: center; transition: .25s var(--spring); font-size: .9rem; }
-.stab.on { background: var(--g1); color: var(--ac); box-shadow: var(--sh-1); }
-div:has(> .stab) { background: var(--in-b); border: 1px solid var(--in-bd); border-radius: var(--r-pill); padding: 4px; }
-
-
-/* ACCORDION (CHAPTERS) */
-.ch-blk { border: 1px solid var(--gb); border-radius: var(--r-md); margin-bottom: 10px; background: var(--g1); overflow: hidden; box-shadow: var(--sh-1); }
-.ch-hdr { padding: 14px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: transparent; border-bottom: 1px solid transparent; transition: background .2s; }
-.ch-hdr:hover { background: var(--in-b); }
-.ch-hdr.open { border-bottom-color: var(--gb); }
-.ch-title { font-size: 1rem; font-weight: 700; color: var(--t1); display: flex; align-items: center; gap: 10px; }
-.ch-meta { display: flex; align-items: center; gap: 10px; }
-.ch-arr { font-size: 1.1rem; color: var(--t4); transition: transform .35s var(--spring); }
-.ch-arr.open { transform: rotate(180deg); }
-.ch-body { display: none; padding: 8px; }
-.ch-body.open { display: block; animation: fd .3s var(--spring); }
-
-
-/* ASSIGNMENT ITEMS */
-.ai { background: var(--in-b); border-radius: var(--r-sm); padding: 12px; margin-bottom: 8px; border: 1px solid var(--in-bd); display: flex; justify-content: space-between; align-items: center; transition: .25s var(--spring); }
-.ai.cl { cursor: pointer; }
-.ai.cl:hover { border-color: var(--ac); background: var(--ac-bg); transform: translateY(-1px); }
-.ai-info { flex: 1; min-width: 0; padding-right: 12px; }
-.ai-name { font-weight: 700; font-size: .98rem; color: var(--t1); margin-bottom: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
-.ai-meta { font-size: .78rem; color: var(--t4); }
-.ai-acts { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-
-
-/* BADGES */
-.bd { display: inline-block; padding: 3px 9px; border-radius: var(--r-pill); font-size: .72rem; font-weight: 700; letter-spacing: .02em; }
-.bd-ok { background: var(--ok-b); color: var(--ok); }
-.bd-er { background: var(--er-b); color: var(--er); }
-.bd-wn { background: var(--wn-b); color: var(--wn); }
-.bd-bl { background: var(--ac-bg); color: var(--ac); }
-.bd-new { background: rgba(236,72,153,.15); color: #ec4899; }
-
-
-/* PROGRESS */
-.pw { width: 100%; background: var(--in-b); height: 7px; border-radius: var(--r-pill); overflow: hidden; margin-top: 6px; }
-.pf { height: 100%; background: linear-gradient(90deg, var(--ac), var(--cy)); border-radius: var(--r-pill); transition: width .6s var(--spring); }
-
-
-/* TABLE */
-.tw { width: 100%; overflow-x: auto; border-radius: var(--r-md); border: 1px solid var(--gb); background: var(--g1); -webkit-backdrop-filter: var(--glass-blur-lite); backdrop-filter: var(--glass-blur-lite); }
-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-th, td { padding: 13px 14px; text-align: left; border-bottom: 1px solid var(--gb); font-size: .88rem; }
-th { background: transparent; font-weight: 600; color: var(--t3); position: sticky; top: 0; white-space: nowrap; backdrop-filter: var(--glass-blur-lite); }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: var(--ac-bg); }
-tr { cursor: pointer; transition: background .15s; }
-
-
-/* SIDE PANEL */
-.spOv { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(4px); z-index: 100; opacity: 0; pointer-events: none; transition: .35s var(--spring); }
-.spOv.open { opacity: 1; pointer-events: auto; }
-.sp { position: fixed; top: 0; right: -440px; width: 100%; max-width: 420px; height: 100vh; background: var(--g1); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); z-index: 110; box-shadow: var(--sh-2); transition: right .45s var(--spring); display: flex; flex-direction: column; border-left: 1px solid var(--gb); }
-.sp.open { right: 0; }
-.sp-hdr { padding: calc(env(safe-area-inset-top) + 16px) 16px 16px; background: transparent; border-bottom: 1px solid var(--gb); display: flex; justify-content: space-between; align-items: center; }
-.sp-con { flex: 1; overflow-y: auto; padding: 16px; }
-
-
-/* MODALS */
-.moOv { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(4px); z-index: 120; display: none; align-items: center; justify-content: center; padding: 16px; opacity: 0; transition: .25s; }
-.moOv.open { display: flex; opacity: 1; }
-.mo { background: var(--g1); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); border-radius: var(--r-lg); width: 100%; max-width: 450px; border: 1px solid var(--gb); transform: scale(.92) translateY(16px); transition: .4s var(--spring); display: flex; flex-direction: column; max-height: 90vh; box-shadow: var(--sh-2); }
-.moOv.open .mo { transform: scale(1) translateY(0); }
-.mo-hdr { padding: 16px 20px; border-bottom: 1px solid var(--gb); display: flex; justify-content: space-between; align-items: center; background: transparent; border-radius: var(--r-lg) var(--r-lg) 0 0; }
-.mo-con { padding: 20px; overflow-y: auto; flex: 1; }
-
-
-/* TOAST */
-.tb { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 20px); left: 50%; transform: translateX(-50%); z-index: 200; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
-.toast { background: var(--g1); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); border: 1px solid var(--gb); color: var(--t1); padding: 11px 20px; border-radius: var(--r-pill); font-weight: 600; font-size: .88rem; box-shadow: var(--sh-2); animation: tIn .4s var(--spring); display: flex; align-items: center; gap: 8px; }
-.toast.ok { box-shadow: var(--sh-2), inset 0 0 0 1px var(--ok-bd); }
-.toast.er { box-shadow: var(--sh-2), inset 0 0 0 1px var(--er-bd); }
-.toast.wn { box-shadow: var(--sh-2), inset 0 0 0 1px var(--wn-bd); }
-@keyframes tIn { from { opacity: 0; transform: translateY(15px) scale(.92); } to { opacity: 1; transform: translateY(0) scale(1); } }
-
-
-/* LOADER */
-.ldOv { position: fixed; inset: 0; background: rgba(0,0,0,.55); backdrop-filter: blur(8px); z-index: 300; display: none; align-items: center; justify-content: center; flex-direction: column; color: #fff; }
-.spn { width: 44px; height: 44px; border: 4px solid rgba(255,255,255,.2); border-top-color: var(--ac); border-radius: 50%; animation: sp .8s linear infinite; margin-bottom: 16px; }
-@keyframes sp { to { transform: rotate(360deg); } }
-
-
-/* UTILS */
-.sec-title { font-size: 1.05rem; font-weight: 700; color: var(--t1); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; letter-spacing: -.01em; }
-.sec-title::before { content:''; display:inline-block; width:4px; height:16px; background:linear-gradient(180deg, var(--ac), var(--cy)); border-radius:2px; }
-.page { display: none; animation: fd .35s var(--spring); }
-.page.active { display: block; }
-@keyframes fd { from{opacity:0; transform: translateY(6px);} to{opacity:1; transform: translateY(0);} }
-
-
-/* HOME HERO */
-.hero { text-align: center; padding: calc(env(safe-area-inset-top) + 56px) 20px 44px; border-bottom: 1px solid var(--gb); margin-bottom: 24px; position: relative; overflow: hidden; }
-.hero-bg { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 50% 30%, var(--ac-bg) 0%, transparent 45%); opacity: .8; z-index: 0; pointer-events: none; }
-.hero-c { position: relative; z-index: 1; }
-.h-ico { width: 76px; height: 76px; background: linear-gradient(150deg, var(--ac), var(--cy)); color: #fff; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; box-shadow: 0 14px 32px var(--ac-bg), inset 0 1px 1px rgba(255,255,255,.4); }
-.h-ico svg { width: 40px; height: 40px; }
-.sj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 450px; margin: 0 auto; }
-.sj-c { background: var(--g1); -webkit-backdrop-filter: var(--glass-blur-lite); backdrop-filter: var(--glass-blur-lite); border: 1px solid var(--gb); padding: 22px 16px; border-radius: var(--r-lg); text-align: center; cursor: pointer; transition: transform .35s var(--spring), box-shadow .35s var(--spring), border-color .35s; box-shadow: var(--sh-1); }
-.sj-c:hover { border-color: var(--ac); transform: translateY(-4px) scale(1.01); box-shadow: 0 16px 30px var(--ac-bg); }
-.sj-c:active { transform: translateY(-1px) scale(.98); }
-.sj-c.p3:hover { border-color: var(--ph3); box-shadow: 0 16px 30px var(--ph3-b); }
-.sj-c.p5:hover { border-color: var(--ph5); box-shadow: 0 16px 30px var(--ph5-b); }
-.sj-i { width: 52px; height: 52px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
-.sj-c.p3 .sj-i { background: var(--ph3-b); color: var(--ph3); }
-.sj-c.p5 .sj-i { background: var(--ph5-b); color: var(--ph5); }
-
-
-/* STEP WIZARD */
-.st { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; position: relative; padding: 0 10px; }
-.st::before { content:''; position: absolute; top: 14px; left: 30px; right: 30px; height: 2px; background: var(--gb); z-index: 0; }
-.st-i { position: relative; z-index: 1; width: 30px; height: 30px; border-radius: 50%; background: var(--g1); border: 2px solid var(--gb); display: flex; align-items: center; justify-content: center; font-size: .85rem; font-weight: 700; color: var(--t4); transition: .35s var(--spring); }
-.st-i.active { border-color: var(--ac); background: var(--ac); color: #fff; box-shadow: 0 0 0 5px var(--ac-bg); }
-
-
-/* SUB BOX */
-.sub-box { padding: 10px 12px; border-radius: 8px; margin-top: 8px; font-size: .82rem; display: flex; align-items: flex-start; gap: 10px; }
-.sub-box.mis { background: var(--er-b); border: 1px solid var(--er-bd); }
-.sub-box.sub { background: var(--ok-b); border: 1px solid var(--ok-bd); }
-.sub-lnk { display: inline-block; padding: 3px 8px; background: var(--g1); border: 1px solid var(--ok-bd); border-radius: 5px; color: var(--ok); text-decoration: none; font-weight: 600; margin-top: 5px; margin-right: 5px; }
-
-
-/* PANEL ACCORDION */
-.pc-blk { margin-bottom: 10px; border-radius: var(--r-sm); overflow: hidden; }
-.pc-hdr { background: var(--in-b); padding: 12px 14px; border: 1px solid var(--in-bd); display: flex; align-items: center; gap: 10px; cursor: pointer; transition: .2s; }
-.pc-hdr:hover { background: var(--ac-bg); }
-.pc-body { border: 1px solid var(--in-bd); border-top: none; background: var(--g1); display: none; }
-.pc-body.open { display: block; animation: fd .3s var(--spring); }
-.asn-row { padding: 14px; border-bottom: 1px solid var(--gb); }
-.asn-row:last-child { border-bottom: none; }
-.asn-name { font-weight: 700; font-size: .95rem; color: var(--t1); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-.asn-max { font-size: .75rem; color: var(--t4); font-weight: 500; }
-.asn-row.missing { border-left: 3px solid var(--er); }
-.asn-row.unmarked { border-left: 3px solid var(--wn); }
-.asn-row.graded { border-left: 3px solid var(--ok); }
-.asn-row.resubmitted { border-left: 3px solid var(--cy); background: var(--cy-d); }
-.grd-sec { background: var(--in-b); padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid var(--in-bd); }
-.qsw { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; }
-.qsb { padding: 6px 12px; border: 1px solid var(--gb); background: var(--g1); color: var(--t2); border-radius: 6px; cursor: pointer; font-weight: 700; font-size: .88rem; transition: .2s; }
-.qsb.on { background: var(--cy); color: #fff; border-color: var(--cy); }
-
-
-/* DOT INDICATORS */
-.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
-.dot-wn { background: var(--wn); box-shadow: 0 0 6px var(--wn); }
-.dot-ok { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
-.dot-cy { background: var(--cy); box-shadow: 0 0 6px var(--cy); animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%{transform:scale(.9);opacity:.7;} 50%{transform:scale(1.2);opacity:1;} 100%{transform:scale(.9);opacity:.7;} }
-
-
-/* RESOURCE LINKS */
-.res-sec { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 5px; }
-.res-lnk { display: inline-block; font-size: .75rem; padding: 3px 8px; background: var(--in-b); border: 1px solid var(--in-bd); border-radius: 4px; color: var(--t2); text-decoration: none; transition: .2s; }
-.res-lnk:hover { border-color: var(--ac); color: var(--ac); }
-.res-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid var(--gb); border-radius: 8px; margin-bottom: 8px; background: var(--g0); }
-.res-highlight { background: var(--ac-bg); border: 1px solid var(--ac); padding: 12px; border-radius: 8px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
-
-
-/* THEME TOGGLE */
-.th-sw { display: flex; background: var(--in-b); border: 1px solid var(--in-bd); border-radius: var(--r-pill); overflow: hidden; padding: 3px; }
-.th-btn { background: transparent; border: none; padding: 5px 11px; font-size: .75rem; color: var(--t3); cursor: pointer; font-weight: 600; border-radius: var(--r-pill); transition: .25s var(--spring); }
-.th-btn.on { background: var(--g1); color: var(--t1); box-shadow: var(--sh-1); }
-
-
-/* MISSING LIST */
-.miss-bd { display: inline-block; background: var(--er-b); color: var(--er); border: 1px solid var(--er-bd); padding: 4px 10px; border-radius: var(--r-pill); font-size: .75rem; font-weight: 700; cursor: pointer; transition: .2s; }
-.miss-bd:hover { background: var(--er); color: #fff; }
-.miss-lst { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
-.miss-stu { background: var(--in-b); border: 1px solid var(--in-bd); padding: 7px 10px; border-radius: var(--r-xs); font-size: .82rem; color: var(--t2); }
-
-
-/* LOGIN */
-.login-ico { width: 76px; height: 76px; background: var(--in-b); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--ac); border: 1px solid var(--in-bd); box-shadow: var(--sh-1); }
-.login-ico svg { width: 36px; height: 36px; }
-
-
-/* TOOLS DASHBOARD (TEACHER) */
-.tg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-.tg-c { background: var(--in-b); border: 1px solid var(--in-bd); padding: 16px; border-radius: var(--r-md); text-align: center; cursor: pointer; transition: .3s var(--spring); display: flex; flex-direction: column; align-items: center; }
-.tg-c:hover { border-color: var(--ac); background: var(--ac-bg); transform: translateY(-2px); }
-.tg-i { width: 44px; height: 44px; background: var(--g1); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; color: var(--ac); box-shadow: var(--sh-1); }
-
-
-/* TIMER & NOISE */
-.timer-d { font-size: 3.5rem; font-weight: 700; color: var(--t1); text-align: center; font-variant-numeric: tabular-nums; line-height: 1; margin: 20px 0; letter-spacing: -0.02em; }
-.noise-lv { height: 24px; background: var(--in-b); border-radius: 12px; overflow: hidden; border: 1px solid var(--gb); margin-top: 10px; }
-.noise-b { height: 100%; width: 0%; transition: width .1s, background .2s; }
-#randDisp { text-align: center; font-size: 1.4rem; font-weight: 700; color: var(--cy); padding: 20px; margin: 10px 0; background: var(--in-b); border-radius: 12px; border: 1px dashed var(--cy); min-height: 80px; display: flex; align-items: center; justify-content: center; }
-
-
-/* EXAM BLOCK */
-.exam-blk { background: var(--g0); border: 1px solid var(--gb); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
-.exam-blk-title { font-size: .9rem; font-weight: 700; color: var(--t1); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-.exam-blk-title::before { content:''; width: 12px; height: 12px; background: var(--ph5); border-radius: 3px; display: inline-block; }
-.ph5-panel { background: var(--ph5-b); border: 1px solid rgba(244,63,94,.3); border-radius: 8px; }
-
-
-/* FORMULA */
-.fm-grid { display: grid; grid-template-columns: 1fr; gap: 8px; max-height: 350px; overflow-y: auto; padding-right: 5px; }
-.fm-item { padding: 10px; background: var(--g1); border: 1px solid var(--gb); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-.fm-sym { font-family: monospace; font-weight: 700; color: var(--cy); font-size: .95rem; }
-
-/* === NEW: FULLSCREEN TIMER === */
-.tmr-fs { position: fixed; inset: 0; background: #000; color: #fff; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 400; }
-.tmr-fs.open { display: flex; }
-.tmr-fs-lbl { font-size: 1rem; letter-spacing: .1em; color: rgba(255,255,255,.5); font-weight: 600; margin-bottom: 10px; text-transform: uppercase; }
-.tmr-fs-num { font-size: 20vw; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; line-height: 1; }
-.tmr-fs-exit { position: absolute; top: max(env(safe-area-inset-top),20px); right: 20px; }
-.tmr-fs-ctl { display: flex; gap: 12px; margin-top: 34px; }
-.wl-badge { display: inline-flex; align-items: center; gap: 5px; font-size: .72rem; color: var(--ok); background: var(--ok-b); border: 1px solid var(--ok-bd); padding: 3px 9px; border-radius: var(--r-pill); font-weight: 700; margin-top: 10px; }
-
-/* === NEW: SHARE CARD / SCORE === */
-.score-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-.score-block { border-radius: var(--r-md); padding: 16px 12px; text-align: center; }
-.score-block.sb-collect { background: linear-gradient(135deg, var(--ac-bg), rgba(10,132,255,.06)); border: 1px solid var(--ac); }
-.score-block.sb-exam { background: linear-gradient(135deg, var(--ph5-b), rgba(255,55,95,.06)); border: 1px solid rgba(244,63,94,.4); }
-.score-block-num { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
-.sb-collect .score-block-num { color: var(--ac); }
-.sb-exam .score-block-num { color: var(--ph5); }
-.score-block-sub { font-size: .74rem; color: var(--t3); margin-top: 6px; font-weight: 600; line-height: 1.4; }
-.cat-brk { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 0; margin-bottom: 16px; }
-.cat-brk-c { background: var(--g1); border: 1px solid var(--gb); border-radius: 10px; padding: 10px; text-align: center; }
-.cat-brk-n { font-size: 1.15rem; font-weight: 700; color: var(--t1); }
-.cat-brk-l { font-size: .68rem; color: var(--t3); margin-top: 2px; }
-.bd-cat { background: rgba(100,210,255,.14); color: var(--cy); }
-#shareCanvasWrap { width: 100%; max-width: 360px; aspect-ratio: 720 / 1560; margin: 0 auto 14px; background: #000; border-radius: 14px; overflow: hidden; }
-#shareCanvas { width: 100%; height: 100%; display: block; }
-.avatar-pick { display: flex; align-items: center; gap: 12px; background: var(--in-b); border: 1px solid var(--in-bd); border-radius: 10px; padding: 10px; margin-bottom: 12px; }
-.avatar-preview { width: 46px; height: 46px; border-radius: 50%; background: var(--g0); border: 1px solid var(--gb); object-fit: cover; flex-shrink: 0; }
-
-/* === PRESENTATION MODE (โหมดนำเสนอผลงาน) === */
-.pr-hero { text-align: center; padding: 44px 20px 36px; border-radius: var(--r-lg); background: linear-gradient(135deg, var(--ac-bg), var(--ph3-b)); border: 1px solid var(--ac); margin-bottom: 22px; }
-.pr-hero-logo { width: 68px; height: 68px; background: linear-gradient(150deg, var(--ac), var(--cy)); color: #fff; border-radius: 22px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; box-shadow: 0 14px 32px var(--ac-bg); }
-.pr-hero-logo svg { width: 36px; height: 36px; }
-.pr-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 24px; }
-.pr-stat-c { background: var(--g1); border: 1px solid var(--gb); border-radius: var(--r-md); padding: 20px 14px; text-align: center; box-shadow: var(--sh-1); }
-.pr-stat-n { font-size: 2rem; font-weight: 700; color: var(--ac); letter-spacing: -0.03em; line-height: 1; }
-.pr-stat-l { font-size: .8rem; color: var(--t3); margin-top: 8px; font-weight: 600; }
-.pr-feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px; }
-.pr-feat-c { background: var(--g1); border: 1px solid var(--gb); border-radius: var(--r-md); padding: 18px; box-shadow: var(--sh-1); }
-.pr-feat-i { font-size: 1.6rem; margin-bottom: 8px; }
-.pr-feat-t { font-weight: 700; font-size: .95rem; color: var(--t1); margin-bottom: 4px; }
-.pr-feat-d { font-size: .8rem; color: var(--t3); line-height: 1.5; }
-.pr-room-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.pr-room-lbl { width: 150px; flex-shrink: 0; font-size: .82rem; font-weight: 600; color: var(--t2); }
-.pr-room-bar { flex: 1; }
-.pr-room-pct { width: 52px; flex-shrink: 0; text-align: right; font-size: .82rem; font-weight: 700; color: var(--ac); }
-@media print {
-  .topbar, .th-sw, .btn { display: none !important; }
-  body { background: #fff !important; color: #000 !important; }
-  .gc, .pr-stat-c, .pr-feat-c { box-shadow: none !important; border: 1px solid #ccc !important; background: #fff !important; }
-  .con { padding: 0 !important; max-width: 100% !important; }
-  .pr-hero { background: #f5f5f7 !important; border-color: #ccc !important; }
-}
-</style>
-</head>
-<body>
-
-
-<!-- LOADER -->
-<div class="ldOv" id="ldr"><div class="spn"></div><div style="font-weight:600;letter-spacing:.05em;">กำลังโหลดข้อมูล...</div></div>
-
-
-<!-- TOAST BOX -->
-<div class="tb" id="toastBox"></div>
-
-
-<!-- MODAL: RESOURCES -->
-<div class="moOv" id="mRes">
-  <div class="mo">
-    <div class="mo-hdr"><div style="font-weight:700;font-size:1.05rem;" id="mResT">จัดการลิงก์</div><button class="btn btn-g btn-sm" onclick="closeM('mRes')">✕</button></div>
-    <div class="mo-con">
-      <div id="mResB" style="margin-bottom:16px;"></div>
-      <div style="background:var(--g0);padding:14px;border-radius:8px;border:1px dashed var(--gb);">
-        <div class="lbl">เพิ่มลิงก์ใหม่</div>
-        <div style="display:flex;gap:8px;margin-bottom:8px;">
-          <select class="fc" id="rType" style="width:100px;"><option value="doc">ใบงาน</option><option value="vid">วิดีโอ</option><option value="lab">การทดลอง</option><option value="lesson">บทเรียน</option><option value="link">อื่นๆ</option></select>
-          <input type="text" class="fc" id="rName" placeholder="ชื่อ (เช่น ใบงาน 1.1)" style="flex:1;">
-        </div>
-        <input type="url" class="fc" id="rUrl" placeholder="https://..." style="margin-bottom:10px;">
-        <button class="btn btn-p" style="width:100%;" onclick="App.addRes()">+ บันทึกสื่อ</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- MODAL: MISSING -->
-<div class="moOv" id="mMiss">
-  <div class="mo">
-    <div class="mo-hdr"><div style="font-weight:700;font-size:1.05rem;" id="mMissT">รายชื่อค้างส่ง</div><button class="btn btn-g btn-sm" onclick="closeM('mMiss')">✕</button></div>
-    <div class="mo-con" id="mMissB"></div>
-  </div>
-</div>
-
-
-<!-- MODAL: TEACHER TOOLS -->
-<div class="moOv" id="mTools">
-  <div class="mo">
-    <div class="mo-hdr">
-      <div style="font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:8px;">อำนวยการสอน</div>
-      <button class="btn btn-g btn-sm" onclick="App.closeTools()">✕</button>
-    </div>
-    <div class="mo-con" style="padding:0;display:flex;flex-direction:column;flex:1;overflow:hidden;">
-      <iframe id="toolsFrame" src="teach-tools.html" allow="microphone; fullscreen" allowfullscreen style="width:100%;flex:1;min-height:70vh;border:none;background:transparent;"></iframe>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: SHARE SCORE -->
-<div class="moOv" id="mShare">
-  <div class="mo">
-    <div class="mo-hdr"><div style="font-weight:700;font-size:1.05rem;">แชร์คะแนนของฉัน 📸</div><button class="btn btn-g btn-sm" onclick="closeM('mShare')">✕</button></div>
-    <div class="mo-con">
-      <div id="shareCanvasWrap"><canvas id="shareCanvas" width="720" height="1560"></canvas></div>
-      <div class="avatar-pick">
-        <img id="avatarPrev" class="avatar-preview" src="" style="display:none;">
-        <div style="flex:1;">
-          <div class="lbl" style="margin-bottom:4px;">แนบรูปเป็นพื้นหลังการ์ด (แนะนำ — เหมือน Strava)</div>
-          <input type="file" class="fc" id="avatarIn" accept="image/*" style="padding:7px 10px;font-size:.8rem;">
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <button class="btn btn-g" style="flex:1;" onclick="App.reshuffleQuote()">🎲 สุ่มคำคมใหม่</button>
-      </div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn btn-p btn-lg" style="flex:1;" onclick="App.downloadShare()">⬇️ บันทึกรูป</button>
-        <button class="btn btn-3 btn-lg" style="flex:1;" onclick="App.nativeShare()">📤 แชร์เลย</button>
-      </div>
-      <button class="btn btn-ig btn-lg" style="width:100%;margin-top:8px;" onclick="App.shareToInstagramStories()">📸 แชร์ไป Instagram Stories</button>
-      <div style="font-size:.7rem;color:var(--t4);margin-top:8px;line-height:1.6;text-align:center;">
-        iPhone: กดแล้วเปิดแอป IG พร้อมรูปให้เลยในหน้า Story (ต้องติดตั้ง Instagram ไว้ก่อน)<br>
-        Android: จะเปิดเมนูแชร์ของเครื่อง ให้เลือก Instagram แล้วเลือกโพสต์ลง Story/ฟีดได้เอง
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: SEND MESSAGE TO TEACHER (กระดานข้อความสด) -->
-<div class="moOv" id="mMsgSend">
-  <div class="mo">
-    <div class="mo-hdr"><div style="font-weight:700;font-size:1.05rem;">💬 ส่งข้อความถึงครู</div><button class="btn btn-g btn-sm" onclick="closeM('mMsgSend')">✕</button></div>
-    <div class="mo-con">
-      <div style="font-size:.78rem;color:var(--t3);margin-bottom:10px;">ข้อความจะขึ้นจอครูแบบสดในระบบอำนวยการสอน ใช้ถามคำถามหรือแจ้งสิ่งที่ไม่เข้าใจระหว่างเรียนได้เลยครับ</div>
-      <textarea id="msgText" class="fc" rows="4" maxlength="300" placeholder="พิมพ์ข้อความ เช่น คำถามเกี่ยวกับบทเรียน..." style="resize:vertical;" oninput="UI.h('msgCharCount',this.value.length)"></textarea>
-      <div style="text-align:right;font-size:.7rem;color:var(--t4);margin:4px 0 14px;"><span id="msgCharCount">0</span>/300</div>
-      <button class="btn btn-p btn-lg" onclick="App.sendMsg()">ส่งข้อความ</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- SIDE PANEL: GRADE -->
-<div class="spOv" id="spOv" onclick="closeSP()"></div>
-<div class="sp" id="sideP">
-  <div class="sp-hdr">
-    <div>
-      <div style="font-weight:700;font-size:1.2rem;color:var(--t1);" id="spN"></div>
-      <div style="font-size:.8rem;color:var(--t4);" id="spM"></div>
-    </div>
-    <button class="btn btn-g btn-sm" onclick="closeSP()">✕ ปิด</button>
-  </div>
-  <div class="sp-con" id="spB"></div>
-</div>
-
-
-<!-- PAGE: HOME -->
-<div id="pg-home" class="page active">
-  <div class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-c">
-      <div class="h-ico" id="homeLogo"></div>
-      <h1 style="font-size:1.9rem;font-weight:700;color:var(--t1);letter-spacing:-.5px;margin-bottom:6px;">ระบบติดตามการเรียน</h1>
-      <p style="color:var(--t3);font-size:.95rem;max-width:420px;margin:0 auto 4px;">รายวิชาฟิสิกส์ • ครูณัฐพล สุขยานุดิษฐ<br>กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี โรงเรียนสนมวิทยาคาร</p>
-    </div>
-  </div>
-  <div class="con" style="padding-top:0;">
-    <div class="sj-grid">
-      <div class="sj-c" id="nav-stu"><div class="sj-i" id="ico-stu" style="background:var(--ac-bg);color:var(--ac);"></div><div style="font-weight:700;font-size:1.1rem;color:var(--t1);">นักเรียน</div><div style="font-size:.78rem;color:var(--t3);margin-top:4px;">เช็คงาน & ส่งงาน</div></div>
-      <div class="sj-c" id="nav-tc"><div class="sj-i" id="ico-tc" style="background:var(--ok-b);color:var(--ok);"></div><div style="font-weight:700;font-size:1.1rem;color:var(--t1);">ครูผู้สอน</div><div style="font-size:.78rem;color:var(--t3);margin-top:4px;">ตรวจงาน & จัดการ</div></div>
-    </div>
-    <div style="text-align:center;margin-top:32px;color:var(--t4);font-size:.74rem;line-height:1.7;">
-      โรงเรียนสนมวิทยาคาร<br>สำนักงานเขตพื้นที่การศึกษามัธยมศึกษาสุรินทร์
-    </div>
-  </div>
-</div>
-
-
-<!-- PAGE: STUDENT -->
-<div id="pg-stu" class="page">
-  <div class="topbar">
-    <div class="tb-title">ส่งงานวิชาฟิสิกส์</div>
-    <div class="tb-acts"><div class="th-sw"><button class="th-btn" id="s-dk" onclick="setTh('dark')">มืด</button><button class="th-btn" id="s-lt" onclick="setTh('light')">สว่าง</button><button class="th-btn" id="s-au" onclick="setTh('auto')">Auto</button></div><button class="btn btn-o btn-sm" onclick="App.go('pg-home')">ออก</button></div>
-  </div>
-  <div class="con">
-    <div class="st">
-      <div class="st-i" id="st1">1</div><div class="st-i" id="st2">2</div><div class="st-i" id="st3">3</div><div class="st-i" id="st4">4</div>
-    </div>
-
-
-    <div class="gc" id="ss1">
-      <div class="sec-title">เลือกรายวิชา</div>
-      <div class="sj-grid">
-        <div class="sj-c p3" data-subj="ฟิสิกส์ 3"><div class="sj-i" id="sj-ico-3"></div><div style="font-weight:700;">ฟิสิกส์ 3 (ม.5)</div></div>
-        <div class="sj-c p5" data-subj="ฟิสิกส์ 5"><div class="sj-i" id="sj-ico-5"></div><div style="font-weight:700;">ฟิสิกส์ 5 (ม.6)</div></div>
-      </div>
-    </div>
-
-
-    <div class="gc" id="ss2" style="display:none;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><div class="sec-title" style="margin:0;">เลือกห้องเรียน</div><button class="btn btn-g btn-sm" onclick="App.step(1)">← กลับ</button></div>
-      <div class="sg" id="roomList"></div>
-    </div>
-
-
-    <div class="gc" id="ss3" style="display:none;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><div class="sec-title" style="margin:0;">เลือกชื่อ-นามสกุล</div><button class="btn btn-g btn-sm" onclick="App.step(2)">← กลับ</button></div>
-      <select class="fc" id="stuSel" style="margin-bottom:16px;font-weight:600;font-size:1rem;"></select>
-      <button class="btn btn-p btn-lg" onclick="App.confStu()">ตกลง เข้าสู่ระบบ</button>
-    </div>
-
-
-    <div id="ss4" style="display:none;">
-      <div class="gc" style="background:var(--ac-bg);border-color:var(--ac);text-align:center;">
-        <div style="font-size:.85rem;color:var(--t2);font-weight:600;margin-bottom:4px;">ยินดีต้อนรับ</div>
-        <div style="font-size:1.25rem;font-weight:700;color:var(--ac);" id="dName"></div>
-        <div style="display:flex;justify-content:center;gap:12px;margin-top:12px;flex-wrap:wrap;">
-          <button class="btn btn-p btn-sm" onclick="App.fetch(true)">รีเฟรชข้อมูล</button>
-          <button class="btn btn-g btn-sm" onclick="App.step(3)">เปลี่ยนชื่อ</button>
-          <button class="btn btn-3 btn-sm" onclick="App.openShare()">แชร์คะแนน 📸</button>
-          <button class="btn btn-g btn-sm" onclick="App.openMsgSend()">💬 ส่งข้อความถึงครู</button>
-        </div>
-      </div>
-
-      <div class="score-dual">
-        <div class="score-block sb-collect">
-          <div class="score-block-num" id="dScoreBig">0</div>
-          <div class="score-block-sub">คะแนนเก็บจากชิ้นงาน<br>(จาก <span id="dScoreMax">0</span> คะแนน • <span id="dScorePct">0%</span>)</div>
-        </div>
-        <div class="score-block sb-exam">
-          <div class="score-block-num" id="dExamBig">-</div>
-          <div class="score-block-sub" id="dExamSub">คะแนนรวม 100<br>(ครูกรอกเอง แยกจากคะแนนเก็บ)</div>
-        </div>
-      </div>
-      <div class="cat-brk" id="dCatBrk"></div>
-      
-      <div class="sg">
-        <div class="sc-card"><div class="sc-num" style="color:var(--cy);" id="dTotal">0</div><div class="sc-lbl">งานทั้งหมด</div></div>
-        <div class="sc-card" style="background:var(--ok-b);border-color:var(--ok-bd);"><div class="sc-num" style="color:var(--ok);" id="dDone">0</div><div class="sc-lbl">ส่งแล้ว</div></div>
-        <div class="sc-card" style="background:var(--er-b);border-color:var(--er-bd);"><div class="sc-num" style="color:var(--er);" id="dMiss">0</div><div class="sc-lbl">ค้างส่ง</div></div>
-      </div>
-      <div class="gc">
-        <div style="display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;margin-bottom:6px;"><span>ความคืบหน้า</span><span id="dPct" style="color:var(--ac)">0%</span></div>
-        <div class="pw" style="height:10px;border-radius:5px;"><div class="pf" id="dBar" style="width:0%"></div></div>
-      </div>
-
-
-      <!-- EXAM CARD -->
-      <div class="gc" id="examCard" style="background:var(--ph5-b);border-color:rgba(244,63,94,.3);">
-        <div class="sec-title" style="color:var(--ph5);">คะแนนสอบ / คะแนนเก็บ (100) — ครูกรอกเอง</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
-          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;min-height:58px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:.74rem;color:var(--t3);">เก็บก่อนกลางภาค (25)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exP">-</div></div>
-          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;min-height:58px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:.74rem;color:var(--t3);">สอบกลางภาค (20)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exM">-</div></div>
-          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;min-height:58px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:.74rem;color:var(--t3);">เก็บหลังกลางภาค (25)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exPo">-</div></div>
-          <div style="background:var(--g1);padding:10px;border-radius:8px;text-align:center;min-height:58px;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:.74rem;color:var(--t3);">สอบปลายภาค (30)</div><div style="font-size:1.1rem;font-weight:700;color:var(--t1);" id="exF">-</div></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;background:var(--g1);padding:12px;border-radius:8px;">
-          <span style="font-weight:700;font-size:.9rem;color:var(--t1);">รวมสุทธิ</span>
-          <div><span style="font-size:1.6rem;font-weight:700;color:var(--ph5);letter-spacing:-1px;" id="exT">-</span><span style="color:var(--t3);font-size:.8rem;font-weight:700;" id="exTMax"> / 100</span></div>
-        </div>
-        <div style="font-size:.68rem;color:var(--t4);margin-top:8px;text-align:center;">*ส่วนคะแนนสอบนี้ครูเป็นผู้กรอกเอง แยกต่างหากจากคะแนนเก็บชิ้นงานด้านบน</div>
-      </div>
-
-
-
-      <div class="gc"><div class="sec-title">รายการงานแยกตามบท</div><div id="stuAcc"></div></div>
-    </div>
-
-
-    <div class="gc" id="ss5" style="display:none;">
-      <div style="background:var(--in-b);padding:12px 14px;border-radius:8px;margin-bottom:16px;border:1px solid var(--in-bd);border-left:3px solid var(--ac);">
-        <div class="lbl">กำลังส่งงาน</div>
-        <div style="font-size:1.05rem;font-weight:700;color:var(--cy);margin-top:2px;" id="subAsnName"></div>
-      </div>
-      <div id="subResLinks" style="margin-bottom:12px;"></div>
-      <div class="fg"><label class="lbl">วางลิงก์งาน (Google Drive, Canva ฯลฯ)</label><input type="url" class="fc" id="linkIn" placeholder="https://..."></div>
-      <div style="text-align:center;margin:10px 0;color:var(--t4);font-weight:700;font-size:.8rem;">— หรือ —</div>
-      <div class="fg"><label class="lbl">อัปโหลดไฟล์งาน</label>
-        <div style="border:1.5px dashed var(--gbs);padding:16px;text-align:center;border-radius:12px;">
-          <input type="file" class="fc" id="fileIn" multiple accept="image/*,.pdf,.doc,.docx" style="border:none;background:transparent;color:var(--t2);">
-          <div style="font-size:.72rem;color:var(--t4);margin-top:5px;">แนบได้ 1-5 ไฟล์ (รวมไม่เกิน 20MB) <br>หากเป็นรูปภาพระบบจะต่อให้เป็นไฟล์เดียวอัตโนมัติ</div>
-        </div></div>
-      <div style="display:flex;gap:10px;margin-top:16px;">
-        <button class="btn btn-o btn-lg" style="flex:1;" onclick="App.step(4)">ยกเลิก</button>
-        <button class="btn btn-p btn-lg" style="flex:2;" onclick="App.subWork()">ยืนยันส่งงาน</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- PAGE: LOGIN -->
-<div id="pg-login" class="page">
-  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;">
-    <div class="gc" style="text-align:center;max-width:350px;width:100%;padding:36px;">
-      <div class="login-ico" id="loginIco"></div>
-      <h2 style="font-weight:700;margin-bottom:4px;color:var(--t1);">เข้าสู่ระบบครูผู้สอน</h2>
-      <p style="font-size:.78rem;color:var(--t3);margin-bottom:22px;">ครูณัฐพล สุขยานุดิษฐ • โรงเรียนสนมวิทยาคาร<br>สพม.สุรินทร์ 2569</p>
-      <input type="password" class="fc" id="pwIn" placeholder="รหัสผ่าน..." style="margin-bottom:12px;font-size:.95rem;text-align:center;">
-      <button class="btn btn-p btn-lg" id="btn-login" type="button">เข้าสู่ระบบ</button>
-      <button class="btn btn-g" id="btn-home" type="button" style="width:100%;margin-top:9px;">← กลับหน้าหลัก</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- PAGE: TEACHER -->
-<div id="pg-tc" class="page">
-  <div class="topbar">
-    <div><div class="tb-title">ระบบจัดการ (ครูผู้สอน)</div></div>
-    <div class="tb-acts">
-      <div class="th-sw"><button class="th-btn" id="t-dk" onclick="setTh('dark')">มืด</button><button class="th-btn" id="t-lt" onclick="setTh('light')">สว่าง</button><button class="th-btn" id="t-au" onclick="setTh('auto')">Auto</button></div>
-      <button class="btn btn-g btn-sm" onclick="App.fetch(true)">รีเฟรช</button>
-      <button class="btn btn-g btn-sm" onclick="openM('mTools')">อำนวยการสอน</button>
-      <button class="btn btn-3 btn-sm" onclick="App.goPresent()">📊 โหมดนำเสนอ</button>
-      <button class="btn btn-g btn-sm" onclick="API.export()">CSV ผลตรวจ</button>
-      <button class="btn btn-5 btn-sm" onclick="App.exportExamRoster()">📝 ใบกรอกคะแนนสอบ</button>
-      <button class="btn btn-o btn-sm" onclick="App.go('pg-home')">ออก</button>
-    </div>
-  </div>
-  <div class="con">
-    <div class="sg" id="tcSum"></div>
-    <div style="display:flex;gap:10px;margin-bottom:18px;">
-      <button class="stab on" id="tb3" onclick="App.setTab('ฟิสิกส์ 3')">ฟิสิกส์ 3 (ม.5)</button>
-      <button class="stab" id="tb5" onclick="App.setTab('ฟิสิกส์ 5')">ฟิสิกส์ 5 (ม.6)</button>
-    </div>
-
-
-    <div class="gc">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <div class="sec-title" style="margin:0;">จัดการงาน <span id="tcSubjN" class="cy-tag" style="font-size:.76rem;color:var(--cy);background:var(--cy-d);padding:2px 9px;border-radius:5px;"></span></div>
-        <button class="btn btn-p" onclick="App.togForm()">สร้างงานใหม่</button>
-      </div>
-      <div id="asnForm" style="display:none;background:var(--g0);padding:16px;border-radius:12px;margin-bottom:18px;border:1px solid var(--gb);">
-        <input type="hidden" id="asId">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div class="fg" style="grid-column:1/-1;"><label class="lbl">ชื่องาน (บังคับ)</label><input type="text" class="fc" id="asNm" placeholder="เช่น ครั้งที่ 1 โหลดไฟล์แล้วหรือยัง"></div>
-          <div class="fg"><label class="lbl">บทที่</label><select class="fc" id="asCh"><option value="1">บทที่ 1</option><option value="2">บทที่ 2</option><option value="3">บทที่ 3</option><option value="4">บทที่ 4</option><option value="5">บทที่ 5</option><option value="6">บทที่ 6</option></select></div>
-          <div class="fg"><label class="lbl">คะแนนเต็ม</label><input type="number" class="fc" id="asSc" value="10"></div>
-          <div class="fg"><label class="lbl">กำหนดส่ง</label><input type="date" class="fc" id="asDt"></div>
-          <div class="fg"><label class="lbl">ช่วงคะแนนเก็บ</label><select class="fc" id="asCat"><option value="pre">ก่อนกลางภาค</option><option value="post">หลังกลางภาค</option><option value="other">ไม่ระบุ / ทั่วไป</option></select></div>
-          <div class="fg" style="grid-column:1/-1;"><label class="lbl">คำอธิบาย</label><input type="text" class="fc" id="asDsc" placeholder="(ไม่บังคับ)"></div>
-        </div>
-        <div style="display:flex;gap:9px;margin-top:9px;">
-          <button class="btn btn-p" onclick="App.saveAsn()">บันทึกงาน</button>
-          <button class="btn btn-g" onclick="App.togForm()">ยกเลิก</button>
-        </div>
-      </div>
-      <div id="tcAcc"></div>
-    </div>
-
-
-    <div class="gc">
-      <div class="sec-title">สถานะการส่งงาน</div>
-      <div style="display:flex;gap:9px;margin-bottom:13px;flex-wrap:wrap;">
-        <select class="fc" id="roomF" onchange="App.renderTbl()" style="max-width:175px;"></select>
-        <input type="text" class="fc" id="search" placeholder="ค้นหาชื่อนักเรียน..." oninput="App.dbRender()" style="flex:1;min-width:155px;">
-        <select class="fc" id="statF" onchange="App.renderTbl()" style="max-width:175px;"><option value="">— ทุกสถานะ —</option><option value="m">ค้างส่ง</option><option value="c">ส่งครบ</option></select>
-      </div>
-      <div class="tw">
-        <table><thead><tr><th>ห้อง</th><th>ชื่อ-นามสกุล</th><th>ส่งแล้ว</th><th>ค้างส่ง</th><th>%</th><th>คะแนนเก็บ</th><th>คะแนนรวม 100</th></tr></thead><tbody id="tcTbl"></tbody></table>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PAGE: PRESENTATION MODE (โหมดนำเสนอผลงาน) -->
-<div id="pg-present" class="page">
-  <div class="topbar">
-    <div class="tb-title">โหมดนำเสนอผลงาน</div>
-    <div class="tb-acts">
-      <button class="btn btn-g btn-sm" onclick="App.fetch(true).then(App.renderPresent)">รีเฟรช</button>
-      <button class="btn btn-p btn-sm" onclick="window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
-      <button class="btn btn-o btn-sm" onclick="App.go('pg-tc')">← กลับ</button>
-    </div>
-  </div>
-  <div class="con" id="presentCon"></div>
-</div>
-
-<script>
-const STUDENTS={'ฟิสิกส์ 3':{'ม.5/1':['นายกนกศักดิ์ สีงาม','นายชยกร สมพันธ์','นายต้นตระกูล บุดดา','นายธนวัฒน์ บุญแสน','นายธนายุทธ วังศรี','นายธีรภัทร์ รุ่งเรือง','นายปวริศร์ ดวงเนตร','นายภควัตร อรุณหอม','นายวรากร ภูพันนา','นายวัชรสินธุ์ เกษใส','นายศิวัช วิถุนัด','นายนพนันท์ จันทะอ่อน','นายวุฒิชัย แสงสี','นายสุรพรชัย เสียมทอง','นางสาวกมลชนก บุตตัสสะ','นางสาวกันต์ฤทัย บุญมะยา','นางสาวจันทร์เพ็ญ สอนคำจันทร์','นางสาวจุฑาพร วิศาลศาสตร์บำรุง','นางสาวณัฐรินยา เสน่หา','นางสาวณิชนันทร์ สืบทอง','นางสาวธนัฐนันท์ บุญปั้ว','นางสาวปภาวรินทร์ โฆสิตดุลย์','นางสาวปรียดา พิศภิรมย์','นางสาวปาลิตา โรมพันธ์','นางสาวพิชญธิดา กัลยะกิติ','นางสาวอุษามณี พันธ์อินทร์ป้อ','นางสาวศิริลักษณ์ พิศภิรมย์'],'ม.5/2':['นายณปกร สำอางค์','นายแทนคุณ เกษรจันทร์','นายธีรวัฒน์ เกตไสย','นายนันทพัฒน์ พุดลา','นายภัทรธร เผือกนอก','นายศุภวิชญ์ คมกล้า','นายสิทธิชัย สิมนาม','นายสิทธินนท์ จันทร์ชื่น','นายสุทธิศักดิ์ หงษ์กรรณ์','นายณัฎฐชัย สุทธิ','นายสรวิชญ์ แสงภักดี','นางสาวกุลธิดา รัตน์ทอง','นางสาวกรชนก สะสมทรัพย์','นางสาวกัญญารัตน์ ชัยยิ่ง','นางสาวกัญญารัตน์ แสงพลอย','นางสาวพิณณ์ประภา เกตไสย์','นางสาววันวิสา ดวงเดือน','นางสาววิกานดา พางาม','เด็กหญิงศุทธวดี สิมมาวงษ์','นางสาวศุภิสรา โปยทอง','นางสาวชุติมา คำหอม','เด็กหญิงนนทิญาภรณ์ ตรองจิตร','นางสาวกัญจน์จิรา แก้วดี','นางสาวณัฐณิชา บุญแจ้ง','นางสาวบุณยานุช บุญสุข','นางสาวเบญญาภา เสรีภาพ','นางสาวสิริกรณ์ ธรรมรักษา','นางสาวเพชรลดา ปรารถนา'],'ม.5/3':['นายกิตติพศ โสนทอง','นายไกรวิชญ์ ฟองนวล','นายชยานันท์ พันนุรัตน์','นายชลธิต เจริญเมือง','นายปฏิวัติ ผาสุข','นายพัศนัย ศรีกุล','นายอติกานต์ มงคลแผ้ว','นายอนันดา ทองขนาน','นายจิรชยนต์ หมื่นเจริญ','นายภาณุวัตร ทองงาม','นางสาวกัญญรัตน์ ผึ่งผาย','นางสาวขวัญจิรา ศรงาม','นางสาวชลธิชา นวนดี','นางสาวณัฐธัญญา ไชโย','นางสาวธัญวรัตน์ สะสม','นางสาวธิดารัตน์ บุญช่วย','นางสาวนพิมประภา อินทร์งาม','นางสาวปิยาพัชร แซ่เตียว','นางสาวพิมลวรรณ นิลจันทร์','นางสาวสุชานาถ สำอางค์','นางสาวสุชาวดี บำรุงนาม','นางสาวสุริวิภา แข่งขัน','นางสาวปัทมวรรณ สีเป้ง','นางสาวปัณฑิตา พินโต','นางสาวกนกขวัญ กะการดี','นางสาวธัญชนก สันทอง','นางสาวสุกัญญา พัดพรม']},'ฟิสิกส์ 5':{'ม.6/1':['นายฆนรุจ ชัยภักดี','นายภูวนาท พรมแดน','นายรัฐพล ทองมาก','นายเอกณกร เจริญพร','นายพชรนันต์ จันดารักษ์','นายภัทรกร ชะช้างรัมย์','นายเศรษฐศาสตร์ พรมตวง','นางสาวกานต์อุษา อินทร์สุข','นางสาวจิราภัทร ย่างสุข','นางสาวญดาวดี คำสีดา','นางสาวณัฐกมล ละม่อม','นางสาวธนพรพรรณ แก้วนนท์','นางสาวนันธิดา จันทร์ชื่น','นางสาวพรฝัน พวงพั่ว','นางสาววรรณิดา มุ่งกองกลาง','นางสาววริศรา โต๊ะสิงห์','นางสาววันวิสา แสงทอง','นางสาวสุธิดา วิชาดี','นางสาวกฤษฎาภา สาระติ','นางสาวกันย์ธิชา โคตรชัย','นางสาวช่อมุกดา เหลื่อมเพชร','นางสาวชีวา อิ่มเอก','นางสาวณัฐธิชาภรณ์ บุญเกตุ','นางสาววิศรุตา ศาลารัตน์','นางสาวศศิวรรณ วงษาเนาว์'],'ม.6/2':['นายกิตติ์ธวัช เจริญชาติ','นายชัยอุดม ยืนยง','นายณภัทร นูพิมพ์','นายเดชดนัย จันทร์ชื่น','นายโทนี่ สอนดี','นายพัชระสิน สำอางค์','นายชวิศ สอนดี','นายอดิเทพ ศรีนิล','นายอภิชาติ พนารักษ์','นายธนัญกร อินนอก','นายสุรศักดิ์ ชมภู่','นายอธิภูมิ สวัสดี','นายอัษฎายุธ แก้วขวัญ','นายอัษฎาวุธ แก้วขวัญ','นางสาวกฤษณา ม่วงทองหลาง','นางสาวชลิตา ศรีเมือง','นางสาวณัฐชยา สายสมุทร','นางสาวโปรดปราน เสริมรัก','นางสาวยศสรัล ล้วนงาม','นางสาวสุธาสินี ตระกูลสุข','นางสาวอัญชิษฐา พลชา','นางสาวอินธิรา ภูพันนา','นางสาวจิรัชญา แสนสุข','นางสาวธิดารัตน์ บุญเสริม','นางสาวธาดารัศมิ์ เพชรโคตร','นางสาวบุตรี วงเวียน'],'ม.6/3':['นายกฤศนล จึงวิเศษพงศ์','นายชิติพัทธ์ อุตรา','นายธนวิชญ์ ไทยตรง','นายธีระภัทร สมรูป','นายปัญญานันท์ บุญเพ็ง','นายภูมินทร์ สืบสังข์','นายศุภกร สวัสดี','นายสิรภัทร คมกล้า','นายอภิภู อินทร์แก้ว','นายเอกรงค์ โพธิ์มี','นายทินกร เจริญศิริ','นางสาวณัฏฐกานต์ เหล่าสกุล','นางสาวณัฐกุล ศรีสว่าง','นางสาวทิวากานต์ บุญหวัง','นางสาวธิดาแก้ว ภาสวัสดิ์','นางสาวนภาพร หีบแก้ว','นางสาวนริศรา ดีหมี','นางสาวนลินญา คมสัน','นางสาวบัณฑิตา ธรรมวัตร','นางสาวปุณยาพร พนารักษ์','นางสาวพัชริดา สุทแสง','นางสาวสุทธิดา ผัดสี','นางสาวหทัยขวัญ ทองมี','นางสาวไอลดา สมบูรณ์','นางสาวกมลทิพย์ แก้วพิลา','นางสาวอรปรีดา เงางาม']}};
-const FM={'ฟิสิกส์ 3':[{s:'F = ma',d:'กฎที่ 2 ของนิวตัน'},{s:'W = Fs cosθ',d:'งาน (Work)'},{s:'KE = ½mv²',d:'พลังงานจลน์'},{s:'PE = mgh',d:'พลังงานศักย์โน้มถ่วง'},{s:'P = W/t',d:'กำลัง (Power)'},{s:'p = mv',d:'โมเมนตัม'},{s:'J = FΔt = Δp',d:'แรงกระตุ้น'},{s:'v² = u² + 2as',d:'สมการการเคลื่อนที่'},{s:'g = 10 m/s²',d:'ค่าแรงโน้มถ่วง'},{s:'T = 2π√(L/g)',d:'คาบของลูกตุ้มนาฬิกา'}],'ฟิสิกส์ 5':[{s:'F = kQ₁Q₂/r²',d:'กฎของคูลอมบ์'},{s:'E = F/q',d:'สนามไฟฟ้า'},{s:'V = kQ/r',d:'ศักย์ไฟฟ้า'},{s:'C = Q/V',d:'ความจุไฟฟ้า'},{s:'I = Q/t',d:'กระแสไฟฟ้า'},{s:'V = IR',d:'กฎของโอห์ม'},{s:'P = IV = I²R',d:'กำลังไฟฟ้า'},{s:'F = qvB sinθ',d:'แรงบนประจุในสนามแม่เหล็ก'},{s:'ε = -ΔΦ/Δt',d:'กฎของฟาราเดย์'},{s:'k = 9×10⁹',d:'ค่าคงที่คูลอมบ์'}]};
-const PW='physics2569';
-
-
-/* SVG ICONS — ใช้แทน emoji ใน GAS WebView */
-var IcoPaths={
-  atom:'<circle cx="12" cy="12" r="2.5" fill="currentColor"/><ellipse cx="12" cy="12" rx="9" ry="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/><ellipse cx="12" cy="12" rx="9" ry="3.5" fill="none" stroke="currentColor" stroke-width="1.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.5" fill="none" stroke="currentColor" stroke-width="1.6" transform="rotate(-60 12 12)"/>',
-  book:'<path d="M6 4h8a2 2 0 0 1 2 2v14H8a2 2 0 0 1-2-2V4z"/><path d="M6 4h8v14H8a2 2 0 0 1-2-2V4z"/><path d="M18 4h-8a2 2 0 0 0-2 2v14h8a2 2 0 0 0 2-2V4z"/>',
-  flask:'<path d="M10 2v6l-5 9a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-5-9V2"/><path d="M8 2h8"/>',
-  lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
-  bolt:'<path d="M13 2L4 14h7l-1 8 10-14h-7l0-6z"/>',
-  wave:'<path d="M2 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M2 19c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>',
-  dice:'<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1.2" fill="currentColor" stroke="none"/>',
-  timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v5l3 2"/><path d="M10 2h4"/>',
-  formula:'<path d="M4 7h6M7 4v6M14 7l6 10M20 7L14 17"/>',
-  sound:'<path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M16 9a4 4 0 0 1 0 6M18 7a7 7 0 0 1 0 10"/>',
-  group:'<circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M4 19c0-3 2.5-5 5-5s5 2 5 5M13 19c0-2 1.5-4 3.5-4"/>',
-  poll:'<path d="M4 19V5M4 19h4M4 13h7M4 7h10"/><path d="M16 16l3-3-3-3"/>',
-  chat:'<path d="M4 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/>'
+Load older messages
+ผมจะ build เองโดยตรงครับ เริ่มจาก index.html (ไฟล์ใหญ่มาก จะแบ่งเขียน):
+
+10:58 AM
+Continue
+11:11 AM
+
+
+11:11 AM
+cotinause
+1:03 PM
+
+
+เสร็จสมบูรณ์ครับ! 🎉
+
+สรุปสิ่งที่ทำ
+ไฟล์อยู่ที่ 
+C:\Users\nutta\.gemini\antigravity\scratch\physics-system\
+
+📄 
+index.html
+ (113 KB) — ระบบติดตามงาน
+การปรับปรุง
+1.1	Share Card — ใช้ CSS aspect-ratio + min() + flex centering แก้ปัญหา mobile ทุก device
+1.2	ปุ่ม ✨ Auto-fill — คำนวณคะแนนเก็บ pre/post จากชิ้นงานที่ตรวจแล้ว กรอกลงตารางอัตโนมัติ
+1.3	ปุ่ม ⬇️ Export CSV + ⬆️ Import CSV — ส่งออก/นำเข้าคะแนนสอบ รองรับ BOM UTF-8 (Excel ภาษาไทย)
+📄 
+teaching-tools.html
+ (72 KB) — เครื่องมืออำนวยการสอน (ใหม่)
+กลุ่ม 1: Timer (SVG ring + fullscreen), สุ่มชื่อ (animation), จัดกลุ่ม, Poll 4 ระดับ, วัดเสียง (Mic API)
+กลุ่ม 2: PhET (เปิดใน modal), Phyphox, Tracker, Desmos
+กลุ่ม 3: Whiteboard canvas (วาดได้จริง), GeoGebra, Excalidraw
+กลุ่ม 4: ClassPoint, Kahoot!, Quizizz, Padlet, Mentimeter, Google Forms
+Bonus: ตารางสูตรฟิสิกส์ 5 หมวด (กลศาสตร์/ไฟฟ้า/คลื่น/ความร้อน/ฟิสิกส์ยุคใหม่)
+IMPORTANT
+
+ก่อนใช้งานจริง ต้องวาง URL ของ Google Apps Script Web App ลงในบรรทัด const SCRIPT_URL = '' ใน index.html และอัปเดต code.gs ให้ doGet() รับ action parameter ด้วยครับ
+
+Walkthrough
+1:03 PM
+แก้ให้เลยได้ไหม  // ====================================================
+// Code.gs — Google Apps Script Backend (Pro Version 2.1)
+// ====================================================
+//
+// วิธี Deploy ที่ถูกต้อง:
+// 1) สร้าง Google Sheet ใหม่ → Extensions → Apps Script
+// 2) วาง Code.gs และ Index.html (ชื่อไฟล์ต้องเป็น "Index" พอดี)
+// 3) รัน setupOnce() ครั้งแรก → อนุญาตสิทธิ์
+// 4) Deploy → New deployment → Web app
+//    Execute as: Me | Who has access: Anyone (หรือ Anyone in org)
+//
+// ถ้า Script แยกจาก Sheet ให้ใส่ ID ของ Sheet ด้านล่าง:
+const SPREADSHEET_ID = '';
+
+const SHT_SUB  = 'การส่งงาน';
+const SHT_ASN  = 'รายการงาน';
+const SHT_GRD  = 'ผลการตรวจ';
+const SHT_EXAM = 'คะแนนรวมรายบุคคล';
+const SHT_MSG  = 'กระดานข้อความ';
+const CACHE_KEY = 'physics_app_all_data';
+const CACHE_SEC = 20;
+
+const HEADERS = {
+  [SHT_ASN]:  ['รหัสงาน','วิชา','ชื่องาน','คะแนนเต็ม','กำหนดส่ง','คำอธิบาย','สร้างเมื่อ','บทที่','ช่วงคะแนนเก็บ'],
+  [SHT_SUB]:  ['รหัสการส่ง','วิชา','ห้อง','ชื่อนักเรียน','ชื่องาน','ลิงก์งาน','ชื่อไฟล์','URL ไฟล์ Drive','วันเวลาที่ส่ง','สถานะ','หมายเหตุ'],
+  [SHT_GRD]:  ['รหัสตรวจ','วิชา','ห้อง','ชื่อ-สกุล','ชื่องาน','คะแนนเต็ม','คะแนนที่ได้','ข้อเสนอแนะ','ตรวจเมื่อ'],
+  [SHT_EXAM]: ['รหัส','วิชา','ห้อง','ชื่อ-สกุล','เก็บก่อนกลางภาค_25','สอบกลางภาค_20','เก็บหลังกลางภาค_25','สอบปลายภาค_30','รวม_100','บันทึกเมื่อ'],
+  [SHT_MSG]:  ['รหัสข้อความ','วิชา','ห้อง','ชื่อผู้ส่ง','ข้อความ','เวลา']
 };
-var Ico={
-  svg:function(n){var p=IcoPaths[n];return p?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>':'';},
-  put:function(id,n){var el=$(id);if(el)el.innerHTML=Ico.svg(n);},
-  bindData:function(root){(root||document).querySelectorAll('[data-ico]').forEach(function(el){el.innerHTML=Ico.svg(el.getAttribute('data-ico'));});}
-};
-var RES_LBL={doc:'ใบงาน',vid:'วิดีโอ',lab:'การทดลอง',lesson:'บทเรียน',link:'อื่นๆ'};
-function resLbl(t){return RES_LBL[t]||t||'ลิงก์';}
-var CAT_LBL={pre:'ก่อนกลางภาค',post:'หลังกลางภาค',other:'ทั่วไป'};
-function catLbl(c){return CAT_LBL[c]||CAT_LBL.other;}
-/* สรุปสถานะคะแนนสอบของนักเรียน 1 คน — แยก "ยังไม่กรอก" ออกจาก "กรอกแล้วได้ 0"
-   และคำนวณสัดส่วน (ratio) เฉพาะจากส่วนที่กรอกแล้วเท่านั้น เพื่อความเป็นธรรมตอนวิเคราะห์/แสดงผล */
-function examStat(ex){
-  if(!ex)return{hasAny:false,complete:false,enteredCount:0,total:0,maxEntered:0,ratio:null};
-  const fields=[[ex.preMid,25],[ex.midExam,20],[ex.postMid,25],[ex.finalExam,30]];
-  let sum=0,maxEntered=0,count=0;
-  fields.forEach(([v,m])=>{ if(v!=null&&v!==''){ sum+=Number(v); maxEntered+=m; count++; } });
-  return {
-    hasAny: count>0,
-    complete: count===4,
-    enteredCount: count,
-    total: sum,
-    maxEntered,
-    ratio: count>0 ? sum/maxEntered : null
+
+// หมายเหตุ: คอลัมน์ 'ช่วงคะแนนเก็บ' (index 8, คอลัมน์ I) ใน SHT_ASN
+// เก็บค่าได้ 3 แบบ: 'pre' (ก่อนกลางภาค) / 'post' (หลังกลางภาค) / 'other' (ไม่ระบุ)
+
+// --- โค้ดใหม่สำหรับ doGet (ทำหน้าที่เป็น API รับส่งข้อมูล) ---
+function doGet(e) {
+  // 1. ลองสร้างข้อมูลตัวอย่างที่จะส่งกลับไป 
+  // (เดี๋ยวอนาคตเราจะเขียนให้มันดึงข้อมูลจาก Sheet 'การส่งงาน' หรือ 'คะแนนรวม' มาใส่ตรงนี้ครับ)
+  var result = {
+    status: "success",
+    message: "🎉 เชื่อมต่อ API ของครูสำเร็จแล้ว!",
+    timestamp: new Date().toString()
   };
+
+  // 2. แปลงข้อมูลเป็นรูปแบบ JSON (ภาษาที่เว็บฝั่ง GitHub จะเข้าใจ) และส่งกลับไป
+  return ContentService.createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
-
-/* THEME */
-function setTh(t){
-  document.documentElement.setAttribute('data-theme',t);
-  try{localStorage.setItem('th',t);}catch(e){}
-  ['dk','lt','au'].forEach(k=>{
-    const m={'dk':'dark','lt':'light','au':'auto'}[k];
-    document.querySelectorAll(`[id$="-${k}"]`).forEach(b=>b.classList.toggle('on',m===t));
-  });
-  const f=document.getElementById('toolsFrame');
-  if(f&&f.contentWindow)f.contentWindow.postMessage({type:'ttTheme',theme:t},'*');
-}
-(()=>{let t='dark';try{t=localStorage.getItem('th')||'dark';}catch(e){}setTh(t);})();
-
-
-/* RESOURCE STORE */
-const Res={
-  load:id=>{try{return JSON.parse(localStorage.getItem('r_'+id)||'[]');}catch(e){return[];}},
-  save:(id,a)=>{try{localStorage.setItem('r_'+id,JSON.stringify(a));}catch(e){}},
-  add:(id,item)=>{const a=Res.load(id);a.push(item);Res.save(id,a);},
-  del:(id,i)=>{const a=Res.load(id);a.splice(i,1);Res.save(id,a);}
-};
-
-
-/* STATE */
-let S={
-  asns:[],subs:[],grds:[],exams:[],subj:'',room:'',stu:'',asn:'',tab:'ฟิสิกส์ 3',
-  siMap:new Map(),giMap:new Map(),exMap:new Map(),
-  scaMap:new Map(),scuMap:new Map(),scoreMap:new Map(),
-  rId:null,rName:'',_dbt:null,_cached:false,
-  tmrIv:null,tmrOn:false,tmrSec:0,tmrInit:false,tmrDown:true,tmrFS:false,wakeLock:null,
-  noStream:null,noAnim:null,poll:{y:0,m:0,n:0},randIv:null,
-  shareQuote:null,avatarImg:null,
-  msgIv:null,msgCache:[]
-};
-
-
-/* UI */
-function $(id){return document.getElementById(id);}
-var UI={
-  show:id=>{const e=$(id);if(e)e.style.display='block';},
-  hide:id=>{const e=$(id);if(e)e.style.display='none';},
-  v:id=>{const e=$(id);return e?e.value:'';},
-  sv:(id,v)=>{const e=$(id);if(e)e.value=v;},
-  h:(id,h)=>{const e=$(id);if(e)e.innerHTML=h;},
-  load:on=>{const l=$('ldr');if(l)l.style.display=on?'flex':'none';},
-  toast:(msg,tp='ok')=>{
-    const t=document.createElement('div');t.className=`toast ${tp}`;t.textContent=msg;
-    $('toastBox').appendChild(t);
-    const d=tp==='er'?7000:3200;
-    setTimeout(()=>{t.style.transition='.28s';t.style.opacity='0';t.style.transform='translateY(6px)';setTimeout(()=>t.remove(),300);},d);
+function getSS() {
+  if (SPREADSHEET_ID) {
+    return SpreadsheetApp.openById(SPREADSHEET_ID);
   }
-};
-function openM(id){$(id).classList.add('open');}
-function closeM(id){$(id).classList.remove('open');}
-function closeSP(){$('sideP').classList.remove('open');$('spOv').classList.remove('open');}
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) {
+    throw new Error(
+      'ไม่พบ Google Sheet — ให้สร้าง Script จากเมนู Extensions → Apps Script ใน Google Sheet ' +
+      'หรือใส่ SPREADSHEET_ID ที่บรรทัดบนสุดของ Code.gs'
+    );
+  }
+  return ss;
+}
 
-
-/* API - อัปเกรดสำหรับรันบน GitHub Pages */
-const API_URL = "https://script.google.com/macros/s/AKfycbwSiibW8oJxLZf9fdirgwsFWDA7pZoF-Favz2eeYCPCrsyRxDaHWly3L8Gvk1aR9MY5Vw/exec"; // 🛑 ครูต้องเอา URL จาก Apps Script มาใส่ในเครื่องหมายคำพูดนี้ครับ!
-
-
-const API={
-  _ready:true,
-  ping:()=>new Promise((res)=>{ res(true); }),
-  call:async (a,p)=>{
-    if (!API_URL || API_URL === "วาง_URL_WEB_APP_ของครูที่นี่") {
-      UI.toast('ยังไม่ได้ใส่ API URL ในโค้ด', 'er');
-      return {error: 'API URL is missing'};
+function getOrCreate(name) {
+  const ss = getSS();
+  let sh = ss.getSheetByName(name);
+  const headers = HEADERS[name] || [];
+  if (!sh) {
+    sh = ss.insertSheet(name);
+    if (headers.length) {
+      sh.appendRow(headers);
+      sh.getRange(1, 1, 1, headers.length)
+        .setFontWeight('bold')
+        .setBackground('#f3f4f6');
+      sh.setFrozenRows(1);
     }
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: a, payload: p || {} })
-      });
-      const result = await response.json();
-      if(result && result.error) return result;
-      return result || { _n: true };
-    } catch (e) {
-      console.error(a, e);
-      return { error: 'การเชื่อมต่อเซิร์ฟเวอร์ล้มเหลว' };
-    }
-  },
-  export:async ()=>{
-    if (!API_URL || API_URL === "วาง_URL_WEB_APP_ของครูที่นี่") {
-      UI.toast('ยังไม่ได้ใส่ API URL ในโค้ด', 'er');
-      return;
-    }
-    UI.toast('กำลังเตรียม CSV...','wn');
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'exportCSV', payload: {} })
-      });
-      const result = await response.json();
-      if(result.error) throw new Error(result.error);
-      
-      const csv = result;
-      if(!csv){UI.toast('ส่งออกไม่สำเร็จ','er');return;}
-      const a=document.createElement('a');
-      a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
-      a.download='รายงานส่งงาน.csv';a.click();
-      UI.toast('ดาวน์โหลด CSV แล้ว','ok');
-    } catch (e) {
-      UI.toast('ส่งออกล้มเหลว: '+e,'er');
+  } else if (sh.getLastRow() === 0 && headers.length) {
+    sh.appendRow(headers);
+    sh.getRange(1, 1, 1, headers.length)
+      .setFontWeight('bold')
+      .setBackground('#f3f4f6');
+    sh.setFrozenRows(1);
+  } else if (headers.length) {
+    // migrate: ถ้าชีตนี้ถูกสร้างไว้ก่อนหน้าและยังขาดคอลัมน์ใหม่ (เช่น 'ช่วงคะแนนเก็บ')
+    // ให้เติมหัวคอลัมน์ที่ขาดต่อท้ายให้อัตโนมัติ โดยไม่แตะข้อมูลเดิม
+    const curLastCol = sh.getLastColumn();
+    if (curLastCol < headers.length) {
+      const missing = headers.slice(curLastCol);
+      sh.getRange(1, curLastCol + 1, 1, missing.length).setValues([missing]);
+      sh.getRange(1, curLastCol + 1, 1, missing.length)
+        .setFontWeight('bold')
+        .setBackground('#f3f4f6');
     }
   }
-};
-
-
-/* REBUILD INDEXES */
-function rebuildIdx(){
-  S.siMap=new Map();S.subs.forEach(s=>S.siMap.set(`${s.subject}|${s.room}|${s.student}|${s.assignment}`,s));
-  S.giMap=new Map();S.grds.forEach(g=>S.giMap.set(`${g.subject}|${g.room}|${g.student}|${g.assignment}`,g));
-  S.scaMap=new Map();S.subs.forEach(s=>{const k=`${s.subject}|${s.assignment}`;S.scaMap.set(k,(S.scaMap.get(k)||0)+1);});
-  S.scuMap=new Map();S.subs.forEach(s=>{const k=`${s.subject}|${s.room}|${s.student}`;S.scuMap.set(k,(S.scuMap.get(k)||0)+1);});
-  S.scoreMap=new Map();S.grds.forEach(g=>{const k=`${g.subject}|${g.room}|${g.student}`;S.scoreMap.set(k,(S.scoreMap.get(k)||0)+(Number(g.score)||0));});
-  S.exMap=new Map();S.exams.forEach(e=>S.exMap.set(`${e.subject}|${e.room}|${e.student}`,e));
+  return sh;
 }
 
-
-function isLate(subTime, dueStr) {
-  if(!subTime || !dueStr) return false;
-  let p = subTime.split(' ')[0].split('/');
-  if(p.length !== 3) return false;
-  let y = parseInt(p[2]), m = p[1].padStart(2,'0'), d = p[0].padStart(2,'0');
-  if (y > 2500) y -= 543;
-  return `${y}-${m}-${d}` > dueStr;
+function initSheets() {
+  Object.keys(HEADERS).forEach(getOrCreate);
 }
 
-/* MAIN APP */
-var App={
-  go:function(id){
-    if(!id)return;
-    document.querySelectorAll('.page').forEach(function(p){
-      p.classList.remove('active');
-      p.style.display='none';
-    });
-    var t=$(id);
-    if(!t){console.error('Page not found:',id);return;}
-    t.classList.add('active');
-    t.style.display='block';
-    window.scrollTo({top:0,behavior:'smooth'});
-  },
-  fetch:async(show=false, forceLoad=false)=>{
-    if(forceLoad)UI.load(true);
-    else if(show)UI.toast('กำลังอัปเดตข้อมูล...','wn');
-    try {
-      if(!S._cached) {
-         const cached = localStorage.getItem('appDataCache');
-         if (cached) {
-            const d = JSON.parse(cached);
-            S.asns=d.asns||[];
-            const valid=new Set(S.asns.map(a=>a.name));
-            const sm={};(d.subs||[]).forEach(s=>{if(valid.has(s.assignment))sm[`${s.subject}|${s.room}|${s.student}|${s.assignment}`]=s;});
-            S.subs=Object.values(sm); S.grds=(d.grds||[]).filter(g=>valid.has(g.assignment)); S.exams=d.exams||[];
-            rebuildIdx(); App.refresh(); S._cached = true;
-         }
+function setupOnce() {
+  initSheets();
+  getOrCreateFolder('ระบบส่งงานฟิสิกส์_ไฟล์แนบ');
+  clearCache_();
+  return '✅ ตั้งค่าเรียบร้อย — Sheet: ' + getSS().getName();
+}
+
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('⚛️ ระบบส่งงานฟิสิกส์')
+    .addItem('ตั้งค่า Sheet ครั้งแรก', 'setupOnce')
+    .addItem('ล้าง Cache ข้อมูล', 'clearCache_')
+    .addToUi();
+}
+
+function clearCache_() {
+  CacheService.getScriptCache().remove(CACHE_KEY);
+}
+
+function serverCall(action, payload) {
+  try {
+    initSheets();
+    let result;
+    switch (action) {
+      case 'ping':             result = { ok: true, time: new Date().toISOString() }; break;
+      case 'getAll':           result = getAllData(); break;
+      case 'saveAssignment':   result = saveAssignment(payload || {}); break;
+      case 'deleteAssignment': result = deleteAssignment((payload && payload.id) || payload); break;
+      case 'submitAssignment': result = submitAssignment(payload || {}); break;
+      case 'saveGrade':        result = saveGrade(payload || {}); break;
+      case 'saveExamScore':    result = saveExamScore(payload || {}); break;
+      case 'getExamScores':    result = getExamScores(); break;
+      case 'getMissingSummary':result = getMissingSummary(payload || {}); break;
+      case 'exportCSV':        result = exportCSV(); break;
+      case 'postMessage':      result = postMessage(payload || {}); break;
+      case 'getMessages':      result = getMessages(payload || {}); break;
+      case 'deleteMessage':    result = deleteMessage((payload && payload.id) || payload); break;
+      case 'clearMessages':    result = clearMessages(payload || {}); break;
+      case 'getMessageStats':  result = getMessageStats(); break;
+      default:                 result = { error: 'Unknown action: ' + action };
+    }
+    return result;
+  } catch (e) {
+    return { error: String(e.message || e) };
+  }
+}
+
+function getSheetValues_(name) {
+  const sh = getOrCreate(name);
+  const lastRow = sh.getLastRow();
+  if (lastRow < 2) return [];
+  return sh.getRange(2, 1, lastRow - 1, sh.getLastColumn()).getValues();
+}
+
+function getAllData() {
+  const cache = CacheService.getScriptCache();
+  const cached = cache.get(CACHE_KEY);
+  if (cached) {
+    try { return JSON.parse(cached); } catch (e) { /* fall through */ }
+  }
+
+  const shAsn  = getSheetValues_(SHT_ASN);
+  const shSub  = getSheetValues_(SHT_SUB);
+  const shGrd  = getSheetValues_(SHT_GRD);
+  const shExam = getSheetValues_(SHT_EXAM);
+
+  const data = {
+    asns: shAsn.map(r => ({
+      id:       r[0],
+      subject:  r[1],
+      name:     r[2],
+      maxScore: r[3],
+      dueDate:  r[4] instanceof Date
+        ? Utilities.formatDate(r[4], 'Asia/Bangkok', 'yyyy-MM-dd')
+        : (r[4] || ''),
+      desc:     r[5] || '',
+      chapter:  r[7] || '1',
+      category: r[8] || 'other'
+    })),
+
+    subs: shSub.map(r => {
+      let submittedAt = r[8];
+      if (submittedAt instanceof Date) {
+        submittedAt = Utilities.formatDate(submittedAt, 'Asia/Bangkok', 'dd/MM/yyyy HH:mm');
       }
-    } catch(e){}
-    try{
-      const d=await API.call('getAll');
-      if(d._n){if(show||forceLoad)UI.toast('เซิร์ฟเวอร์ไม่ตอบ — ตรวจ Deploy และสิทธิ์ Sheet','er');if(forceLoad)UI.load(false);return;}
-      if(d.error)throw new Error(d.error);
-      try { localStorage.setItem('appDataCache', JSON.stringify(d)); } catch(e){}
-      S.asns=d.asns||[];
-      const valid=new Set(S.asns.map(a=>a.name));
-      const sm={};(d.subs||[]).forEach(s=>{if(valid.has(s.assignment))sm[`${s.subject}|${s.room}|${s.student}|${s.assignment}`]=s;});
-      S.subs=Object.values(sm); S.grds=(d.grds||[]).filter(g=>valid.has(g.assignment)); S.exams=d.exams||[];
-      rebuildIdx();
-      if(show||forceLoad)UI.toast('อัปเดตข้อมูลล่าสุดแล้ว','ok');
-      App.refresh();
-    }catch(e){if(show||forceLoad)UI.toast('เชื่อมต่อล้มเหลว: '+e,'er');}
-    if(forceLoad)UI.load(false);
-  },
-  refresh:()=>{if(S.stu)App.renderStuDash();App.renderTcDash();},
+      return {
+        id: r[0], subject: r[1], room: r[2], student: r[3],
+        assignment: r[4], link: r[5] || '', fileName: r[6] || '',
+        fileUrl: r[7] || '', submittedAt: submittedAt || ''
+      };
+    }),
+
+    grds: shGrd.map(r => {
+      let gradedAt = r[8];
+      if (gradedAt instanceof Date) {
+        gradedAt = Utilities.formatDate(gradedAt, 'Asia/Bangkok', 'dd/MM/yyyy HH:mm');
+      }
+      return {
+        id: r[0], subject: r[1], room: r[2], student: r[3],
+        assignment: r[4], maxScore: r[5], score: r[6],
+        comment: r[7] || '', gradedAt: gradedAt || ''
+      };
+    }),
+
+    exams: shExam.map(r => {
+      let savedAt = r[9];
+      if (savedAt instanceof Date) {
+        savedAt = Utilities.formatDate(savedAt, 'Asia/Bangkok', 'dd/MM/yyyy HH:mm');
+      }
+      const norm = v => (v === '' || v === null || v === undefined) ? null : v;
+      return {
+        id: r[0], subject: r[1], room: r[2], student: r[3],
+        preMid: norm(r[4]), midExam: norm(r[5]), postMid: norm(r[6]),
+        finalExam: norm(r[7]), total: r[8], savedAt: savedAt || ''
+      };
+    })
+  };
+
+  try {
+    cache.put(CACHE_KEY, JSON.stringify(data), CACHE_SEC);
+  } catch (e) { /* payload too large — skip cache */ }
+
+  return data;
+}
+
+function saveAssignment(p) {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(8000)) return { error: 'ระบบไม่ว่าง ลองใหม่อีกครั้ง' };
+
+  try {
+    const sh  = getOrCreate(SHT_ASN);
+    const now = Utilities.formatDate(new Date(), 'Asia/Bangkok', 'dd/MM/yyyy HH:mm:ss');
+    const data = sh.getDataRange().getValues();
+    const category = (p.category === 'pre' || p.category === 'post') ? p.category : 'other';
+
+    if (p.id) {
+      for (let i = 1; i < data.length; i++) {
+        if (String(data[i][0]) === String(p.id)) {
+          const oldName = data[i][2];
+          sh.getRange(i + 1, 2, 1, 8).setValues([[
+            p.subject, p.name, p.maxScore, p.dueDate, p.desc || '',
+            data[i][6] || now, p.chapter || '1', category
+          ]]);
+          if (oldName && oldName !== p.name) {
+            updateAssignmentNameInOtherSheets(p.subject, oldName, p.name);
+          }
+          clearCache_();
+          return { success: true };
+        }
+      }
+      return { error: 'ไม่พบงานที่ต้องการแก้ไข' };
+    }
+
+    sh.appendRow([
+      'ASN_' + Date.now(), p.subject, p.name,
+      p.maxScore, p.dueDate || '', p.desc || '', now, p.chapter || '1', category
+    ]);
+    clearCache_();
+    return { success: true };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function updateAssignmentNameInOtherSheets(subject, oldName, newName) {
+  [SHT_SUB, SHT_GRD].forEach(sn => {
+    const sh   = getOrCreate(sn);
+    const data = sh.getDataRange().getValues();
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][1] === subject && data[i][4] === oldName) {
+        sh.getRange(i + 1, 5).setValue(newName);
+      }
+    }
+  });
+}
+
+function deleteAssignment(id) {
+  if (!id) return { error: 'ไม่พบรหัสงาน' };
+  const sh   = getOrCreate(SHT_ASN);
+  const data = sh.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === String(id)) {
+      sh.deleteRow(i + 1);
+      clearCache_();
+      return { success: true };
+    }
+  }
+  return { error: 'Not found' };
+}
+
+function submitAssignment(p) {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(15000)) return { error: 'ระบบไม่ว่าง ลองส่งใหม่อีกครั้ง' };
+
+  try {
+    const sh  = getOrCreate(SHT_SUB);
+    const now = Utilities.formatDate(new Date(), 'Asia/Bangkok', 'dd/MM/yyyy HH:mm:ss');
+    let fileUrl = p.fileUrl || '';
+
+    if (p.fileData) {
+      const split = String(p.fileData).split(',');
+      if (split.length < 2) return { error: 'รูปแบบไฟล์ไม่ถูกต้อง' };
+      const blob = Utilities.newBlob(
+        Utilities.base64Decode(split[1]),
+        p.fileMime || 'application/octet-stream',
+        p.fileName || 'upload'
+      );
+      fileUrl = getOrCreateFolder('ระบบส่งงานฟิสิกส์_ไฟล์แนบ')
+        .createFile(blob)
+        .getUrl();
+    }
+
+    const data = sh.getDataRange().getValues();
+    const key  = `${p.subject}|${p.room}|${p.student}|${p.assignment}`;
+    const rowData = [
+      'SUB_' + Date.now(), p.subject, p.room, p.student,
+      p.assignment, p.link || '', p.fileName || '', fileUrl, now, 'ส่งแล้ว', ''
+    ];
+
+    for (let i = 1; i < data.length; i++) {
+      if (`${data[i][1]}|${data[i][2]}|${data[i][3]}|${data[i][4]}` === key) {
+        sh.getRange(i + 1, 1, 1, rowData.length).setValues([rowData]);
+        clearCache_();
+        return { success: true, fileUrl };
+      }
+    }
+
+    sh.appendRow(rowData);
+    clearCache_();
+    return { success: true, fileUrl };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function getOrCreateFolder(folderName) {
+  const folders = DriveApp.getFoldersByName(folderName);
+  return folders.hasNext() ? folders.next() : DriveApp.createFolder(folderName);
+}
+
+function saveGrade(p) {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(8000)) return { error: 'ระบบไม่ว่าง ลองบันทึกใหม่อีกครั้ง' };
+
+  try {
+    const sh   = getOrCreate(SHT_GRD);
+    const data = sh.getDataRange().getValues();
+    const now  = Utilities.formatDate(new Date(), 'Asia/Bangkok', 'dd/MM/yyyy HH:mm:ss');
+    const key  = `${p.subject}|${p.room}|${p.student}|${p.assignment}`;
+
+    for (let i = 1; i < data.length; i++) {
+      if (`${data[i][1]}|${data[i][2]}|${data[i][3]}|${data[i][4]}` === key) {
+        sh.getRange(i + 1, 1, 1, 9).setValues([[
+          data[i][0], p.subject, p.room, p.student,
+          p.assignment, p.maxScore, p.score, p.comment || '', now
+        ]]);
+        clearCache_();
+        return { success: true };
+      }
+    }
+
+    sh.appendRow([
+      'GRD_' + Date.now(), p.subject, p.room, p.student,
+      p.assignment, p.maxScore, p.score, p.comment || '', now
+    ]);
+    clearCache_();
+    return { success: true };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function saveExamScore(p) {
+  const lock = LockService.getScriptLock();
+  try { lock.waitLock(10000); }
+  catch (e) { return { error: 'ระบบไม่ว่าง ลองบันทึกใหม่อีกครั้งครับ' }; }
+
+  try {
+    const sh        = getOrCreate(SHT_EXAM);
+    const now       = Utilities.formatDate(new Date(), 'Asia/Bangkok', 'dd/MM/yyyy HH:mm:ss');
+    // ช่องไหนไม่ได้กรอก (null / undefined / ค่าว่าง) จะถูกเก็บเป็นค่าว่างจริงๆ ในชีต
+    // ไม่ใช่ 0 — เพื่อแยกแยะ "ยังไม่กรอก" ออกจาก "กรอกแล้วได้ 0 คะแนน"
+    const preMid    = clampOrNull_(p.preMid,    0, 25);
+    const midExam   = clampOrNull_(p.midExam,   0, 20);
+    const postMid   = clampOrNull_(p.postMid,   0, 25);
+    const finalExam = clampOrNull_(p.finalExam, 0, 30);
+    const parts     = [preMid, midExam, postMid, finalExam];
+    const entered   = parts.filter(v => v !== null);
+    const total     = entered.length ? entered.reduce((a, b) => a + b, 0) : 0;
+    const complete  = entered.length === 4;
+    const key       = `${p.subject}|${p.room}|${p.student}`;
+    const data      = sh.getDataRange().getValues();
+    const rowVals   = [
+      preMid    === null ? '' : preMid,
+      midExam   === null ? '' : midExam,
+      postMid   === null ? '' : postMid,
+      finalExam === null ? '' : finalExam,
+      total, now
+    ];
+
+    for (let i = 1; i < data.length; i++) {
+      if (`${data[i][1]}|${data[i][2]}|${data[i][3]}` === key) {
+        sh.getRange(i + 1, 5, 1, 6).setValues([rowVals]);
+        clearCache_();
+        return { success: true, total, complete, enteredCount: entered.length };
+      }
+    }
+
+    sh.appendRow([
+      'EXM_' + Date.now(), p.subject, p.room, p.student, ...rowVals
+    ]);
+    clearCache_();
+    return { success: true, total, complete, enteredCount: entered.length };
+  } catch (e) {
+    return { error: 'saveExamScore: ' + e.toString() };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// คืนค่า null ถ้าไม่ได้กรอก (ไม่บังคับให้เป็น 0) มิฉะนั้น clamp ค่าให้อยู่ในช่วงที่กำหนด
+function clampOrNull_(v, min, max) {
+  if (v === null || v === undefined || v === '') return null;
+  const n = Number(v);
+  if (isNaN(n)) return null;
+  return Math.max(min, Math.min(max, n));
+}
+
+function clamp_(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function getExamScores() {
+  try {
+    const data = getSheetValues_(SHT_EXAM);
+    const norm = v => (v === '' || v === null || v === undefined) ? null : v;
+    return {
+      exams: data.map(r => ({
+        subject: r[1], room: r[2], student: r[3],
+        preMid: norm(r[4]), midExam: norm(r[5]), postMid: norm(r[6]),
+        finalExam: norm(r[7]), total: r[8]
+      }))
+    };
+  } catch (e) {
+    return { error: 'getExamScores: ' + e.toString(), exams: [] };
+  }
+}
+
+function getMissingSummary(p) {
+  const data = getSheetValues_(SHT_SUB);
+  const submittedStudents = data
+    .filter(r =>
+      r[1] === p.subject &&
+      r[2] === p.room &&
+      r[4] === p.assignmentName
+    )
+    .map(r => r[3]);
+  return { submittedStudents: submittedStudents };
+}
+
+function exportCSV() {
+  const data = getOrCreate(SHT_GRD).getDataRange().getValues();
+  return '\uFEFF' + data.map(r =>
+    r.map(cell => {
+      const s = cell instanceof Date
+        ? Utilities.formatDate(cell, 'Asia/Bangkok', 'dd/MM/yyyy HH:mm')
+        : String(cell == null ? '' : cell);
+      return s.includes(',') || s.includes('"') || s.includes('\n')
+        ? '"' + s.replace(/"/g, '""') + '"'
+        : s;
+    }).join(',')
+  ).join('\n');
+}
+
+// ==================== กระดานข้อความสด (Live Message Board) ====================
+// นักเรียนพิมพ์ข้อความ -> ขึ้นจอครูแบบเกือบเรียลไทม์ (ฝั่งเว็บ poll ทุก ~4 วินาที) -> ครูลบทีละอันหรือลบทั้งหมดได้
+
+function postMessage(p) {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(8000)) return { error: 'ระบบไม่ว่าง ลองส่งใหม่อีกครั้ง' };
+  try {
+    const msg = String(p.message || '').trim();
+    if (!msg) return { error: 'กรุณาพิมพ์ข้อความก่อนส่ง' };
+    if (msg.length > 300) return { error: 'ข้อความยาวเกินไป (ไม่เกิน 300 ตัวอักษร)' };
+    const sh  = getOrCreate(SHT_MSG);
+    const now = Utilities.formatDate(new Date(), 'Asia/Bangkok', 'dd/MM/yyyy HH:mm:ss');
+    sh.appendRow([
+      'MSG_' + Date.now(), p.subject || '', p.room || '',
+      (p.student && String(p.student).trim()) || 'ไม่ระบุชื่อ', msg, now
+    ]);
+    return { success: true };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function getMessages(p) {
+  try {
+    const data = getSheetValues_(SHT_MSG);
+    const rows = data.filter(r => r[1] === p.subject && r[2] === p.room);
+    // เอาข้อความล่าสุดขึ้นก่อน จำกัดไว้ 150 ข้อความล่าสุดต่อห้อง กันโหลดหนักเกินไป
+    const msgs = rows.slice(-150).reverse().map(r => ({
+      id: r[0], subject: r[1], room: r[2], student: r[3], message: r[4], time: r[5]
+    }));
+    return { messages: msgs };
+  } catch (e) {
+    return { error: 'getMessages: ' + e.toString(), messages: [] };
+  }
+}
+
+function deleteMessage(id) {
+  if (!id) return { error: 'ไม่พบรหัสข้อความ' };
+  const sh   = getOrCreate(SHT_MSG);
+  const data = sh.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === String(id)) {
+      sh.deleteRow(i + 1);
+      return { success: true };
+    }
+  }
+  return { error: 'Not found' };
+}
+
+function clearMessages(p) {
+  const sh   = getOrCreate(SHT_MSG);
+  const data = sh.getDataRange().getValues();
+  // ลบจากแถวล่างขึ้นบน กัน index เพี้ยนระหว่างลบ
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (data[i][1] === p.subject && data[i][2] === p.room) {
+      sh.deleteRow(i + 1);
+    }
+  }
+  return { success: true };
+}
+
+// นับจำนวนข้อความทั้งหมดในกระดาน (ทุกวิชา/ทุกห้องรวมกัน) ใช้แสดงในหน้าสรุปโหมดนำเสนอผลงาน
+function getMessageStats() {
+  try {
+    const sh = getOrCreate(SHT_MSG);
+    return { total: Math.max(0, sh.getLastRow() - 1) };
+  } catch (e) {
+    return { total: 0 };
+  }
+}
+
+// --- โค้ดสำหรับรับข้อมูลจาก GitHub (API แบบ POST) ---
+function doPost(e) {
+  try {
+    // แปลงข้อความที่ GitHub ส่งมา ให้กลายเป็น Object
+    var request = JSON.parse(e.postData.contents);
+    var action = request.action;
+    var payload = request.payload;
+    
+    // โยนคำสั่งไปให้ฟังก์ชัน serverCall ตัวเดิมของครูจัดการต่อ
+    var result = serverCall(action, payload);
+    
+    // ส่งผลลัพธ์กลับไปให้หน้าเว็บ GitHub
+    return ContentService.createTextOutput(JSON.stringify(result))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({error: String(error)}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+1:12 PM
 
 
-  /* STUDENT FLOW */
-  goStu:function(){
+1:12 PM
+ต่อ
+1:19 PM
+
+
+1:19 PM
+ต่อ
+1:19 PM
+
+
+1:19 PM
+
+
+
+
+
+
+}
+/* ─────────────────────────────────────────────────────
+   INIT
+   ───────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  // HOME navigation
+  document.getElementById('nav-stu').addEventListener('click', () => {
     App.go('pg-stu');
     App.step(1);
-    App.fetch(false);
-  },
-  goTc:function(){
+    App.fetch();
+  });
+  document.getElementById('nav-tc').addEventListener('click', () => {
     App.go('pg-login');
-  },
-  step:n=>{
-    [1,2,3,4,5].forEach(i=>{UI.hide('ss'+i);const s=$(i>4?'st4':'st'+i);if(s)s.classList.remove('active');});
-    UI.show('ss'+n);const s=$(n>4?'st4':'st'+n);if(s)s.classList.add('active');
-  },
-  selSubj:sj=>{S.subj=sj;App.renderRooms();App.step(2);},
-  renderRooms:()=>{
-    UI.h('roomList',Object.keys(STUDENTS[S.subj]).map(r=>`<div class="ai cl" style="justify-content:center;padding:13px;" onclick="App.selRoom('${r}')"><b style="font-size:.95rem;color:var(--t1);">${r}</b></div>`).join(''));
-  },
-  selRoom:r=>{S.room=r;UI.h('stuSel','<option value="">— เลือกชื่อ-นามสกุล —</option>'+STUDENTS[S.subj][r].map(n=>`<option value="${n}">${n}</option>`).join(''));App.step(3);},
-  confStu:()=>{const n=UI.v('stuSel');if(!n)return UI.toast('กรุณาเลือกชื่อก่อนครับ','wn');S.stu=n;App.renderStuDash();App.step(4);},
-
-
-  renderStuDash:()=>{
-    UI.h('dName',S.stu);
-    const asns=S.asns.filter(a=>a.subject===S.subj);
-    const subs=S.subs.filter(s=>s.subject===S.subj&&s.room===S.room&&s.student===S.stu);
-    const grds=S.grds.filter(g=>g.subject===S.subj&&g.room===S.room&&g.student===S.stu);
-    const done=subs.length,miss=asns.length-done,score=grds.reduce((s,g)=>s+(Number(g.score)||0),0);
-    const maxTotal=asns.reduce((s,a)=>s+(Number(a.maxScore)||0),0);
-    UI.h('dTotal',asns.length);UI.h('dDone',done);UI.h('dMiss',miss);
-    UI.h('dScoreBig',score);UI.h('dScoreMax',maxTotal);
-    UI.h('dScorePct',maxTotal?Math.round(score/maxTotal*100)+'%':'0%');
-    const pct=asns.length?Math.round(done/asns.length*100):0;
-    $('dPct').textContent=pct+'%';$('dBar').style.width=pct+'%';
-    // category breakdown (pre/post midterm)
-    const catStats={};['pre','post'].forEach(c=>{catStats[c]={score:0,max:0};});
-    asns.forEach(a=>{
-      const c=a.category==='pre'||a.category==='post'?a.category:null;
-      if(!c)return;
-      catStats[c].max+=Number(a.maxScore)||0;
-      const g=grds.find(x=>x.assignment===a.name);
-      if(g)catStats[c].score+=Number(g.score)||0;
-    });
-    const hasCat=catStats.pre.max>0||catStats.post.max>0;
-    UI.h('dCatBrk',hasCat?
-      `<div class="cat-brk-c"><div class="cat-brk-n">${catStats.pre.score}/${catStats.pre.max}</div><div class="cat-brk-l">เก็บก่อนกลางภาค (ชิ้นงาน)</div></div><div class="cat-brk-c"><div class="cat-brk-n">${catStats.post.score}/${catStats.post.max}</div><div class="cat-brk-l">เก็บหลังกลางภาค (ชิ้นงาน)</div></div>`:'');
-    const ex=S.exMap.get(`${S.subj}|${S.room}|${S.stu}`);
-    const exSt=examStat(ex);
-    UI.h('dExamBig',exSt.hasAny?exSt.total:'-');
-    const dExamSub=$('dExamSub');
-    if(dExamSub)dExamSub.innerHTML=exSt.hasAny&&!exSt.complete
-      ?'คะแนนรวม 100<br>(กรอกแล้ว '+exSt.enteredCount+'/4 ส่วน — ครูกรอกเอง)'
-      :'คะแนนรวม 100<br>(ครูกรอกเอง แยกจากคะแนนเก็บ)';
-    const EX_EMPTY='ยังไม่ได้เก็บ<br>คะแนนส่วนนี้';
-    const setExField=(id,val,max)=>{
-      const el=$(id);if(!el)return;
-      if(ex&&val!=null&&val!==''){
-        el.innerHTML=val+' <span style="font-size:.62em;color:var(--t4);font-weight:600;">/'+max+'</span>';
-        el.style.fontSize='1.1rem';el.style.fontWeight='700';el.style.color='var(--t1)';
-      }else{
-        el.innerHTML=EX_EMPTY;
-        el.style.fontSize='.68rem';el.style.fontWeight='600';el.style.color='var(--t4)';
-      }
-    };
-    setExField('exP',ex?ex.preMid:null,25);
-    setExField('exM',ex?ex.midExam:null,20);
-    setExField('exPo',ex?ex.postMid:null,25);
-    setExField('exF',ex?ex.finalExam:null,30);
-    if(exSt.hasAny){
-      const elT=$('exT');if(elT){elT.textContent=exSt.total;elT.style.fontSize=exSt.complete?'1.6rem':'1.15rem';elT.style.color='var(--ph5)';}
-      UI.h('exTMax',exSt.complete?' / 100':' (กรอกแล้ว '+exSt.enteredCount+'/4 ส่วน)');
-    }else{
-      const elT=$('exT');if(elT){elT.textContent='ยังไม่มีข้อมูล';elT.style.fontSize='.9rem';elT.style.color='var(--t4)';}
-      UI.h('exTMax','');
-    }
-    const chs={};asns.forEach(a=>{const c=a.chapter||'1';if(!chs[c])chs[c]=[];chs[c].push(a);});
-    let html='';
-    Object.keys(chs).sort((a,b)=>+a-+b).forEach(ch=>{
-      const items=chs[ch],chD=items.filter(a=>subs.find(s=>s.assignment===a.name)).length;
-      html+=`<div class="ch-blk"><div class="ch-hdr" onclick="togCh(this)"><div class="ch-title">บทที่ ${ch}<span class="bd bd-bl">${items.length} งาน</span>${chD===items.length?'<span class="bd bd-ok">ครบ</span>':'<span class="bd bd-er">ค้าง '+(items.length-chD)+'</span>'}</div><div class="ch-meta"><span style="font-size:.74rem;color:var(--t3);">${chD}/${items.length}</span><span class="ch-arr">▾</span></div></div><div class="ch-body">${items.map(a=>{
-        const sub=subs.find(s=>s.assignment===a.name),grd=grds.find(g=>g.assignment===a.name);
-        const res=Res.load(a.id);
-        const isL = sub ? isLate(sub.submittedAt, a.dueDate) : false;
-        const subColor = isL ? 'var(--wn)' : 'var(--ok)';
-        const subText = isL ? 'ส่งช้ากว่ากำหนด' : 'ส่งแล้ว';
-        const catTag = (a.category==='pre'||a.category==='post') ? `<span class="bd bd-cat" style="font-size:.64rem;">${catLbl(a.category)}</span>` : '';
-        return `<div class="ai cl" onclick="App.prepSub('${a.id}')"><div class="ai-info"><div class="ai-name">${a.name}${catTag}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}${sub?`<br><span style="color:${subColor};font-weight:600;">${subText} `+(sub.submittedAt||'')+'</span>':''}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div style="text-align:right;flex-shrink:0;margin-left:10px;">${sub?`<span class="bd" style="background:rgba(${isL?'245,158,11':'16,185,129'},.1);color:${subColor};border-color:rgba(${isL?'245,158,11':'16,185,129'},.3)">${subText}</span>`:'<span class="bd bd-er">ค้างส่ง</span>'}<div style="font-size:.76rem;margin-top:5px;color:var(--t3);">${grd?'<b style="color:var(--cy)">'+grd.score+'</b>/'+a.maxScore:'-/'+a.maxScore}</div></div></div>`;
-      }).join('')}</div></div>`;
-    });
-    UI.h('stuAcc',html||'<div style="text-align:center;padding:18px;color:var(--t3)">ยังไม่มีชิ้นงาน</div>');
-  },
-
-
-  prepSub:id=>{
-    const a=S.asns.find(x=>x.id===id);if(!a)return;
-    S.asn=a.name;UI.h('subAsnName',a.name);UI.sv('linkIn','');UI.sv('fileIn','');
-    const links=Res.load(id);
-    UI.h('subResLinks',links.length?'<div class="res-highlight"><div class="lbl" style="margin-bottom:6px;">สื่อประกอบการเรียน</div>'+links.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':'');
-    App.step(5);
-  },
-  mergeImages: async (files) => {
-    return new Promise((resolve) => {
-      const imgElements = []; let loaded = 0;
-      for (let i = 0; i < files.length; i++) {
-        const img = new Image();
-        img.onload = () => {
-          loaded++;
-          if (loaded === files.length) {
-            let totalHeight = 0, maxWidth = 1200;
-            imgElements.forEach(im => {
-              let scale = im.width > maxWidth ? maxWidth / im.width : 1;
-              im.scaledWidth = im.width * scale; im.scaledHeight = im.height * scale;
-              totalHeight += im.scaledHeight;
-            });
-            const canvas = document.createElement('canvas');
-            canvas.width = maxWidth; canvas.height = totalHeight;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = "white"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            let currentY = 0;
-            imgElements.forEach(im => {
-              const x = (maxWidth - im.scaledWidth) / 2;
-              ctx.drawImage(im, x, currentY, im.scaledWidth, im.scaledHeight);
-              currentY += im.scaledHeight;
-            });
-            resolve(canvas.toDataURL('image/jpeg', 0.85));
-          }
-        };
-        const reader = new FileReader();
-        reader.onload = e => { img.src = e.target.result; };
-        reader.readAsDataURL(files[i]);
-        imgElements.push(img);
-      }
-    });
-  },
-  subWork:async()=>{
-    const link=UI.v('linkIn'),files=$('fileIn').files;
-    if(!link&&files.length===0)return UI.toast('กรุณาใส่ลิงก์หรือเลือกไฟล์งาน','wn');
-    if(files.length>5)return UI.toast('เลือกไฟล์ได้ไม่เกิน 5 ไฟล์','er');
-    UI.load(true);
-    const p={subject:S.subj,room:S.room,student:S.stu,assignment:S.asn,link};
-    if(files.length>0){
-      let totalSize=0,allImages=true;
-      for(let i=0;i<files.length;i++){totalSize+=files[i].size;if(!files[i].type.startsWith('image/'))allImages=false;}
-      if(totalSize>20*1024*1024){UI.load(false);return UI.toast('ขนาดไฟล์รวมใหญ่เกิน 20MB','er');}
-      if(files.length===1||!allImages){
-        if(files.length>1&&!allImages){UI.load(false);return UI.toast('การแนบหลายไฟล์รองรับเฉพาะรูปภาพเท่านั้น','er');}
-        const file=files[0],rd=new FileReader();
-        rd.onload=async e=>{p.fileData=e.target.result;p.fileName=file.name;p.fileMime=file.type;await App._doSub(p);};
-        rd.readAsDataURL(file);
-      }else{
-        App.mergeImages(files).then(async merged=>{
-          p.fileData=merged;p.fileName="merged_images.jpg";p.fileMime="image/jpeg";await App._doSub(p);
-        }).catch(()=>{UI.load(false);UI.toast('เกิดข้อผิดพลาดในการรวมรูปภาพ','er');});
-      }
-    }else await App._doSub(p);
-  },
-  _doSub:async p=>{
-    const r=await API.call('submitAssignment',p);
-    if(r.error){UI.toast('ส่งงานล้มเหลว: '+r.error,'er');UI.load(false);return;}
-    if(r.success){
-      UI.toast('ส่งงานเรียบร้อย','ok');
-      const now=new Date().toLocaleString('th-TH');
-      let ex=S.subs.find(s=>s.subject===p.subject&&s.room===p.room&&s.student===p.student&&s.assignment===p.assignment);
-      if(ex){ex.link=p.link||'';ex.fileName=p.fileName||'';ex.fileUrl=r.fileUrl||'';ex.submittedAt=now;}
-      else S.subs.push({...p,id:'SUB_'+Date.now(),fileUrl:r.fileUrl||'',submittedAt:now});
-      rebuildIdx();App.step(4);App.renderStuDash();
-    }else UI.toast('ส่งงานล้มเหลว','er');
-    UI.load(false);
-  },
-
-
-  /* TEACHER */
-  login:()=>{if(UI.v('pwIn')===PW){App.go('pg-tc');App.fetch(true);UI.sv('pwIn','');}else UI.toast('รหัสผ่านไม่ถูกต้อง!','er');},
-  setTab:function(t){
-    S.tab=t;
-    var tb3=$('tb3'),tb5=$('tb5');
-    if(tb3)tb3.className='stab'+(t==='ฟิสิกส์ 3'?' on':'');
-    if(tb5)tb5.className='stab'+(t==='ฟิสิกส์ 5'?' on':'');
-    var rf=$('roomF');
-    if(rf)UI.h('roomF','<option value="">— ดูทุกห้อง —</option>'+Object.keys(STUDENTS[t]).map(function(r){return '<option>'+r+'</option>';}).join(''));
-    if($('pg-tc'))App.renderTcDash();
-    var f=$('toolsFrame');
-    if(f&&f.contentWindow)f.contentWindow.postMessage({type:'ttSubjectChange',subject:t},'*');
-  },
-  renderTcDash:function(){
-    if(!$('tcSubjN'))return;
-    UI.h('tcSubjN',`(${S.tab})`);
-    const asns=S.asns.filter(a=>a.subject===S.tab);
-    const allS=Object.values(STUDENTS[S.tab]).flat();
-    let tS=0,tM=0;
-    Object.entries(STUDENTS[S.tab]).forEach(([room,stus])=>stus.forEach(stu=>{const ms=S.scuMap.get(`${S.tab}|${room}|${stu}`)||0;tS+=ms;if(ms<asns.length)tM++;}));
-    let tU=0;S.subs.forEach(s=>{if(s.subject===S.tab&&!S.giMap.has(`${s.subject}|${s.room}|${s.student}|${s.assignment}`))tU++;});
-    UI.h('tcSum',`<div class="sc-card"><div class="sc-num" style="color:var(--cy)">${asns.length}</div><div class="sc-lbl">ชิ้นงานทั้งหมด</div></div><div class="sc-card"><div class="sc-num">${allS.length}</div><div class="sc-lbl">นักเรียนทั้งหมด</div></div><div class="sc-card" style="background:var(--ok-b);border-color:var(--ok-bd);"><div class="sc-num" style="color:var(--ok)">${tS}</div><div class="sc-lbl">ชิ้นงานที่ส่ง</div></div><div class="sc-card" style="background:var(--er-b);border-color:var(--er-bd);"><div class="sc-num" style="color:var(--er)">${tM}</div><div class="sc-lbl">คนที่ยังค้างส่ง</div></div><div class="sc-card" style="background:var(--wn-b);border-color:var(--wn-bd);"><div class="sc-num" style="color:var(--wn)">${tU}</div><div class="sc-lbl">รอตรวจ</div></div>`);
-    const chs={};asns.forEach(a=>{const c=a.chapter||'1';if(!chs[c])chs[c]=[];chs[c].push(a);});
-    const tot=allS.length;let html='';
-    Object.keys(chs).sort((a,b)=>+a-+b).forEach(ch=>{
-      const items=chs[ch];
-      html+=`<div class="ch-blk"><div class="ch-hdr" onclick="togCh(this)"><div class="ch-title">บทที่ ${ch}<span class="bd bd-bl">${items.length} งาน</span></div><span class="ch-arr">▾</span></div><div class="ch-body">${items.map(a=>{
-        const done=S.scaMap.get(`${S.tab}|${a.name}`)||0,miss=tot-done,pct=tot?Math.round(done/tot*100):0;
-        const res=Res.load(a.id);
-        const catTag = (a.category==='pre'||a.category==='post') ? `<span class="bd bd-cat" style="font-size:.64rem;">${catLbl(a.category)}</span>` : '';
-        return `<div class="ai" style="flex-direction:column;align-items:stretch;gap:9px;"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="ai-info"><div class="ai-name">${a.name}${catTag}</div><div class="ai-meta">คะแนนเต็ม: ${a.maxScore} | กำหนดส่ง: ${a.dueDate||'-'}</div>${res.length?'<div class="res-sec">'+res.map(function(r){return '<a href="'+r.url+'" target="_blank" class="res-lnk">'+resLbl(r.type)+' '+r.name+'</a>';}).join('')+'</div>':''}</div><div class="ai-acts">${miss>0?`<span class="miss-bd" onclick="App.showMiss('${a.id}')">ค้าง ${miss} คน</span>`:'<span class="bd bd-ok">ครบ</span>'}<button class="btn btn-g btn-sm" onclick="App.openRes('${a.id}')">ลิงก์</button><button class="btn btn-g btn-sm" onclick="App.editAsn('${a.id}')">แก้ไข</button><button class="btn btn-d btn-sm" onclick="App.delAsn('${a.id}')">ลบ</button></div></div><div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--t3);margin-bottom:3px;"><span>ส่งแล้ว ${done}/${tot} คน</span><span>${pct}%</span></div><div class="pw"><div class="pf" style="width:${pct}%"></div></div></div></div>`;
-      }).join('')}</div></div>`;
-    });
-    UI.h('tcAcc',html||'<div style="text-align:center;padding:18px;color:var(--t3);">ยังไม่มีชิ้นงาน</div>');
-    App.renderTbl();
-  },
-  togForm:()=>{const f=$('asnForm');if(f.style.display==='none'||!f.style.display){UI.sv('asId','');UI.sv('asNm','');UI.sv('asSc','10');UI.sv('asDt','');UI.sv('asDsc','');UI.sv('asCh','1');UI.sv('asCat','other');UI.show('asnForm');}else UI.hide('asnForm');},
-
-  /* ==================== PRESENTATION MODE (โหมดนำเสนอผลงาน) ==================== */
-  /* ==================== ใบกรอกคะแนนสอบ (CSV) ====================
-     Export รายชื่อนักเรียนทั้งหมดของวิชาที่เลือกอยู่ (S.tab) พร้อมคะแนนสอบที่มีอยู่แล้ว (ถ้ามี)
-     ช่องไหนยังไม่มีข้อมูลจะเว้นว่างไว้ (ไม่ใส่ 0) ให้ครู/กรรมการคุมสอบกรอกด้วยมือหรือเปิดใน Excel กรอกต่อได้เลย */
-  exportExamRoster:()=>{
-    const esc=v=>{
-      const s=String(v==null?'':v);
-      return (s.includes(',')||s.includes('"')||s.includes('\n')) ? '"'+s.replace(/"/g,'""')+'"' : s;
-    };
-    const rows=[['ลำดับ','วิชา','ห้อง','ชื่อ-นามสกุล','เก็บก่อนกลางภาค (25)','สอบกลางภาค (20)','เก็บหลังกลางภาค (25)','สอบปลายภาค (30)','รวม (100)']];
-    let n=1;
-    Object.entries(STUDENTS[S.tab]||{}).forEach(([room,stus])=>{
-      stus.forEach(stu=>{
-        const ex=S.exMap.get(`${S.tab}|${room}|${stu}`);
-        rows.push([
-          n++, S.tab, room, stu,
-          ex&&ex.preMid!=null?ex.preMid:'',
-          ex&&ex.midExam!=null?ex.midExam:'',
-          ex&&ex.postMid!=null?ex.postMid:'',
-          ex&&ex.finalExam!=null?ex.finalExam:'',
-          ex&&ex.total!=null?ex.total:''
-        ]);
-      });
-    });
-    const csv='\uFEFF'+rows.map(r=>r.map(esc).join(',')).join('\n');
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
-    a.download='ใบกรอกคะแนนสอบ_'+S.tab+'.csv';
-    a.click();
-    UI.toast('ดาวน์โหลดใบกรอกคะแนนสอบแล้ว','ok');
-  },
-
-  goPresent:()=>{App.go('pg-present');App.renderPresent();},
-  renderPresent:async()=>{
-    const con=$('presentCon');if(!con)return;
-    const subjects=Object.keys(STUDENTS);
-    let totalAsn=0,totalStu=0,totalSub=0,totalScore=0,totalScoreMax=0;
-    const roomRows=[];
-    subjects.forEach(sub=>{
-      const asns=S.asns.filter(a=>a.subject===sub);
-      totalAsn+=asns.length;
-      const asnMax=asns.reduce((s,a)=>s+(Number(a.maxScore)||0),0);
-      Object.entries(STUDENTS[sub]).forEach(([room,stus])=>{
-        totalStu+=stus.length;
-        let roomDone=0;
-        stus.forEach(stu=>{
-          roomDone+=S.scuMap.get(`${sub}|${room}|${stu}`)||0;
-          totalScore+=S.scoreMap.get(`${sub}|${room}|${stu}`)||0;
-        });
-        totalScoreMax+=asnMax*stus.length;
-        totalSub+=roomDone;
-        const roomMax=asns.length*stus.length;
-        roomRows.push({label:sub+' • '+room,pct:roomMax?Math.round(roomDone/roomMax*100):0,done:roomDone,max:roomMax});
-      });
-    });
-    const overallPct=roomRows.reduce((s,r)=>s+r.max,0)?Math.round(totalSub/roomRows.reduce((s,r)=>s+r.max,0)*100):0;
-    const avgScorePct=totalScoreMax?Math.round(totalScore/totalScoreMax*100):0;
-
-    let msgTotal='-';
-    try{
-      const r=await API.call('getMessageStats',{});
-      if(r&&r.total!=null)msgTotal=r.total;
-    }catch(e){}
-
-    const stats=[
-      {n:totalStu,l:'นักเรียนทั้งหมด (2 รายวิชา)'},
-      {n:totalAsn,l:'ชิ้นงานที่มอบหมายทั้งหมด'},
-      {n:totalSub,l:'จำนวนครั้งที่ส่งงานสะสม'},
-      {n:overallPct+'%',l:'อัตราการส่งงานเฉลี่ยรวม'},
-      {n:avgScorePct+'%',l:'คะแนนเก็บเฉลี่ย (จากที่ตรวจแล้ว)'},
-      {n:msgTotal,l:'ข้อความในกระดานสดสะสม'}
-    ];
-
-    const features=[
-      {i:'📸',t:'แชร์คะแนนโซเชียลสไตล์ Strava',d:'นักเรียนแนบรูปตัวเอง สร้างการ์ดคะแนนพร้อมคำวิเคราะห์และให้กำลังใจอัตโนมัติ แชร์ได้ทั้ง Instagram Stories และแอปอื่นๆ'},
-      {i:'💬',t:'กระดานข้อความสด',d:'นักเรียนพิมพ์คำถามระหว่างเรียน ขึ้นจอครูแบบเกือบเรียลไทม์ ครูลบทีละข้อความหรือลบทั้งหมดได้'},
-      {i:'⏱️',t:'เครื่องมืออำนวยการสอน',d:'จับเวลาเต็มจอกันหน้าจอดับ สุ่มเรียกชื่อ จัดกลุ่มสุ่ม วัดระดับเสียง โหวตความเข้าใจ สูตรลัดประจำบท'},
-      {i:'📊',t:'ติดตามคะแนนแบบแยกส่วนชัดเจน',d:'แยกคะแนนเก็บจากชิ้นงานกับคะแนนสอบ 4 ช่วงเวลา (ก่อน/กลาง/หลังกลางภาค/ปลายภาค) ไม่ปนกัน'},
-      {i:'🔗',t:'จัดการสื่อการสอนต่อชิ้นงาน',d:'แนบลิงก์ใบงาน วิดีโอ การทดลอง หรือบทเรียนแยกตามชิ้นงานได้โดยตรง'},
-      {i:'📁',t:'ส่งออกข้อมูลเป็น CSV',d:'ดาวน์โหลดผลการตรวจงานทั้งหมดไปใช้งานต่อในโปรแกรมอื่นได้ทันที'}
-    ];
-
-    con.innerHTML=`
-      <div class="pr-hero">
-        <div class="pr-hero-logo">${Ico.svg('atom')}</div>
-        <h1 style="font-size:1.7rem;font-weight:700;color:var(--t1);letter-spacing:-.5px;margin-bottom:6px;">ระบบติดตามการเรียนวิชาฟิสิกส์</h1>
-        <p style="color:var(--t3);font-size:.92rem;">ครูณัฐพล สุขยานุดิษฐ • กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี<br>โรงเรียนสนมวิทยาคาร • สำนักงานเขตพื้นที่การศึกษามัธยมศึกษาสุรินทร์</p>
-      </div>
-
-      <div class="sec-title">ภาพรวมการใช้งานระบบ</div>
-      <div class="pr-stat-grid">
-        ${stats.map(s=>`<div class="pr-stat-c"><div class="pr-stat-n">${s.n}</div><div class="pr-stat-l">${s.l}</div></div>`).join('')}
-      </div>
-
-      <div class="sec-title">อัตราการส่งงานแยกตามห้องเรียน</div>
-      <div class="gc">
-        ${roomRows.map(r=>`<div class="pr-room-row"><div class="pr-room-lbl">${r.label}</div><div class="pr-room-bar pw" style="height:10px;border-radius:5px;"><div class="pf" style="width:${r.pct}%"></div></div><div class="pr-room-pct">${r.pct}%</div></div>`).join('')}
-      </div>
-
-      <div class="sec-title">จุดเด่นของระบบ</div>
-      <div class="pr-feat-grid">
-        ${features.map(f=>`<div class="pr-feat-c"><div class="pr-feat-i">${f.i}</div><div class="pr-feat-t">${f.t}</div><div class="pr-feat-d">${f.d}</div></div>`).join('')}
-      </div>
-
-      <div style="text-align:center;color:var(--t4);font-size:.74rem;line-height:1.7;margin:20px 0 8px;">
-        จัดทำและพัฒนาโดย ครูณัฐพล สุขยานุดิษฐ • โรงเรียนสนมวิทยาคาร<br>ข้อมูล ณ วันที่ ${new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'})}
-      </div>
-    `;
-  },
-  editAsn:id=>{const a=S.asns.find(x=>x.id===id);if(!a)return;UI.show('asnForm');UI.sv('asId',a.id);UI.sv('asNm',a.name);UI.sv('asSc',a.maxScore);UI.sv('asDt',a.dueDate);UI.sv('asDsc',a.desc);UI.sv('asCh',a.chapter||'1');UI.sv('asCat',a.category||'other');$('asnForm').scrollIntoView({behavior:'smooth',block:'center'});},
-  saveAsn:async()=>{
-    if(!UI.v('asNm'))return UI.toast('กรุณาระบุชื่องานด้วยครับ','wn');
-    const p={id:UI.v('asId'),subject:S.tab,name:UI.v('asNm'),maxScore:UI.v('asSc'),dueDate:UI.v('asDt'),desc:UI.v('asDsc'),chapter:UI.v('asCh'),category:UI.v('asCat')};
-    UI.hide('asnForm');UI.toast('กำลังบันทึก...','wn');
-    const r=await API.call('saveAssignment',p);
-    if(r.success){UI.toast('บันทึกสำเร็จ','ok');
-      // เก็บ category ไว้ในเครื่องด้วย เผื่อ backend ยังไม่มีคอลัมน์นี้
-      try{const m=JSON.parse(localStorage.getItem('asnCatMap')||'{}');m[p.name]=p.category;localStorage.setItem('asnCatMap',JSON.stringify(m));}catch(e){}
-      await App.fetch(true);
-      S.asns.forEach(a=>{ if(!a.category){ try{const m=JSON.parse(localStorage.getItem('asnCatMap')||'{}'); if(m[a.name])a.category=m[a.name]; }catch(e){} } });
-      App.refresh();
-    }else UI.toast((r.error||'เกิดข้อผิดพลาด'),'er');
-  },
-  delAsn:async id=>{
-    if(!confirm('ยืนยันการลบชิ้นงานนี้?'))return;
-    const d=S.asns.find(a=>a.id===id);S.asns=S.asns.filter(a=>a.id!==id);
-    if(d){S.subs=S.subs.filter(s=>s.assignment!==d.name);S.grds=S.grds.filter(g=>g.assignment!==d.name);}
-    rebuildIdx();App.renderTcDash();UI.toast('ลบแล้ว','ok');API.call('deleteAssignment',{id});
-  },
-
-
-  /* RESOURCE */
-  openRes:id=>{const a=S.asns.find(x=>x.id===id);if(!a)return;S.rId=id;S.rName=a.name;UI.h('mResT','จัดการลิงก์: '+a.name);App.renderRes();UI.sv('rName','');UI.sv('rUrl','');openM('mRes');},
-  renderRes:()=>{
-    const lnks=Res.load(S.rId);
-    UI.h('mResB',lnks.length===0?'<div style="text-align:center;padding:12px;color:var(--t3);font-size:.82rem;">ยังไม่มีลิงก์ประกอบ</div>':
-      lnks.map(function(r,i){return '<div class="res-item"><div style="display:flex;align-items:center;gap:8px;"><span>'+resLbl(r.type)+'</span><div><div style="font-weight:600;font-size:.84rem;color:var(--t1);">'+r.name+'</div><div style="font-size:.7rem;color:var(--t3);max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+r.url+'</div></div></div><div style="display:flex;gap:5px;"><a href="'+r.url+'" target="_blank" class="btn btn-g btn-sm">เปิด</a><button class="btn btn-d btn-sm" onclick="App.delRes('+i+')">X</button></div></div>';}).join(''));
-  },
-  addRes:()=>{
-    const name=UI.v('rName').trim(),url=UI.v('rUrl').trim(),type=UI.v('rType');
-    if(!name||!url)return UI.toast('กรุณากรอกชื่อและ URL','wn');
-    if(!url.startsWith('http'))return UI.toast('URL ต้องขึ้นต้นด้วย http://','wn');
-    Res.add(S.rId,{name,url,type});UI.sv('rName','');UI.sv('rUrl','');
-    App.renderRes();App.renderTcDash();UI.toast('เพิ่มลิงก์แล้ว','ok');
-  },
-  delRes:i=>{Res.del(S.rId,i);App.renderRes();App.renderTcDash();UI.toast('ลบลิงก์แล้ว','ok');},
-
-
-  /* MISSING */
-  showMiss:id=>{
-    const a=S.asns.find(x=>x.id===id);if(!a)return;const name=a.name;
-    const rf=UI.v('roomF');UI.h('mMissT','ยังไม่ส่ง: '+name);let html='';
-    Object.entries(STUDENTS[S.tab]).forEach(([room,stus])=>{
-      if(rf&&room!==rf)return;
-      const miss=stus.filter(stu=>!S.subs.find(s=>s.subject===S.tab&&s.room===room&&s.student===stu&&s.assignment===name));
-      if(!miss.length)return;
-      html+='<div style="margin-bottom:13px;"><div style="font-weight:700;color:var(--t3);font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">'+room+' — ค้าง '+miss.length+' คน</div><div class="miss-lst">'+miss.map(function(n){return '<div class="miss-stu">'+n+'</div>';}).join('')+'</div></div>';
-    });
-    UI.h('mMissB',html||'<div style="text-align:center;padding:18px;color:var(--ok);">ทุกคนส่งงานแล้ว</div>');
-    openM('mMiss');
-  },
-
-
-  /* TABLE */
-  dbRender:()=>{clearTimeout(S._dbt);S._dbt=setTimeout(App.renderTbl,250);},
-  renderTbl:()=>{
-    const rf=UI.v('roomF'),sf=UI.v('search').toLowerCase(),stf=UI.v('statF');
-    const asns=S.asns.filter(a=>a.subject===S.tab);let rows=[];
-    Object.entries(STUDENTS[S.tab]).forEach(([room,stus])=>{
-      if(rf&&room!==rf)return;
-      stus.forEach(stu=>{
-        if(sf&&!stu.toLowerCase().includes(sf))return;
-        const done=S.scuMap.get(`${S.tab}|${room}|${stu}`)||0;
-        const score=S.scoreMap.get(`${S.tab}|${room}|${stu}`)||0;
-        const exam=S.exMap.get(`${S.tab}|${room}|${stu}`);
-        const miss=Math.max(0,asns.length-done),pct=asns.length?Math.round(done/asns.length*100):0;
-        if(stf==='m'&&miss===0)return;if(stf==='c'&&miss>0)return;
-        const hasU=S.subs.some(s=>s.subject===S.tab&&s.room===room&&s.student===stu&&!S.giMap.has(`${s.subject}|${s.room}|${s.student}|${s.assignment}`));
-        rows.push(`<tr onclick="App.openPanel('${room}','${stu.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')"><td style="font-weight:700;color:var(--t1);">${room}</td><td style="color:var(--t1);">${stu}${hasU?` <span class="bd bd-wn" style="font-size:.65rem;">รอตรวจ</span>`:''}</td><td style="color:var(--ok);font-weight:700;">${done}/${asns.length}</td><td style="color:${miss>0?'var(--er)':'var(--ok)'};font-weight:700;">${miss}</td><td><div style="display:flex;align-items:center;gap:5px;"><div class="pw" style="width:42px;"><div class="pf" style="width:${pct}%"></div></div><span style="font-size:.72rem;color:var(--t3);">${pct}%</span></div></td><td style="color:var(--cy);font-weight:700;">${score}</td><td style="color:${exam?'var(--ph5)':'var(--t4)'};font-weight:700;">${exam?exam.total+'/100':'-'}</td></tr>`);
-      });
-    });
-    UI.h('tcTbl',rows.join('')||'<tr><td colspan="7" style="text-align:center;padding:18px;color:var(--t3);">ไม่พบข้อมูล</td></tr>');
-  },
-
-
-  /* SIDE PANEL */
-  openPanel:(room,stu)=>{
-    UI.h('spN',stu);UI.h('spM',`วิชา ${S.tab} | ห้อง ${room}`);
-    const asns=S.asns.filter(a=>a.subject===S.tab);
-    const subs=S.subs.filter(s=>s.subject===S.tab&&s.room===room&&s.student===stu);
-    const grds=S.grds.filter(g=>g.subject===S.tab&&g.room===room&&g.student===stu);
-    const exam=S.exMap.get(`${S.tab}|${room}|${stu}`);
-    let html='<div class="exam-blk"><div class="exam-blk-title">คะแนนรวม (100 คะแนน)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px;"><div><label class="lbl">เก็บก่อนกลางภาค /25</label><input type="number" id="epre" class="fc" min="0" max="25" value="'+(exam&&exam.preMid!=null?exam.preMid:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div><div><label class="lbl">สอบกลางภาค /20</label><input type="number" id="emid" class="fc" min="0" max="20" value="'+(exam&&exam.midExam!=null?exam.midExam:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div><div><label class="lbl">เก็บหลังกลางภาค /25</label><input type="number" id="epost" class="fc" min="0" max="25" value="'+(exam&&exam.postMid!=null?exam.postMid:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div><div><label class="lbl">สอบปลายภาค /30</label><input type="number" id="efin" class="fc" min="0" max="30" value="'+(exam&&exam.finalExam!=null?exam.finalExam:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div></div><div class="ph5-panel" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:5px;"><span style="font-weight:700;font-size:.82rem;color:var(--ph5);">รวมเท่าที่กรอก</span><div><span style="font-weight:700;font-size:1.35rem;color:var(--ph5);letter-spacing:-.03em;" id="etot">'+(exam&&exam.total!=null?exam.total:0)+'</span><span style="font-size:.76rem;color:var(--t3);">/ 100</span></div></div><div style="font-size:.68rem;color:var(--t4);margin-bottom:9px;" id="etotNote">ช่องไหนเว้นว่างไว้ ระบบจะถือว่า "ยังไม่กรอก" ไม่ใช่ 0 คะแนน — ไม่นำมารวมหรือคิดวิเคราะห์ให้นักเรียน</div><button class="btn btn-5" style="width:100%;font-size:.82rem;" onclick="App.saveEx(\''+room+'\',\''+stu.replace(/'/g,"\\'").replace(/"/g,"&quot;")+'\')">บันทึกคะแนนรวม</button></div>';
-    const chs={};asns.forEach(a=>{const c=a.chapter||'1';if(!chs[c])chs[c]=[];chs[c].push(a);});
-    Object.keys(chs).sort((a,b)=>+a-+b).forEach(ch=>{
-      const items=chs[ch];
-      const ung=items.filter(a=>{const sub=subs.find(s=>s.assignment===a.name);const grd=grds.find(g=>g.assignment===a.name);return sub&&!grd;}).length;
-      const newS=items.filter(a=>{const sub=subs.find(s=>s.assignment===a.name);const grd=grds.find(g=>g.assignment===a.name);return sub&&grd&&sub.submittedAt&&grd.gradedAt&&sub.submittedAt>grd.gradedAt;}).length;
-      html+=`<div class="pc-blk"><div class="pc-hdr" onclick="togPC(this)"><span class="ch-arr">▾</span><span style="font-weight:700;font-size:.86rem;color:var(--t1);">บทที่ ${ch}</span><span class="bd bd-bl" style="font-size:.66rem;">${items.length} งาน</span>${ung>0?`<span class="bd bd-wn" style="font-size:.66rem;">รอตรวจ ${ung}</span>`:''}${newS>0?`<span class="bd bd-new" style="font-size:.66rem;">ส่งใหม่ ${newS}</span>`:''}</div><div class="pc-body">${items.map(a=>{
-        const sub=subs.find(s=>s.assignment===a.name),grd=grds.find(g=>g.assignment===a.name);
-        const maxS=Number(a.maxScore)||10;
-        const scores=maxS<=10?Array.from({length:maxS+1},(_,i)=>i):[0,Math.floor(maxS*.25),Math.floor(maxS*.5),Math.floor(maxS*.75),maxS];
-        let dc='',dl='',rowCls='missing';
-        if(sub&&!grd){dc='dot-wn';dl='รอตรวจ';rowCls='unmarked';}
-        else if(sub&&grd){const isN=sub.submittedAt&&grd.gradedAt&&sub.submittedAt>grd.gradedAt;dc=isN?'dot-cy':'dot-ok';dl=isN?'ส่งใหม่หลังตรวจ!':'ตรวจแล้ว';rowCls=isN?'resubmitted':'graded';}
-        const isL=sub?isLate(sub.submittedAt,a.dueDate):false;const subColor=isL?'var(--wn)':'var(--ok)';const subText=isL?'ส่งช้ากว่ากำหนด':'ส่งแล้ว';
-        const stH=sub?`<div class="sub-box sub" style="border-color:rgba(${isL?'245,158,11':'16,185,129'},0.3);background:rgba(${isL?'245,158,11':'16,185,129'},0.1);"><span style="font-weight:700;color:${subColor};">${isL?'LATE':'OK'}</span><div><div style="font-size:.8rem;font-weight:700;color:${subColor};">${subText} — ${sub.submittedAt||'-'}</div>${sub.fileName?`<a href="${sub.fileUrl}" target="_blank" class="sub-lnk">ไฟล์: ${sub.fileName}</a>`:''}${sub.link?`<a href="${sub.link}" target="_blank" class="sub-lnk">ลิงก์งาน</a>`:''}</div></div>`:`<div class="sub-box mis"><span style="font-weight:700;color:var(--er);">X</span><div style="font-size:.8rem;font-weight:700;color:var(--er);">ยังไม่ส่งงาน</div></div>`;
-        const catTag = (a.category==='pre'||a.category==='post') ? `<span class="bd bd-cat" style="font-size:.6rem;">${catLbl(a.category)}</span>` : '';
-        return `<div class="asn-row ${rowCls}"><div class="asn-name">${dc?`<span class="dot ${dc}" title="${dl}"></span>`:''}${a.name}<span class="asn-max">(${a.maxScore} คะแนน)</span>${catTag}${dc==='dot-cy'?` <span class="bd bd-new" style="font-size:.64rem;">ส่งใหม่!</span>`:dc==='dot-wn'&&sub?` <span class="bd bd-wn" style="font-size:.64rem;">รอตรวจ</span>`:''}</div>${stH}${sub?`<div class="grd-sec"><div class="lbl" style="margin-bottom:6px;">ให้คะแนน</div><div class="qsw">${scores.map(s=>`<button class="qsb${grd&&Number(grd.score)===s?' on':''}" onclick="App.qsc('g_${a.id}','${s}',this)">${s}</button>`).join('')}</div><div style="display:flex;gap:7px;align-items:center;"><input type="number" id="g_${a.id}" class="fc" value="${grd?grd.score:''}" min="0" max="${maxS}" style="width:68px;text-align:center;font-weight:700;color:var(--cy);font-size:.98rem;"><input type="text" id="c_${a.id}" class="fc" value="${grd?grd.comment:''}" placeholder="ข้อเสนอแนะ..." style="flex:1;"><button class="btn btn-p btn-sm" onclick="App.saveGrd('${room}','${stu.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${a.id}')">บันทึก</button></div>${grd?`<div style="font-size:.68rem;color:var(--t4);margin-top:4px;">ตรวจล่าสุด: ${grd.gradedAt||'-'}</div>`:''}</div>`:''}</div>`;
-      }).join('')}</div></div>`;
-    });
-    UI.h('spB',html);
-    $('sideP').classList.add('open');$('spOv').classList.add('open');
-  },
-  qsc:(inputId,val,btn)=>{UI.sv(inputId,val);btn.closest('.qsw').querySelectorAll('.qsb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');},
-  saveGrd:(room,stu,asnId)=>{
-    const a=S.asns.find(x=>x.id===asnId);if(!a)return;
-    const name=a.name,maxScore=a.maxScore;
-    const score=UI.v('g_'+asnId),comment=UI.v('c_'+asnId),now=new Date().toLocaleString('th-TH');
-    let ex=S.grds.find(g=>g.subject===S.tab&&g.room===room&&g.student===stu&&g.assignment===name);
-    const old=ex?Number(ex.score)||0:0;
-    if(ex){ex.score=score;ex.comment=comment;ex.gradedAt=now;}
-    else{ex={id:'GRD_'+Date.now(),subject:S.tab,room,student:stu,assignment:name,maxScore,score,comment,gradedAt:now};S.grds.push(ex);}
-    S.giMap.set(`${S.tab}|${room}|${stu}|${name}`,ex);
-    const k=`${S.tab}|${room}|${stu}`;S.scoreMap.set(k,(S.scoreMap.get(k)||0)-old+(Number(score)||0));
-    UI.toast('กำลังเซฟ...','wn');
-    API.call('saveGrade',{subject:S.tab,room,student:stu,assignment:name,score,comment,maxScore})
-      .then(r=>{if(r.success){UI.toast('บันทึกคะแนนสำเร็จ','ok');App.renderTbl();}else if(r.error)UI.toast(r.error,'er');})
-      .catch(function(){UI.toast('การเชื่อมต่อขัดข้อง','er');});
-  },
-  prevEx:()=>{
-    const raw=id=>{const v=UI.v(id).trim();return v===''?null:Number(v);};
-    const vals=[raw('epre'),raw('emid'),raw('epost'),raw('efin')];
-    const entered=vals.filter(v=>v!=null);
-    const t=entered.length?entered.reduce((a,b)=>a+b,0):0;
-    const el=$('etot');if(el)el.textContent=t;
-    const note=$('etotNote');
-    if(note){
-      if(entered.length===4)note.textContent='กรอกครบทั้ง 4 ส่วนแล้ว ✅';
-      else if(entered.length===0)note.textContent='ยังไม่ได้กรอกคะแนนสอบส่วนใดเลย';
-      else note.textContent='กรอกแล้ว '+entered.length+'/4 ส่วน — ช่องที่เว้นว่างจะไม่ถูกนับเป็น 0 ครับ';
-    }
-  },
-  saveEx:async(room,stu)=>{
-    const raw=id=>{const v=UI.v(id).trim();return v===''?null:Number(v);};
-    const preMid=raw('epre'),midExam=raw('emid'),postMid=raw('epost'),finalExam=raw('efin');
-    UI.toast('กำลังบันทึก...','wn');
-    const r=await API.call('saveExamScore',{subject:S.tab,room,student:stu,preMid,midExam,postMid,finalExam});
-    if(r._n){UI.toast('การเชื่อมต่อหลุด','er');return;}
-    if(r.success){
-      const k=`${S.tab}|${room}|${stu}`,obj={subject:S.tab,room,student:stu,preMid,midExam,postMid,finalExam,total:r.total};
-      S.exMap.set(k,obj);const i=S.exams.findIndex(e=>e.subject===S.tab&&e.room===room&&e.student===stu);
-      if(i>=0)S.exams[i]=obj;else S.exams.push(obj);
-      UI.toast(r.complete?('บันทึกคะแนนรวมครบแล้ว ('+r.total+'/100)'):('บันทึกแล้ว — กรอกครบ '+r.enteredCount+'/4 ส่วน (รวมเท่าที่มี '+r.total+' คะแนน)'),'ok');
-      App.renderTbl();
-    }else UI.toast((r.error||'บันทึกไม่สำเร็จ'),'er');
-  },
-
-
-  /* === เครื่องมืออำนวยการสอน (แยกเป็นไฟล์ teach-tools.html โหลดผ่าน iframe) ===
-     ฟังก์ชันด้านล่างมีหน้าที่แค่ "ส่งข้อมูลเข้า/ออกจาก iframe" ผ่าน postMessage
-     ตรรกะเครื่องมือจริง (จับเวลา สุ่มชื่อ วัดเสียง ฯลฯ) อยู่ในไฟล์ teach-tools.html ทั้งหมด */
-  closeTools:()=>{
-    const f=$('toolsFrame');
-    if(f&&f.contentWindow)f.contentWindow.postMessage({type:'ttStop'},'*');
-    closeM('mTools');
-  },
-  postToolsInit:()=>{
-    const f=$('toolsFrame');if(!f||!f.contentWindow)return;
-    f.contentWindow.postMessage({
-      type:'ttInit',
-      subject:S.tab,
-      theme:document.documentElement.getAttribute('data-theme')||'dark',
-      students:STUDENTS,
-      formulas:FM,
-      apiUrl:API_URL
-    },'*');
-  },
-  openMsgSend:()=>{UI.sv('msgText','');UI.h('msgCharCount','0');openM('mMsgSend');},
-  sendMsg:async()=>{
-    const txt=UI.v('msgText').trim();
-    if(!txt)return UI.toast('พิมพ์ข้อความก่อนส่งครับ','wn');
-    if(txt.length>300)return UI.toast('ข้อความยาวเกินไป (ไม่เกิน 300 ตัวอักษร)','wn');
-    const r=await API.call('postMessage',{subject:S.subj,room:S.room,student:S.stu,message:txt});
-    if(r&&r.success){UI.toast('ส่งข้อความแล้ว ครูจะเห็นบนจอเลยครับ','ok');closeM('mMsgSend');}
-    else UI.toast((r&&r.error)||'ส่งข้อความไม่สำเร็จ','er');
-  },
-
-  /* === SHARE SCORE CARD === */
-  openShare:()=>{
-    S.avatarImg=null;
-    const av=$('avatarPrev');if(av){av.style.display='none';av.src='';}
-    UI.sv('avatarIn','');
-    S.shareQuote=App._pickQuote();
-    App.drawShareCanvas();
-    openM('mShare');
-  },
-  reshuffleQuote:()=>{S.shareQuote=App._pickQuote(true);App.drawShareCanvas();},
-  _pickQuote:(forceNew)=>{
-    let q=SCI_QUOTES[Math.floor(Math.random()*SCI_QUOTES.length)];
-    if(forceNew&&S.shareQuote){let tries=0;while(q.q===S.shareQuote.q&&tries<8){q=SCI_QUOTES[Math.floor(Math.random()*SCI_QUOTES.length)];tries++;}}
-    return q;
-  },
-  _teaseFor:(doneRatio)=>{
-    let tier=TEASE_MSGS.hi;
-    if(doneRatio<0.4)tier=TEASE_MSGS.lo;
-    else if(doneRatio<0.75)tier=TEASE_MSGS.mid;
-    return tier[Math.floor(Math.random()*tier.length)];
-  },
-  /* วิเคราะห์ภาพรวม (คะแนนเก็บ + คะแนนสอบเท่าที่กรอกแล้ว + อัตราส่งงาน) แล้วให้คำแนะนำ+กำลังใจแบบสุ่ม
-     หมายเหตุ: exSt คือผลจาก examStat(ex) — ใช้ ratio ที่คำนวณเฉพาะส่วนที่ครูกรอกแล้วเท่านั้น
-     ไม่เอาช่องที่ยังไม่กรอกมาคิดเป็น 0 เพื่อความเป็นธรรมกับนักเรียน */
-  _analysisFor:(scoreRatio,exSt,doneRatio)=>{
-    const examRatio=exSt?exSt.ratio:null;
-    const parts=[doneRatio];
-    if(scoreRatio!=null)parts.push(scoreRatio);
-    if(examRatio!=null)parts.push(examRatio);
-    const overall=parts.reduce((a,b)=>a+b,0)/parts.length;
-    let tier='hi';
-    if(overall<0.4)tier='low';
-    else if(overall<0.65)tier='mid';
-    else if(overall<0.85)tier='good';
-    const msg=ANALYSIS_MSGS[tier][Math.floor(Math.random()*ANALYSIS_MSGS[tier].length)];
-    let examNote='';
-    if(!exSt||!exSt.hasAny)examNote=' (ยังไม่มีคะแนนสอบให้วิเคราะห์ ลองถามครูดูนะ)';
-    else if(!exSt.complete)examNote=' (คำนวณจากคะแนนสอบเท่าที่กรอกแล้ว '+exSt.enteredCount+'/4 ส่วน)';
-    return msg+examNote;
-  },
-  drawShareCanvas:()=>{
-    const cv=$('shareCanvas');if(!cv)return;const ctx=cv.getContext('2d');
-    const W=cv.width,H=cv.height;
-    const asns=S.asns.filter(a=>a.subject===S.subj);
-    const subs=S.subs.filter(s=>s.subject===S.subj&&s.room===S.room&&s.student===S.stu);
-    const grds=S.grds.filter(g=>g.subject===S.subj&&g.room===S.room&&g.student===S.stu);
-    const score=grds.reduce((s,g)=>s+(Number(g.score)||0),0);
-    const maxTotal=asns.reduce((s,a)=>s+(Number(a.maxScore)||0),0);
-    const done=subs.length,total=asns.length||1;
-    const doneRatio=done/total;
-    const scoreRatio=maxTotal?score/maxTotal:null;
-    const ex=S.exMap.get(`${S.subj}|${S.room}|${S.stu}`);
-    const exSt=examStat(ex);
-
-    ctx.clearRect(0,0,W,H);
-    ctx.textAlign='center';
-
-    // กรอบขอบเขตการ์ดทั้งหมด (ทุกกล่องด้านล่างใช้ความกว้างเท่ากันเพื่อความเรียบร้อย เป็นระเบียบ)
-    const CARD_M=64, CARD_X=CARD_M, CARD_W=W-CARD_M*2;
-
-    /* === พื้นหลัง: รูปที่นักเรียนเลือก (แบบ Strava) หรือ gradient สำรอง === */
-    if(S.avatarImg){
-      const iw=S.avatarImg.width,ih=S.avatarImg.height;
-      const s=Math.max(W/iw,H/ih),dw=iw*s,dh=ih*s;
-      ctx.drawImage(S.avatarImg,(W-dw)/2,(H-dh)/2,dw,dh);
-    }else{
-      const grad=ctx.createLinearGradient(0,0,W,H);
-      grad.addColorStop(0,'#0a2540');grad.addColorStop(.5,'#123a63');grad.addColorStop(1,'#3a1155');
-      ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
-      ctx.globalAlpha=.15;
-      ctx.fillStyle='#64d2ff';ctx.beginPath();ctx.arc(W*0.85,H*0.14,180,0,7);ctx.fill();
-      ctx.fillStyle='#bf5af2';ctx.beginPath();ctx.arc(W*0.12,H*0.28,220,0,7);ctx.fill();
-      ctx.globalAlpha=1;
-      ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 24px Kanit, sans-serif';
-      App._wrapText(ctx,'📷 แนบรูปตัวเองเพื่อให้การ์ดดูเหมือน Strava',W/2,H*0.28,CARD_W-40,32);
-    }
-
-    /* === vignette บาง ๆ รอบขอบภาพ ให้ดูมีมิติขึ้น === */
-    const vig=ctx.createRadialGradient(W/2,H*0.38,H*0.25,W/2,H*0.38,H*0.72);
-    vig.addColorStop(0,'rgba(0,0,0,0)');vig.addColorStop(1,'rgba(0,0,0,.35)');
-    ctx.fillStyle=vig;ctx.fillRect(0,0,W,H);
-
-    /* === gradient มืดด้านบน (ให้ badge อ่านง่าย) === */
-    const topG=ctx.createLinearGradient(0,0,0,180);
-    topG.addColorStop(0,'rgba(0,0,0,.55)');topG.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=topG;ctx.fillRect(0,0,W,180);
-
-    /* === ตำแหน่งบล็อกด้านล่างทั้งหมด (คำนวณจากล่างขึ้นบน) === */
-    const footerY=H-32;
-    const anaH=210, anaBottom=H-64, anaTop=anaBottom-anaH;
-    const gap=18;
-    const quoteH=200, quoteBottom=anaTop-gap, quoteTop=quoteBottom-quoteH;
-    const exMiniH=196, exMiniBottom=quoteTop-gap, exMiniTop=exMiniBottom-exMiniH;
-    const statH=126, statBottom=exMiniTop-gap, statTop=statBottom-statH;
-    const nameY=statTop-36;
-    const captionY=nameY-40;
-
-    /* === gradient มืดด้านล่าง (สำหรับวางสถิติ แบบสรุปกิจกรรม Strava) === */
-    const gStart=captionY-100;
-    const botG=ctx.createLinearGradient(0,gStart,0,H);
-    botG.addColorStop(0,'rgba(0,0,0,0)');
-    botG.addColorStop(.28,'rgba(0,0,0,.5)');
-    botG.addColorStop(.58,'rgba(0,0,0,.8)');
-    botG.addColorStop(1,'rgba(0,0,0,.97)');
-    ctx.fillStyle=botG;ctx.fillRect(0,gStart,W,H-gStart);
-
-    /* === badge บนซ้าย: วิชา/ห้อง === */
-    ctx.textAlign='left';
-    ctx.font='700 21px Kanit, sans-serif';
-    const badgeTxt='⚛️  '+S.subj+' • '+S.room;
-    const badgeW=Math.min(CARD_W,ctx.measureText(badgeTxt).width+40);
-    ctx.fillStyle='rgba(0,0,0,.42)';App._rr(ctx,CARD_X,32,badgeW,44,22);ctx.fill();
-    ctx.fillStyle='#fff';
-    ctx.fillText(badgeTxt,CARD_X+20,60);
-    ctx.textAlign='center';
-
-    /* === ชื่อนักเรียน === */
-    ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=10;
-    ctx.fillStyle='rgba(255,255,255,.82)';ctx.font='600 21px Kanit, sans-serif';
-    ctx.fillText('รายงานคะแนนของ',W/2,captionY);
-    ctx.fillStyle='#fff';ctx.font='700 42px Kanit, sans-serif';
-    ctx.shadowBlur=12;
-    App._fitText(ctx,S.stu||'-',W/2,nameY,CARD_W-20,42,'700','Kanit, sans-serif');
-    ctx.shadowBlur=0;ctx.shadowColor='transparent';
-
-    /* === แถวสถิติแบบ Strava: คะแนนเก็บ | คะแนนรวม(ครู) | ส่งงานแล้ว === */
-    const statMidY=statTop+statH*0.58;
-    const cols=[
-      {big:String(score),unit:'/'+maxTotal,label:'คะแนนเก็บ'},
-      {big: exSt.hasAny?String(exSt.total):'—',unit: exSt.hasAny?(exSt.complete?'/100':'('+exSt.enteredCount+'/4)'):'ยังไม่กรอก',label:'คะแนนรวม (ครู)'},
-      {big:Math.round(doneRatio*100)+'%',unit:'',label:'ส่งงานแล้ว '+done+'/'+total}
-    ];
-    const colW=CARD_W/3;
-    const colX=[CARD_X+colW*0.5,CARD_X+colW*1.5,CARD_X+colW*2.5];
-    ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=8;
-    cols.forEach((c,i)=>{
-      // วัดความกว้างรวมของ "ตัวเลข+หน่วย" ก่อน แล้วค่อยจัดกึ่งกลางทั้งคู่ไปด้วยกัน (กันบั๊กเหลื่อมขวา)
-      ctx.font='700 42px Kanit, sans-serif';
-      const bigW=ctx.measureText(c.big).width;
-      ctx.font='600 17px Kanit, sans-serif';
-      const unitW=c.unit?ctx.measureText(c.unit).width:0;
-      const pairGap=c.unit?8:0;
-      const totalW=bigW+pairGap+unitW;
-      const startX=colX[i]-totalW/2;
-      ctx.textAlign='left';
-      ctx.font='700 42px Kanit, sans-serif';ctx.fillStyle='#fff';
-      ctx.fillText(c.big,startX,statMidY);
-      if(c.unit){
-        ctx.font='600 17px Kanit, sans-serif';ctx.fillStyle='rgba(255,255,255,.72)';
-        ctx.fillText(c.unit,startX+bigW+pairGap,statMidY);
-      }
-      ctx.textAlign='center';
-      ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='600 17px Kanit, sans-serif';
-      App._fitText(ctx,c.label,colX[i],statTop+statH-10,colW-16,17,'600','Kanit, sans-serif');
-    });
-    ctx.shadowBlur=0;ctx.shadowColor='transparent';
-    // เส้นแบ่งคอลัมน์
-    ctx.strokeStyle='rgba(255,255,255,.22)';ctx.lineWidth=2;
-    [CARD_X+colW,CARD_X+colW*2].forEach(dx=>{
-      ctx.beginPath();ctx.moveTo(dx,statTop+18);ctx.lineTo(dx,statTop+statH-18);ctx.stroke();
-    });
-
-    /* === กล่องคะแนนสอบรายส่วน 4 ช่อง (ครูกรอกเอง) === */
-    ctx.fillStyle='rgba(255,255,255,.09)';App._rr(ctx,CARD_X,exMiniTop,CARD_W,exMiniH,18);ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,.14)';ctx.lineWidth=1.5;App._rr(ctx,CARD_X,exMiniTop,CARD_W,exMiniH,18);ctx.stroke();
-    ctx.fillStyle='rgba(255,255,255,.88)';ctx.font='700 19px Kanit, sans-serif';
-    ctx.fillText('📋 คะแนนสอบรายส่วน (ครูกรอกเอง)',W/2,exMiniTop+32);
-    const exCells=[
-      {l:'เก็บก่อนกลาง',v:ex?ex.preMid:null,m:25},
-      {l:'สอบกลางภาค',v:ex?ex.midExam:null,m:20},
-      {l:'เก็บหลังกลาง',v:ex?ex.postMid:null,m:25},
-      {l:'สอบปลายภาค',v:ex?ex.finalExam:null,m:30}
-    ];
-    const ecColW=CARD_W/2;
-    const ecX=[CARD_X+ecColW*0.5,CARD_X+ecColW*1.5],ecY=[exMiniTop+78,exMiniTop+146];
-    exCells.forEach((c,i)=>{
-      const cx=ecX[i%2],cy=ecY[Math.floor(i/2)];
-      if(ex&&c.v!=null&&c.v!==''){
-        ctx.fillStyle='#fff';ctx.font='700 25px Kanit, sans-serif';
-        ctx.fillText(c.v+'/'+c.m,cx,cy);
-      }else{
-        ctx.fillStyle='rgba(255,255,255,.42)';ctx.font='600 15px Kanit, sans-serif';
-        ctx.fillText('ยังไม่กรอก',cx,cy);
-      }
-      ctx.fillStyle='rgba(255,255,255,.58)';ctx.font='600 14px Kanit, sans-serif';
-      ctx.fillText(c.l,cx,cy+21);
-    });
-
-    /* === การ์ดคำคม + ข้อความกวนๆ (ตำแหน่งไล่ต่อกันแบบไดนามิก กันทับกันถ้าข้อความยาว) === */
-    ctx.fillStyle='rgba(255,255,255,.11)';App._rr(ctx,CARD_X,quoteTop,CARD_W,quoteH,18);ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,.14)';ctx.lineWidth=1.5;App._rr(ctx,CARD_X,quoteTop,CARD_W,quoteH,18);ctx.stroke();
-    ctx.fillStyle='#fff';ctx.font='italic 600 23px Kanit, sans-serif';
-    let qy=App._wrapText(ctx,'"'+S.shareQuote.q+'"',W/2,quoteTop+40,CARD_W-56,31);
-    ctx.fillStyle='#bf5af2';ctx.font='700 19px Kanit, sans-serif';
-    qy+=28;ctx.fillText('— '+S.shareQuote.a,W/2,qy);
-    const tease=App._teaseFor(doneRatio);
-    ctx.fillStyle='#ff9f0a';ctx.font='700 22px Kanit, sans-serif';
-    App._wrapText(ctx,tease,W/2,qy+34,CARD_W-40,27);
-
-    /* === กล่องวิเคราะห์ผลการเรียน + ข้อความให้กำลังใจ (จากระบบ) === */
-    ctx.fillStyle='rgba(48,209,88,.15)';App._rr(ctx,CARD_X,anaTop,CARD_W,anaH,18);ctx.fill();
-    ctx.strokeStyle='rgba(48,209,88,.4)';ctx.lineWidth=1.5;App._rr(ctx,CARD_X,anaTop,CARD_W,anaH,18);ctx.stroke();
-    ctx.fillStyle='#30d158';ctx.font='700 19px Kanit, sans-serif';
-    ctx.fillText('🔍 คำแนะนำจากระบบ',W/2,anaTop+32);
-    const analysis=App._analysisFor(scoreRatio,exSt,doneRatio);
-    ctx.fillStyle='#fff';ctx.font='600 20px Kanit, sans-serif';
-    App._wrapText(ctx,analysis,W/2,anaTop+66,CARD_W-56,28);
-
-    /* === footer === */
-    ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='600 16px Kanit, sans-serif';
-    App._fitText(ctx,'ระบบติดตามการเรียน • ครูณัฐพล สุขยานุดิษฐ • ร.ร.สนมวิทยาคาร',W/2,footerY,CARD_W,16,'600','Kanit, sans-serif');
-  },
-  _rr:(ctx,x,y,w,h,r)=>{ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();},
-  _wrapText:(ctx,text,x,y,maxW,lh)=>{
-    const words=text.split(' ');
-    let line='',yy=y;
-    const flushLine=()=>{ if(line){ctx.fillText(line,x,yy);yy+=lh;line='';} };
-    words.forEach(w=>{
-      const piece=line?line+' '+w:w;
-      if(ctx.measureText(piece).width<=maxW){
-        line=piece;
-        return;
-      }
-      // piece นี้ยาวเกิน maxW แม้จะรวมกับ line เดิม -> ขึ้นบรรทัดใหม่ก่อน
-      flushLine();
-      if(ctx.measureText(w).width<=maxW){
-        line=w;
-      }else{
-        // คำ/ก้อนข้อความนี้ยาวเกินทั้งบรรทัดแม้อยู่บรรทัดเดียว (ปกติของภาษาไทยที่ไม่มีเว้นวรรคในคำ)
-        // -> ตัดทีละตัวอักษรแทน
-        let seg='';
-        Array.from(w).forEach(ch=>{
-          const test=seg+ch;
-          if(ctx.measureText(test).width>maxW&&seg){
-            ctx.fillText(seg,x,yy);yy+=lh;seg=ch;
-          }else{
-            seg=test;
-          }
-        });
-        line=seg;
-      }
-    });
-    flushLine();
-    return yy; // คืนตำแหน่ง y ถัดจากบรรทัดสุดท้าย เผื่อผู้เรียกอยากวางองค์ประกอบถัดไปต่อ
-  },
-  /* วาดข้อความบรรทัดเดียว โดยลดขนาดฟอนต์ลงเรื่อยๆ จนพอดีกับความกว้างที่กำหนด กันข้อความล้นขอบการ์ด */
-  _fitText:(ctx,text,x,y,maxW,baseSize,weight,family)=>{
-    let size=baseSize;
-    ctx.font=weight+' '+size+'px '+family;
-    while(ctx.measureText(text).width>maxW&&size>10){
-      size-=1;
-      ctx.font=weight+' '+size+'px '+family;
-    }
-    ctx.fillText(text,x,y);
-  },
-  downloadShare:()=>{
-    const cv=$('shareCanvas');if(!cv)return;
-    const a=document.createElement('a');
-    a.href=cv.toDataURL('image/png');
-    a.download='คะแนนของฉัน_'+(S.stu||'student')+'.png';
-    a.click();
-    UI.toast('บันทึกรูปแล้ว','ok');
-  },
-  nativeShare:async()=>{
-    const cv=$('shareCanvas');if(!cv)return;
-    cv.toBlob(async blob=>{
-      if(!blob)return UI.toast('สร้างรูปไม่สำเร็จ','er');
-      const file=new File([blob],'คะแนนของฉัน.png',{type:'image/png'});
-      try{
-        if(navigator.canShare&&navigator.canShare({files:[file]})){
-          await navigator.share({files:[file],title:'คะแนนฟิสิกส์ของฉัน',text:'มาดูคะแนนฟิสิกส์ของฉันสิ!'});
-        }else{
-          App.downloadShare();
-          UI.toast('อุปกรณ์นี้แชร์ไฟล์โดยตรงไม่ได้ ระบบดาวน์โหลดรูปให้แทน','wn');
-        }
-      }catch(e){ if(e.name!=='AbortError') UI.toast('แชร์ไม่สำเร็จ','er'); }
-    },'image/png');
-  },
-  /* แชร์ตรงไปหน้า Instagram Stories
-     - iPhone: คัดลอกรูปเข้า clipboard แล้วเปิดแอป IG ด้วย URL scheme ทางการของ Instagram
-       (instagram-stories://share) รูปจะถูกดึงเข้า Story ให้อัตโนมัติ ต้องติดตั้งแอป IG ไว้ก่อน
-     - Android/อื่นๆ: เว็บไม่สามารถส่งรูปตรงเข้าแอป IG ได้ (ข้อจำกัดของ Android/เบราว์เซอร์)
-       จึงใช้เมนูแชร์ของเครื่อง (Web Share) แทน ซึ่งจะมี Instagram ให้เลือกถ้าติดตั้งไว้ */
-  shareToInstagramStories:async()=>{
-    const cv=$('shareCanvas');if(!cv)return;
-    const isIOS=/iP(hone|od|ad)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-    cv.toBlob(async blob=>{
-      if(!blob)return UI.toast('สร้างรูปไม่สำเร็จ','er');
-      if(isIOS){
-        try{
-          if(!navigator.clipboard||!window.ClipboardItem)throw new Error('no-clipboard');
-          await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
-          UI.toast('คัดลอกรูปแล้ว กำลังเปิด Instagram Stories...','ok');
-          let leftPage=false;
-          const onHide=()=>{leftPage=true;};
-          document.addEventListener('visibilitychange',onHide,{once:true});
-          window.location.href='instagram-stories://share?source_application='+IG_APP_ID;
-          setTimeout(()=>{
-            document.removeEventListener('visibilitychange',onHide);
-            if(!leftPage){
-              UI.toast('เปิด Instagram ไม่สำเร็จ (อาจไม่ได้ติดตั้งแอป) — ลองปุ่ม "แชร์เลย" แทนครับ','wn');
-            }
-          },1800);
-        }catch(e){
-          UI.toast('เบราว์เซอร์นี้ยังไม่รองรับการคัดลอกรูปอัตโนมัติ — ลองปุ่ม "แชร์เลย" แล้วเลือก Instagram แทนครับ','wn');
-        }
-      }else{
-        UI.toast('เปิดเมนูแชร์ของเครื่อง — เลือก Instagram แล้วโพสต์ลง Story/ฟีดได้เลย','wn');
-        App.nativeShare();
-      }
-    },'image/png');
-  }
-};
-
-/* ใส่ Facebook App ID ของโรงเรียน/ครู (ถ้ามี) เพื่อให้ deep-link ไป Instagram Stories สมบูรณ์ตามมาตรฐานของ Meta
-   ถ้าไม่มีก็ปล่อยว่างไว้ได้ — ส่วนใหญ่ยังเปิด Story composer พร้อมรูปให้ได้ตามปกติ */
-const IG_APP_ID='';
-
-/* คำคมนักวิทยาศาสตร์ (สุ่มแปะในการ์ดแชร์คะแนน) */
-const SCI_QUOTES=[
-  {q:'จินตนาการสำคัญกว่าความรู้',a:'อัลเบิร์ต ไอน์สไตน์'},
-  {q:'ฉันไม่ได้ล้มเหลว ฉันแค่เจอวิธีที่ใช้ไม่ได้ตั้งหลายพันวิธี',a:'โทมัส เอดิสัน'},
-  {q:'ถ้าฉันมองเห็นได้ไกล ก็เพราะยืนอยู่บนบ่าของยักษ์',a:'ไอแซก นิวตัน'},
-  {q:'ในชีวิตนี้ไม่มีอะไรน่ากลัว มีแต่สิ่งที่ต้องทำความเข้าใจ',a:'มารี กูรี'},
-  {q:'วิทยาศาสตร์คือการจัดระเบียบความรู้อย่างมีเหตุผล',a:'เฮอร์เบิร์ต สเปนเซอร์'},
-  {q:'ความอยากรู้อยากเห็นสำคัญกว่าความรู้ที่มีอยู่แล้ว',a:'อัลเบิร์ต ไอน์สไตน์'},
-  {q:'อย่าเพียงแค่เรียนรู้สิ่งต่างๆ จงเรียนรู้ที่จะคิด',a:'อัลเบิร์ต ไอน์สไตน์'},
-  {q:'ธรรมชาติไม่เคยโกหก มีแต่มนุษย์ที่ยังตีความมันผิด',a:'กาลิเลโอ กาลิเลอี'},
-];
-/* ข้อความกวนๆ ตามอัตราส่งงาน (โทนล้อเล่น ไม่ใช่ดูถูก) */
-const TEASE_MSGS={
-  lo:[
-    'งานค้างเยอะขนาดนี้ แรงโน้มถ่วงยังฉุดไม่ทันเลยเธอ 😂',
-    'ถ้าความขยันมีหน่วยเป็นนิวตัน อันนี้ยังเป็น 0 อยู่นะ 🙃',
-    'สปีดส่งงานช้ากว่าแสงในสุญญากาศไปนิดนึง 🐢'
-  ],
-  mid:[
-    'มาไกลระดับหนึ่งแล้ว อีกนิดเดียวถึงจุดสมดุลพอดี ⚖️',
-    'โมเมนตัมกำลังมา ส่งต่ออีกหน่อยน้าา 🚀',
-    'ครึ่งทางแล้ว! อย่าเพิ่งหยุดที่จุดสมดุลนะ 😄'
-  ],
-  hi:[
-    'ส่งงานครบขนาดนี้ พลังงานจลน์ต้องยกให้เธอเลย ⚡',
-    'ขยันจนฟิสิกส์อิจฉา งานนี้ครูปลื้ม 🏆',
-    'นักเรียนโมเดลตัวอย่าง ส่งงานไวกว่าคลื่นแม่เหล็กไฟฟ้า ✨'
-  ]
-};
-/* ข้อความวิเคราะห์ผลการเรียน + ให้กำลังใจ (โทนจริงใจ สร้างสรรค์ ไม่ใช่ล้อเล่น) */
-const ANALYSIS_MSGS={
-  low:[
-    'ตอนนี้คะแนนโดยรวมยังค่อนข้างน้อย ลองเริ่มจากส่งงานที่ค้างอยู่ให้ครบก่อน แล้วค่อยๆ ไล่ทบทวนทีละบท ไม่ต้องรีบ ครูพร้อมช่วยเสมอ',
-    'ยังมีจุดที่ต้องพัฒนาอีกพอสมควร ลองแบ่งเวลาทบทวนวันละนิด และรีบส่งงานที่ค้างไว้ก่อนนะ ทุกคนเริ่มจากจุดนี้ได้เสมอ',
-    'คะแนนตอนนี้ยังไม่ถึงเป้า แต่ยังมีเวลาปรับปรุงอีกเยอะ ลองเข้าไปถามครูหรือเพื่อนในจุดที่ไม่เข้าใจดูนะ'
-  ],
-  mid:[
-    'ภาพรวมทำได้ในระดับหนึ่งแล้ว ยังพอมีช่องว่างให้พัฒนาอีกนิด ลองส่งงานที่เหลือให้ครบและทบทวนจุดที่ไม่มั่นใจเพิ่มอีกหน่อย',
-    'กำลังไปได้ดี แต่ยังไม่สุด ลองเพิ่มความสม่ำเสมอในการส่งงานอีกนิด คะแนนจะขยับขึ้นได้อีกแน่นอน',
-    'อยู่ในระดับกลางๆ ถ้าตั้งใจอีกนิดในช่วงที่เหลือ มีโอกาสขยับขึ้นไปอีกระดับได้สบายๆ'
-  ],
-  good:[
-    'ทำได้ดีทีเดียว! ทั้งคะแนนเก็บและการส่งงานอยู่ในเกณฑ์น่าพอใจ รักษามาตรฐานแบบนี้ไว้ต่อไปนะ',
-    'โดยรวมอยู่ในระดับดี ใกล้ถึงจุดที่ยอดเยี่ยมแล้ว ลองเก็บรายละเอียดเล็กๆ น้อยๆ ที่เหลือให้ครบ',
-    'มาถูกทางแล้ว! คะแนนอยู่ในเกณฑ์ดี แค่รักษาความสม่ำเสมอต่อไปก็จะยิ่งดีขึ้นเรื่อยๆ'
-  ],
-  hi:[
-    'ยอดเยี่ยมมาก! ทั้งคะแนนเก็บ คะแนนสอบ และอัตราส่งงานอยู่ในระดับดีเยี่ยมทั้งหมด รักษาความสม่ำเสมอแบบนี้ไว้นะ',
-    'เก่งมากจริงๆ ผลงานอยู่ในระดับต้นๆ ของห้องเลย ภูมิใจในตัวเองได้เต็มที่ แล้วรักษามาตรฐานนี้ไว้ต่อไป',
-    'สุดยอด! ทุกด้านอยู่ในเกณฑ์ดีเยี่ยม เป็นตัวอย่างที่ดีให้เพื่อนๆ ได้เลย เก่งแบบนี้ต่อไปเรื่อยๆ นะ'
-  ]
-};
-
-
-/* ACCORDION */
-function togCh(h){const b=h.nextElementSibling,a=h.querySelector('.ch-arr'),o=b.classList.contains('open');h.classList.toggle('open',!o);b.classList.toggle('open',!o);if(a)a.classList.toggle('open',!o);}
-function togPC(h){const b=h.nextElementSibling,a=h.querySelector('.ch-arr'),o=b.classList.contains('open');h.classList.toggle('open',!o);b.classList.toggle('open',!o);if(a)a.classList.toggle('open',!o);}
-
-
-/* EXPOSE GLOBALS — จำเป็นสำหรับ Google Apps Script iframe + inline onclick */
-window.App=App;
-window.UI=UI;
-window.setTh=setTh;
-window.openM=openM;
-window.closeM=closeM;
-window.closeSP=closeSP;
-window.togCh=togCh;
-window.togPC=togPC;
-
-
-function bindNav(){
-  var stu=$('nav-stu'),tc=$('nav-tc');
-  function goStuFn(){App.goStu();}
-  function goTcFn(){App.goTc();}
-  if(stu){
-    stu.addEventListener('click',goStuFn);
-    stu.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')goStuFn();});
-  }
-  if(tc){
-    tc.addEventListener('click',goTcFn);
-    tc.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')goTcFn();});
-  }
-  document.querySelectorAll('.sj-c[data-subj]').forEach(function(el){
-    el.addEventListener('click',function(){
-      App.selSubj(el.getAttribute('data-subj'));
-    });
-    el.addEventListener('keydown',function(e){
-      if(e.key==='Enter'||e.key===' ')App.selSubj(el.getAttribute('data-subj'));
+  });
+  // Subject selection
+  document.querySelectorAll('[data-subj]').forEach(el => {
+    el.addEventListener('click', () => {
+      S.subj = el.dataset.subj;
+      App.showRooms();
     });
   });
-  var btnLogin=$('btn-login'),btnHome=$('btn-home'),pwIn=$('pwIn');
-  if(btnLogin)btnLogin.addEventListener('click',function(){App.login();});
-  if(btnHome)btnHome.addEventListener('click',function(){App.go('pg-home');});
-  if(pwIn)pwIn.addEventListener('keydown',function(e){if(e.key==='Enter')App.login();});
-
-  // ตอบรับ iframe เครื่องมืออำนวยการสอน (teach-tools.html) เมื่อมันโหลดเสร็จและพร้อมรับข้อมูล
-  window.addEventListener('message',function(ev){
-    const d=ev.data||{};
-    if(d.type==='ttReady')App.postToolsInit();
-  });
-  var avatarIn=$('avatarIn');
-  if(avatarIn)avatarIn.addEventListener('change',function(e){
-    const f=e.target.files&&e.target.files[0];if(!f)return;
-    const rd=new FileReader();
-    rd.onload=function(ev){
-      const img=new Image();
-      img.onload=function(){
-        S.avatarImg=img;
-        const av=$('avatarPrev');if(av){av.src=ev.target.result;av.style.display='block';}
-        App.drawShareCanvas();
-      };
-      img.src=ev.target.result;
-    };
-    rd.readAsDataURL(f);
-  });
-}
-
-
-function bootApp(){
-  try{
-    Ico.put('homeLogo','atom');
-    Ico.put('ico-stu','book');
-    Ico.put('ico-tc','flask');
-    Ico.put('sj-ico-3','bolt');
-    Ico.put('sj-ico-5','wave');
-    Ico.put('loginIco','lock');
-    var tg=$('tgMain');if(tg)Ico.bindData(tg);
-    bindNav();
-    App.setTab('ฟิสิกส์ 3');
-    if(typeof google!=='undefined'&&google.script&&google.script.run){
-      API.ping().then(function(ok){
-        if(!ok)console.warn('Backend ping failed — run setupOnce() in Apps Script editor');
-      });
-    }
-  }catch(err){
-    console.error('bootApp',err);
-    if(UI&&UI.toast)UI.toast('เริ่มระบบผิดพลาด: '+err.message,'er');
+  // Auto-fill missing rooms / names from localStorage
+  const savedName = localStorage.getItem('stu_name');
+  const savedRoom = localStorage.getItem('stu_room');
+  const savedSubj = localStorage.getItem('stu_subj');
+  if (savedName && savedRoom && savedSubj) {
+    S.name = savedName; S.room = savedRoom; S.subj = savedSubj;
+    UI.h('dName', `${savedName} (${savedRoom})`);
+    App.go('pg-stu');
+    App.step(4);
+    App.fetch();
   }
-}
-
-
-if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',bootApp);
-}else{
-  bootApp();
-}
-
-
-window.onerror=function(msg,src,line){
-  console.error(msg,src,line);
-  if(UI&&UI.toast)UI.toast('ข้อผิดพลาด: '+msg,'er');
-  return false;
-};
+  // Teacher page tab init
+  App.tcTab('sub');
+});
 </script>
 </body>
 </html>
