@@ -459,6 +459,19 @@ tr { cursor: pointer; transition: background .15s; }
   </div>
 </div>
 
+<!-- MODAL: IMPORT EXAM SCORES FROM CSV -->
+<div class="moOv" id="mImportExam">
+  <div class="mo">
+    <div class="mo-hdr"><div style="font-weight:700;font-size:1.05rem;">📥 นำเข้าคะแนนสอบจาก CSV</div><button class="btn btn-g btn-sm" onclick="closeM('mImportExam')">✕</button></div>
+    <div class="mo-con">
+      <div style="font-size:.78rem;color:var(--t3);margin-bottom:12px;line-height:1.6;">เลือกไฟล์ CSV ที่ได้จากปุ่ม "📝 ใบกรอกคะแนนสอบ" (กรอกคะแนนเพิ่มในโปรแกรม Excel/Google Sheets แล้ว) ระบบจะจับคู่ชื่อนักเรียนอัตโนมัติ — เฉพาะแถวที่พบชื่อตรงกับรายชื่อในระบบเท่านั้นที่จะถูกนำเข้า</div>
+      <input type="file" class="fc" id="impFile" accept=".csv,text/csv" style="margin-bottom:12px;">
+      <div id="impPreview"></div>
+      <button class="btn btn-p btn-lg" id="impBtn" style="display:none;margin-top:14px;" onclick="App.startImportExam()">เริ่มนำเข้า</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- SIDE PANEL: GRADE -->
 <div class="spOv" id="spOv" onclick="closeSP()"></div>
@@ -635,6 +648,7 @@ tr { cursor: pointer; transition: background .15s; }
       <button class="btn btn-3 btn-sm" onclick="App.goPresent()">📊 โหมดนำเสนอ</button>
       <button class="btn btn-g btn-sm" onclick="API.export()">CSV ผลตรวจ</button>
       <button class="btn btn-5 btn-sm" onclick="App.exportExamRoster()">📝 ใบกรอกคะแนนสอบ</button>
+      <button class="btn btn-3 btn-sm" onclick="App.openImportExam()">📥 นำเข้าคะแนนสอบ</button>
       <button class="btn btn-o btn-sm" onclick="App.go('pg-home')">ออก</button>
     </div>
   </div>
@@ -778,7 +792,8 @@ let S={
   tmrIv:null,tmrOn:false,tmrSec:0,tmrInit:false,tmrDown:true,tmrFS:false,wakeLock:null,
   noStream:null,noAnim:null,poll:{y:0,m:0,n:0},randIv:null,
   shareQuote:null,avatarImg:null,
-  msgIv:null,msgCache:[]
+  msgIv:null,msgCache:[],
+  impRows:[]
 };
 
 
@@ -1161,6 +1176,86 @@ var App={
     a.download='ใบกรอกคะแนนสอบ_'+S.tab+'.csv';
     a.click();
     UI.toast('ดาวน์โหลดใบกรอกคะแนนสอบแล้ว','ok');
+  },
+
+  /* ==================== นำเข้าคะแนนสอบจาก CSV (Batch Import) ====================
+     รับไฟล์ CSV ที่มาจากปุ่ม "ใบกรอกคะแนนสอบ" (หรือรูปแบบคอลัมน์ใกล้เคียงกัน) กลับเข้ามา
+     จับคู่ชื่อนักเรียนกับรายชื่อในระบบก่อน แล้วค่อยส่งเฉพาะแถวที่ตรงเข้า saveExamScoresBatch ทีเดียว */
+  openImportExam:()=>{
+    UI.sv('impFile','');UI.h('impPreview','');
+    const b=$('impBtn');if(b)b.style.display='none';
+    S.impRows=[];
+    openM('mImportExam');
+  },
+  _csvParse:(text)=>{
+    if(text.charCodeAt(0)===0xFEFF)text=text.slice(1); // ตัด BOM
+    const rows=[];let row=[],field='',inQuotes=false;
+    for(let i=0;i<text.length;i++){
+      const c=text[i];
+      if(inQuotes){
+        if(c==='"'){ if(text[i+1]==='"'){field+='"';i++;} else inQuotes=false; }
+        else field+=c;
+      }else{
+        if(c==='"')inQuotes=true;
+        else if(c===','){row.push(field);field='';}
+        else if(c==='\n'){row.push(field);rows.push(row);row=[];field='';}
+        else if(c==='\r'){/* ข้าม รอ \n ตามมา */}
+        else field+=c;
+      }
+    }
+    if(field!==''||row.length){row.push(field);rows.push(row);}
+    return rows;
+  },
+  parseImportCSV:(text)=>{
+    const rows=App._csvParse(text);
+    if(!rows.length)return UI.toast('ไฟล์ว่างเปล่าหรืออ่านไม่ได้','er');
+    const header=rows[0].map(h=>(h||'').trim());
+    const findCol=needle=>header.findIndex(h=>h.includes(needle));
+    const iSubj=findCol('วิชา'), iRoom=findCol('ห้อง'), iName=findCol('ชื่อ'),
+          iPre=findCol('ก่อนกลาง'), iMid=findCol('สอบกลางภาค'),
+          iPost=findCol('หลังกลาง'), iFin=findCol('ปลายภาค');
+    if(iSubj<0||iRoom<0||iName<0){
+      UI.h('impPreview','<div style="color:var(--er);font-size:.85rem;padding:10px;">ไม่พบคอลัมน์ วิชา/ห้อง/ชื่อ-นามสกุล ในไฟล์นี้ — ตรวจสอบว่าเป็นไฟล์ที่ได้จากปุ่ม "ใบกรอกคะแนนสอบ" หรือไม่</div>');
+      return;
+    }
+    const g=v=>{const s=(v==null?'':String(v)).trim();return s===''?null:Number(s);};
+    const parsed=[];
+    for(let i=1;i<rows.length;i++){
+      const r=rows[i];if(!r||!r.length||r.every(c=>(c||'').trim()===''))continue;
+      const subject=(r[iSubj]||'').trim(),room=(r[iRoom]||'').trim(),student=(r[iName]||'').trim();
+      const valid=!!(STUDENTS[subject]&&STUDENTS[subject][room]&&STUDENTS[subject][room].includes(student));
+      parsed.push({
+        subject,room,student,valid,
+        preMid: iPre>=0?g(r[iPre]):null,
+        midExam: iMid>=0?g(r[iMid]):null,
+        postMid: iPost>=0?g(r[iPost]):null,
+        finalExam: iFin>=0?g(r[iFin]):null
+      });
+    }
+    S.impRows=parsed;
+    const okCount=parsed.filter(r=>r.valid).length,badCount=parsed.length-okCount;
+    UI.h('impPreview',
+      `<div style="font-size:.82rem;margin-bottom:8px;font-weight:600;"><span style="color:var(--ok);">✅ พบชื่อตรงกัน ${okCount} คน</span>${badCount?` &nbsp;•&nbsp; <span style="color:var(--er);">⚠️ ไม่พบชื่อ ${badCount} คน (จะถูกข้าม)</span>`:''}</div>`+
+      `<div style="max-height:280px;overflow-y:auto;border:1px solid var(--gb);border-radius:8px;">`+
+      parsed.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--gb);font-size:.78rem;">
+        <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.valid?'✅':'⚠️'} ${r.room} — ${r.student}</span>
+        <span style="color:var(--t4);flex-shrink:0;">${[r.preMid,r.midExam,r.postMid,r.finalExam].map(v=>v==null?'-':v).join(' / ')}</span>
+      </div>`).join('')+
+      `</div>`
+    );
+    const b=$('impBtn');if(b)b.style.display=okCount?'block':'none';
+  },
+  startImportExam:async()=>{
+    const rows=(S.impRows||[]).filter(r=>r.valid);
+    if(!rows.length)return;
+    UI.load(true);
+    const r=await API.call('saveExamScoresBatch',{rows});
+    UI.load(false);
+    if(r&&r.success){
+      UI.toast('นำเข้าสำเร็จ '+r.imported+' คน'+(r.failed?' (ผิดพลาด '+r.failed+' คน)':''),'ok');
+      closeM('mImportExam');
+      await App.fetch(true);
+    }else UI.toast((r&&r.error)||'นำเข้าไม่สำเร็จ','er');
   },
 
   goPresent:()=>{App.go('pg-present');App.renderPresent();},
@@ -1851,6 +1946,15 @@ function bindNav(){
       img.src=ev.target.result;
     };
     rd.readAsDataURL(f);
+  });
+  var impFile=$('impFile');
+  if(impFile)impFile.addEventListener('change',function(e){
+    const f=e.target.files&&e.target.files[0];if(!f)return;
+    UI.h('impPreview','<div style="color:var(--t3);font-size:.82rem;padding:10px;">กำลังอ่านไฟล์...</div>');
+    const rd=new FileReader();
+    rd.onload=function(ev){App.parseImportCSV(ev.target.result);};
+    rd.onerror=function(){UI.toast('อ่านไฟล์ไม่สำเร็จ','er');};
+    rd.readAsText(f,'utf-8');
   });
 }
 
