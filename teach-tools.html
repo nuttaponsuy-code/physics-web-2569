@@ -3,1074 +3,327 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>เครื่องมืออำนวยการสอนฟิสิกส์ — ครูณัฐพล สุขยานุดิษฐ</title>
-<meta name="description" content="เครื่องมืออำนวยการสอนฟิสิกส์ครบชุด: PhET, GeoGebra, Whiteboard, Kahoot!, Padlet และอีกมากมาย">
+<title>เครื่องมืออำนวยการสอน — ฟิสิกส์</title>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ── DESIGN SYSTEM (identical tokens to index.html) ── */
-:root{
-  --wallpaper:#000;
-  --mesh1:rgba(191,90,242,.30);--mesh2:rgba(10,132,255,.22);--mesh3:rgba(52,199,89,.14);
-  --g0:rgba(20,20,22,.62);--g1:rgba(36,36,40,.66);--gb:rgba(255,255,255,.09);--gbs:rgba(255,255,255,.16);
-  --t1:#f5f5f7;--t2:rgba(235,235,245,.82);--t3:rgba(235,235,245,.58);--t4:rgba(235,235,245,.38);
-  --ac:#0a84ff;--ac-h:#409cff;--ac-bg:rgba(10,132,255,.18);
-  --ok:#30d158;--ok-b:rgba(48,209,88,.16);--ok-bd:rgba(48,209,88,.35);
-  --er:#ff453a;--er-b:rgba(255,69,58,.16);--er-bd:rgba(255,69,58,.35);
-  --wn:#ff9f0a;--wn-b:rgba(255,159,10,.16);--wn-bd:rgba(255,159,10,.35);
-  --cy:#64d2ff;--cy-d:rgba(100,210,255,.18);
-  --ph3:#bf5af2;--ph3-b:rgba(191,90,242,.18);
-  --ph5:#ff375f;--ph5-b:rgba(255,55,95,.18);
-  --in-b:rgba(120,120,128,.16);--in-bd:rgba(120,120,128,.3);
-  --glass-blur:blur(28px) saturate(180%);--glass-blur-lite:blur(16px) saturate(160%);
-  --r-lg:26px;--r-md:18px;--r-sm:12px;--r-xs:8px;--r-pill:980px;
-  --sh-1:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.28);--sh-2:0 20px 50px rgba(0,0,0,.45);
-  --spring:cubic-bezier(.22,1,.36,1);
-  --font-ui:-apple-system,BlinkMacSystemFont,"SF Pro Display","Kanit",sans-serif;
+/* ==== ไฟล์นี้เป็นเอกสารอิสระ (โหลดผ่าน <iframe> จาก index.html) ====
+   จึงต้องมี CSS/JS พื้นฐานของตัวเองครบชุด ไม่ได้สืบทอดสไตล์จากหน้าแม่
+   ค่าตัวแปรสี/ธีมด้านล่างซิงก์ให้ตรงกับ index.html เพื่อให้หน้าตากลมกลืนกัน */
+:root {
+  --wallpaper: #000000;
+  --g0: rgba(20,20,22,.62); --g1: rgba(36,36,40,.66); --gb: rgba(255,255,255,.09); --gbs: rgba(255,255,255,.16);
+  --t1: #f5f5f7; --t2: rgba(235,235,245,.82); --t3: rgba(235,235,245,.58); --t4: rgba(235,235,245,.38);
+  --ac: #0a84ff; --ac-h: #409cff; --ac-bg: rgba(10,132,255,.18);
+  --ok: #30d158; --ok-b: rgba(48,209,88,.16); --ok-bd: rgba(48,209,88,.35);
+  --er: #ff453a; --er-b: rgba(255,69,58,.16); --er-bd: rgba(255,69,58,.35);
+  --wn: #ff9f0a; --wn-b: rgba(255,159,10,.16); --wn-bd: rgba(255,159,10,.35);
+  --cy: #64d2ff; --cy-d: rgba(100,210,255,.18);
+  --in-b: rgba(120,120,128,.16); --in-bd: rgba(120,120,128,.3);
+  --r-lg: 26px; --r-md: 18px; --r-sm: 12px; --r-pill: 980px;
+  --sh-1: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.28);
+  --sh-2: 0 20px 50px rgba(0,0,0,.45);
+  --spring: cubic-bezier(.22,1,.36,1);
+  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Kanit", "Sukhumvit Set", sans-serif;
 }
-[data-theme="light"]{
-  --wallpaper:#eef1f6;
-  --mesh1:rgba(175,82,222,.16);--mesh2:rgba(10,132,255,.14);--mesh3:rgba(52,199,89,.10);
-  --g0:rgba(255,255,255,.55);--g1:rgba(255,255,255,.72);--gb:rgba(60,60,67,.12);--gbs:rgba(60,60,67,.2);
-  --t1:#1c1c1e;--t2:rgba(60,60,67,.85);--t3:rgba(60,60,67,.6);--t4:rgba(60,60,67,.4);
-  --ac:#007aff;--ac-h:#0062cc;--ac-bg:rgba(0,122,255,.12);
-  --ok:#34c759;--ok-b:rgba(52,199,89,.14);--ok-bd:rgba(52,199,89,.35);
-  --er:#ff3b30;--er-b:rgba(255,59,48,.12);--er-bd:rgba(255,59,48,.32);
-  --wn:#ff9500;--wn-b:rgba(255,149,0,.14);--wn-bd:rgba(255,149,0,.32);
-  --cy:#32ade6;--cy-d:rgba(50,173,230,.16);
-  --ph3:#af52de;--ph3-b:rgba(175,82,222,.14);
-  --ph5:#ff2d55;--ph5-b:rgba(255,45,85,.14);
-  --in-b:rgba(118,118,128,.1);--in-bd:rgba(118,118,128,.22);
-  --sh-1:0 1px 2px rgba(60,60,67,.08),0 8px 24px rgba(60,60,67,.10);--sh-2:0 20px 50px rgba(60,60,67,.18);
+[data-theme="light"] {
+  --wallpaper: #eef1f6;
+  --g0: rgba(255,255,255,.55); --g1: rgba(255,255,255,.72); --gb: rgba(60,60,67,.12); --gbs: rgba(60,60,67,.2);
+  --t1: #1c1c1e; --t2: rgba(60,60,67,.85); --t3: rgba(60,60,67,.6); --t4: rgba(60,60,67,.4);
+  --ac: #007aff; --ac-h: #0062cc; --ac-bg: rgba(0,122,255,.12);
+  --ok: #34c759; --ok-b: rgba(52,199,89,.14); --ok-bd: rgba(52,199,89,.35);
+  --er: #ff3b30; --er-b: rgba(255,59,48,.12); --er-bd: rgba(255,59,48,.32);
+  --wn: #ff9500; --wn-b: rgba(255,149,0,.14); --wn-bd: rgba(255,149,0,.32);
+  --cy: #32ade6; --cy-d: rgba(50,173,230,.16);
+  --in-b: rgba(118,118,128,.1); --in-bd: rgba(118,118,128,.22);
+  --sh-1: 0 1px 2px rgba(60,60,67,.08), 0 8px 24px rgba(60,60,67,.10);
+  --sh-2: 0 20px 50px rgba(60,60,67,.18);
 }
-
-/* RESET */
-*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-ui);-webkit-tap-highlight-color:transparent;}
-html{scroll-behavior:smooth;}
-body{background:radial-gradient(1200px 800px at 0% -15%,var(--mesh1),transparent 55%),
-  radial-gradient(900px 700px at 110% 20%,var(--mesh2),transparent 60%),
-  radial-gradient(700px 600px at 60% 110%,var(--mesh3),transparent 55%),var(--wallpaper);
-  background-attachment:fixed;color:var(--t1);font-size:15px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
-@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important;}}
-
-/* TOPBAR */
-.topbar{background:var(--g1);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
-  padding:calc(env(safe-area-inset-top)+12px) 20px 12px;display:flex;justify-content:space-between;
-  align-items:center;gap:10px;border-bottom:1px solid var(--gb);position:sticky;top:0;z-index:50;flex-wrap:wrap;}
-.tb-title{font-size:1.15rem;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:8px;letter-spacing:-0.3px;}
-
-/* LAYOUT */
-.con{max-width:1020px;margin:0 auto;padding:24px 16px;padding-bottom:calc(env(safe-area-inset-bottom)+80px);}
-
-/* HERO */
-.hero{text-align:center;padding:56px 20px 44px;position:relative;overflow:hidden;margin-bottom:32px;}
-.hero-glow{position:absolute;top:-30%;left:50%;transform:translateX(-50%);width:700px;height:700px;
-  background:radial-gradient(circle,var(--ph3-b) 0%,transparent 65%);pointer-events:none;z-index:0;}
-.hero-c{position:relative;z-index:1;}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--ph3-b);border:1px solid var(--ph3);
-  border-radius:var(--r-pill);padding:5px 14px;font-size:.78rem;font-weight:700;color:var(--ph3);margin-bottom:16px;}
-
-/* CATEGORY SECTIONS */
-.cat-label{display:flex;align-items:center;gap:10px;margin-bottom:16px;margin-top:8px;}
-.cat-line{flex:1;height:1px;background:var(--gb);}
-.cat-txt{font-size:.8rem;font-weight:700;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
-.cat-ico{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-
-/* TOOL CARDS GRID */
-.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:32px;}
-.tool-card{background:var(--g1);-webkit-backdrop-filter:var(--glass-blur-lite);backdrop-filter:var(--glass-blur-lite);
-  border:1px solid var(--gb);border-radius:var(--r-lg);padding:0;box-shadow:var(--sh-1);overflow:hidden;
-  display:flex;flex-direction:column;transition:transform .35s var(--spring),box-shadow .35s,border-color .3s;
-  position:relative;}
-.tool-card::before{content:'';position:absolute;inset:0;border-radius:var(--r-lg);padding:1px;
-  background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0) 50%);
-  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;}
-.tool-card:hover{transform:translateY(-5px) scale(1.01);box-shadow:var(--sh-2);border-color:var(--accent-c,var(--gb));}
-.tool-card-top{height:5px;border-radius:var(--r-lg) var(--r-lg) 0 0;}
-.tool-card-body{padding:18px 18px 16px;flex:1;display:flex;flex-direction:column;}
-.tool-icon{width:52px;height:52px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;
-  font-size:1.6rem;margin-bottom:14px;flex-shrink:0;box-shadow:0 6px 16px rgba(0,0,0,.2);}
-.tool-name{font-size:1.05rem;font-weight:700;color:var(--t1);margin-bottom:6px;letter-spacing:-.01em;}
-.tool-desc{font-size:.82rem;color:var(--t3);line-height:1.55;flex:1;margin-bottom:16px;}
-.tool-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
-.tool-tag{padding:2px 8px;border-radius:var(--r-pill);font-size:.68rem;font-weight:700;background:var(--in-b);color:var(--t3);border:1px solid var(--in-bd);}
-.tool-actions{display:flex;gap:8px;flex-wrap:wrap;}
-
-/* BUTTONS */
-.btn{border:none;border-radius:var(--r-pill);padding:9px 18px;font-size:.88rem;font-weight:600;cursor:pointer;
-  transition:transform .28s var(--spring),background .15s,opacity .15s;display:inline-flex;align-items:center;
-  justify-content:center;gap:6px;}
-.btn:active{transform:scale(.93);}
-.btn-p{background:var(--ac);color:#fff;box-shadow:0 6px 16px var(--ac-bg);}
-.btn-p:hover{background:var(--ac-h);}
-.btn-g{background:var(--in-b);border:1px solid var(--in-bd);color:var(--t1);}
-.btn-ph3{background:var(--ph3);color:#fff;box-shadow:0 6px 16px var(--ph3-b);}
-.btn-ph5{background:var(--ph5);color:#fff;box-shadow:0 6px 16px var(--ph5-b);}
-.btn-ok{background:var(--ok);color:#fff;box-shadow:0 6px 16px var(--ok-b);}
-.btn-wn{background:var(--wn-b);border:1px solid var(--wn-bd);color:var(--wn);}
-.btn-cy{background:var(--cy-d);border:1px solid var(--cy);color:var(--cy);}
-.btn-sm{padding:6px 13px;font-size:.78rem;}
-.btn-lg{padding:12px 20px;font-size:.95rem;width:100%;}
-
-/* INLINE TOOLS */
-.it-box{background:var(--g0);border:1px solid var(--gb);border-radius:var(--r-md);padding:20px;margin-bottom:0;}
-.lbl{display:block;font-size:.84rem;color:var(--t2);font-weight:600;margin-bottom:6px;}
-.fc{width:100%;background:var(--in-b);border:1px solid var(--in-bd);color:var(--t1);padding:10px 14px;
-  border-radius:var(--r-sm);outline:none;font-size:.92rem;transition:border .2s,box-shadow .2s;}
-.fc:focus{border-color:var(--ac);box-shadow:0 0 0 4px var(--ac-bg);}
-.fc::placeholder{color:var(--t4);}
-
-/* MODALS */
-.moOv{position:fixed;inset:0;background:rgba(0,0,0,.50);backdrop-filter:blur(6px);z-index:120;
-  display:none;align-items:center;justify-content:center;padding:16px;opacity:0;transition:.25s;}
-.moOv.open{display:flex;opacity:1;}
-.mo{background:var(--g1);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
-  border-radius:var(--r-lg);width:100%;border:1px solid var(--gb);box-shadow:var(--sh-2);
-  transform:scale(.92) translateY(16px);transition:.4s var(--spring);display:flex;flex-direction:column;max-height:92vh;}
-.moOv.open .mo{transform:scale(1) translateY(0);}
-.mo-hdr{padding:16px 20px;border-bottom:1px solid var(--gb);display:flex;justify-content:space-between;align-items:center;}
-.mo-con{padding:20px;overflow-y:auto;flex:1;}
-
-/* TOAST */
-.tb-wrap{position:fixed;bottom:calc(env(safe-area-inset-bottom)+20px);left:0;right:0;
-  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;z-index:200;}
-.toast{background:var(--g1);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
-  border:1px solid var(--gb);color:var(--t1);padding:11px 20px;border-radius:var(--r-pill);font-weight:600;
-  font-size:.88rem;box-shadow:var(--sh-2);animation:tIn .4s var(--spring);display:flex;align-items:center;gap:8px;max-width:90vw;}
-.toast.ok{box-shadow:var(--sh-2),inset 0 0 0 1px var(--ok-bd);}
-.toast.er{box-shadow:var(--sh-2),inset 0 0 0 1px var(--er-bd);}
-.toast.wn{box-shadow:var(--sh-2),inset 0 0 0 1px var(--wn-bd);}
-@keyframes tIn{from{opacity:0;transform:translateY(15px) scale(.92);}to{opacity:1;transform:translateY(0) scale(1);}}
-
-/* TIMER */
-.timer-display{font-size:4rem;font-weight:700;color:var(--t1);text-align:center;font-variant-numeric:tabular-nums;
-  line-height:1;letter-spacing:-0.02em;padding:24px 0;}
-.timer-ring{width:200px;height:200px;margin:0 auto;position:relative;}
-.tmr-svg{transform:rotate(-90deg);}
-.tmr-bg{fill:none;stroke:var(--in-b);stroke-width:10;}
-.tmr-arc{fill:none;stroke:var(--ac);stroke-width:10;stroke-linecap:round;
-  stroke-dasharray:565.5;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke .5s;}
-.timer-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2.2rem;font-weight:700;font-variant-numeric:tabular-nums;}
-
-/* FULLSCREEN TIMER */
-.tmr-fs{position:fixed;inset:0;background:#0a0012;color:#fff;display:none;
-  flex-direction:column;align-items:center;justify-content:center;z-index:400;}
-.tmr-fs.open{display:flex;}
-.tmr-fs-num{font-size:22vw;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1;}
-
-/* RANDOMIZER */
-.rand-stage{background:linear-gradient(135deg,var(--in-b),var(--ac-bg));border:2px dashed var(--ac);
-  border-radius:var(--r-md);padding:30px;text-align:center;min-height:120px;display:flex;
-  align-items:center;justify-content:center;margin:16px 0;transition:.3s;}
-.rand-result{font-size:1.8rem;font-weight:700;color:var(--cy);letter-spacing:-.02em;}
-.rand-animate .rand-result{animation:shake .08s ease-in-out;}
-@keyframes shake{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
-
-/* GROUP GRID */
-.grp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:16px;}
-.grp-box{background:var(--g1);border:1px solid var(--gb);border-radius:var(--r-sm);padding:12px;}
-.grp-head{font-weight:700;font-size:.9rem;padding:6px 10px;border-radius:6px;margin-bottom:8px;text-align:center;}
-.grp-name{font-size:.82rem;padding:4px 8px;border-radius:4px;background:var(--in-b);margin-bottom:4px;color:var(--t2);}
-
-/* WHITEBOARD */
-.wb-wrap{border:1px solid var(--gb);border-radius:12px;overflow:hidden;position:relative;background:#fff;}
-#wbCanvas{display:block;touch-action:none;cursor:crosshair;}
-.wb-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:10px 14px;
-  background:var(--g1);border-top:1px solid var(--gb);}
-.wb-color{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;
-  transition:.2s var(--spring);flex-shrink:0;}
-.wb-color.on{border-color:var(--t1);transform:scale(1.15);}
-.wb-tool-btn{background:var(--in-b);border:1px solid var(--in-bd);color:var(--t2);padding:5px 10px;
-  border-radius:6px;font-size:.78rem;font-weight:600;cursor:pointer;transition:.2s;}
-.wb-tool-btn.on,.wb-tool-btn:hover{background:var(--ac-bg);color:var(--ac);border-color:var(--ac);}
-
-/* FORMULA TABLE */
-.fm-table{width:100%;border-collapse:collapse;}
-.fm-table th{font-size:.78rem;color:var(--t3);padding:8px 10px;text-align:left;border-bottom:1px solid var(--gb);}
-.fm-table td{padding:9px 10px;border-bottom:1px solid var(--gb);font-size:.84rem;}
-.fm-table tr:last-child td{border-bottom:none;}
-.fm-table tr:hover td{background:var(--ac-bg);}
-.fm-sym{font-family:'Courier New',monospace;font-weight:700;color:var(--cy);font-size:.95rem;}
-
-/* CALC INSET */
-.calc-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px;}
-.calc-res{font-size:1.1rem;font-weight:700;color:var(--ok);padding:10px;background:var(--ok-b);border:1px solid var(--ok-bd);border-radius:8px;margin-top:8px;text-align:center;}
-
-/* THEME SWITCH */
-.th-sw{display:flex;background:var(--in-b);border:1px solid var(--in-bd);border-radius:var(--r-pill);padding:3px;}
-.th-btn{background:transparent;border:none;padding:5px 11px;font-size:.75rem;color:var(--t3);cursor:pointer;font-weight:600;border-radius:var(--r-pill);transition:.25s var(--spring);}
-.th-btn.on{background:var(--g1);color:var(--t1);box-shadow:var(--sh-1);}
-
-/* IFRAMES */
-.iframe-wrap{width:100%;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--gb);background:#000;aspect-ratio:16/9;}
-.iframe-wrap iframe{width:100%;height:100%;display:block;border:none;}
-iframe.tall{aspect-ratio:unset;height:600px;}
-
-/* BACK LINK */
-.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--ph3);font-weight:600;font-size:.88rem;text-decoration:none;padding:6px 14px;border:1px solid var(--ph3);border-radius:var(--r-pill);transition:.25s;}
-.back-link:hover{background:var(--ph3-b);}
-
-/* POLL */
-.poll-opt{background:var(--in-b);border:1px solid var(--in-bd);border-radius:10px;padding:14px 16px;cursor:pointer;
-  transition:.25s var(--spring);display:flex;align-items:center;gap:12px;margin-bottom:8px;}
-.poll-opt:hover{border-color:var(--ac);background:var(--ac-bg);}
-.poll-bar-wrap{flex:1;background:var(--g0);border-radius:var(--r-pill);height:8px;overflow:hidden;}
-.poll-bar{height:100%;background:linear-gradient(90deg,var(--ac),var(--cy));border-radius:var(--r-pill);transition:width .5s var(--spring);}
-.poll-emo{font-size:1.5rem;}
-.poll-cnt{font-size:1rem;font-weight:700;color:var(--t1);min-width:28px;text-align:right;}
-
-/* NOISE METER */
-.noise-level{font-size:3rem;font-weight:700;text-align:center;margin:12px 0;transition:color .5s;}
-.noise-bar-outer{height:20px;background:var(--in-b);border-radius:var(--r-pill);overflow:hidden;margin-bottom:14px;}
-.noise-bar-inner{height:100%;background:linear-gradient(90deg,var(--ok),var(--wn) 60%,var(--er));transition:width .2s;}
-
-/* PAGE ANIMATION */
-.page{display:none;animation:fd .35s var(--spring);}
-.page.active{display:block;}
-@keyframes fd{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-
-/* RESPONSIVE */
-@media(max-width:640px){
-  .tools-grid{grid-template-columns:1fr;}
-  .timer-display{font-size:3rem;}
-  .tmr-fs-num{font-size:28vw;}
-}
-@media(min-width:900px){.tools-grid{grid-template-columns:repeat(3,1fr);}}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-ui); -webkit-tap-highlight-color: transparent; }
+body { background: var(--wallpaper); color: var(--t1); line-height: 1.5; font-size: 15px; -webkit-font-smoothing: antialiased; padding: 14px; min-height: 100vh; }
+.lbl { display: block; font-size: .84rem; color: var(--t2); font-weight: 600; margin-bottom: 6px; }
+.fc { width: 100%; background: var(--in-b); border: 1px solid var(--in-bd); color: var(--t1); padding: 11px 14px; border-radius: var(--r-sm); outline: none; font-size: .95rem; }
+.fc:focus { border-color: var(--ac); box-shadow: 0 0 0 4px var(--ac-bg); }
+select.fc { appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill="%23888890" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 20px; padding-right: 34px; }
+.btn { border: none; border-radius: var(--r-pill); padding: 9px 18px; font-size: .92rem; font-weight: 600; cursor: pointer; transition: transform .28s var(--spring), background .15s, opacity .15s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.btn:active { transform: scale(.94); }
+.btn-p { background: var(--ac); color: #fff; box-shadow: 0 6px 16px var(--ac-bg); }
+.btn-o { background: var(--in-b); border: 1px solid var(--ac); color: var(--ac); }
+.btn-g { background: var(--in-b); border: 1px solid var(--in-bd); color: var(--t1); }
+.btn-d { background: var(--er-b); color: var(--er); }
+.btn-ok { background: var(--ok-b); color: var(--ok); }
+.btn-sm { padding: 6px 13px; font-size: .8rem; }
+.btn-lg { padding: 14px 20px; font-size: 1rem; width: 100%; }
+.tg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.tg-c { background: var(--in-b); border: 1px solid var(--in-bd); padding: 16px; border-radius: var(--r-md); text-align: center; cursor: pointer; transition: .3s var(--spring); display: flex; flex-direction: column; align-items: center; }
+.tg-c:hover { border-color: var(--ac); background: var(--ac-bg); transform: translateY(-2px); }
+.tg-i { width: 44px; height: 44px; background: var(--g1); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; color: var(--ac); box-shadow: var(--sh-1); }
+.tg-panel { background: var(--g0); border: 1px solid var(--gb); border-radius: 12px; padding: 16px; }
+.timer-d { font-size: 3.5rem; font-weight: 700; color: var(--t1); text-align: center; font-variant-numeric: tabular-nums; line-height: 1; margin: 20px 0; letter-spacing: -0.02em; }
+.noise-lv { height: 24px; background: var(--in-b); border-radius: 12px; overflow: hidden; border: 1px solid var(--gb); margin-top: 10px; }
+.noise-b { height: 100%; width: 0%; transition: width .1s, background .2s; }
+#randDisp { text-align: center; font-size: 1.4rem; font-weight: 700; color: var(--cy); padding: 20px; margin: 10px 0; background: var(--in-b); border-radius: 12px; border: 1px dashed var(--cy); min-height: 80px; display: flex; align-items: center; justify-content: center; }
+.fm-grid { display: grid; grid-template-columns: 1fr; gap: 8px; max-height: 350px; overflow-y: auto; padding-right: 5px; }
+.fm-item { padding: 10px; background: var(--g1); border: 1px solid var(--gb); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+.fm-sym { font-family: monospace; font-weight: 700; color: var(--cy); font-size: .95rem; }
+.tmr-fs { position: fixed; inset: 0; background: #000; color: #fff; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 400; }
+.tmr-fs.open { display: flex; }
+.tmr-fs-lbl { font-size: 1rem; letter-spacing: .1em; color: rgba(255,255,255,.5); font-weight: 600; margin-bottom: 10px; text-transform: uppercase; }
+.tmr-fs-num { font-size: 20vw; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.02em; line-height: 1; }
+.tmr-fs-exit { position: absolute; top: 20px; right: 20px; }
+.tmr-fs-ctl { display: flex; gap: 12px; margin-top: 34px; }
+.wl-badge { display: inline-flex; align-items: center; gap: 5px; font-size: .72rem; color: var(--ok); background: var(--ok-b); border: 1px solid var(--ok-bd); padding: 3px 9px; border-radius: var(--r-pill); font-weight: 700; margin-top: 10px; }
+.tb { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 500; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+.toast { background: var(--g1); border: 1px solid var(--gb); color: var(--t1); padding: 11px 20px; border-radius: var(--r-pill); font-weight: 600; font-size: .88rem; box-shadow: var(--sh-2); }
+.toast.er { box-shadow: var(--sh-2), inset 0 0 0 1px var(--er-bd); }
+.toast.ok { box-shadow: var(--sh-2), inset 0 0 0 1px var(--ok-bd); }
+.toast.wn { box-shadow: var(--sh-2), inset 0 0 0 1px var(--wn-bd); }
+.not-ready { text-align: center; padding: 60px 20px; color: var(--t3); }
+.msg-row { background: var(--in-b); border: 1px solid var(--in-bd); border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
 </style>
 </head>
 <body>
 
-<!-- TOAST -->
-<div class="tb-wrap" id="toastBox"></div>
+<div class="tb" id="toastBox"></div>
 
-<!-- FULLSCREEN TIMER -->
+<!-- FULLSCREEN TIMER OVERLAY -->
 <div class="tmr-fs" id="tmrFS">
-  <button class="btn btn-g" style="position:absolute;top:max(env(safe-area-inset-top),20px);right:20px;" onclick="T.fs(false)">✕ ออก</button>
-  <div style="letter-spacing:.12em;color:rgba(255,255,255,.4);font-weight:600;font-size:.9rem;margin-bottom:8px;">⏱️ เวลาที่เหลือ</div>
+  <button class="btn btn-g tmr-fs-exit" id="tmrFSExitBtn">ออกจากเต็มจอ ✕</button>
+  <div class="tmr-fs-lbl">เวลาที่เหลือ</div>
   <div class="tmr-fs-num" id="tmrFSNum">5:00</div>
-  <div style="display:flex;gap:12px;margin-top:30px;">
-    <button class="btn btn-ok" style="min-width:100px;" onclick="T.start()">▶ เริ่ม</button>
-    <button class="btn btn-wn" style="min-width:100px;" onclick="T.pause()">⏸ หยุด</button>
-    <button class="btn btn-g" style="min-width:100px;" onclick="T.reset()">↺ รีเซต</button>
+  <div class="tmr-fs-ctl">
+    <button class="btn btn-ok btn-lg" onclick="App.tmrStart()">เริ่ม</button>
+    <button class="btn btn-g btn-lg" onclick="App.tmrPause()">หยุด</button>
+    <button class="btn btn-d btn-lg" onclick="App.tmrReset()">รีเซต</button>
   </div>
+  <div class="wl-badge" id="wlBadge" style="display:none;">🔒 หน้าจอจะไม่ดับระหว่างจับเวลา</div>
 </div>
 
-<!-- MODAL: PhET EMBED -->
-<div class="moOv" id="moPhet">
-  <div class="mo" style="max-width:860px;">
-    <div class="mo-hdr">
-      <div style="font-weight:700;" id="moPhetT">PhET Simulation</div>
-      <button class="btn btn-g btn-sm" onclick="closeM('moPhet');document.getElementById('phetFrame').src=''">✕ ปิด</button>
-    </div>
-    <div class="mo-con" style="padding:8px;">
-      <div class="iframe-wrap" style="aspect-ratio:4/3;">
-        <iframe id="phetFrame" src="" allow="fullscreen"></iframe>
-      </div>
-    </div>
+<div id="notReady" class="not-ready">กำลังเชื่อมต่อกับหน้าหลัก...</div>
+
+<div id="tgMain" style="display:none;">
+  <div class="tg-grid">
+    <div class="tg-c" onclick="App.tool('rand')"><div class="tg-i" data-ico="dice"></div><span style="font-weight:600;font-size:.85rem;">สุ่มชื่อ</span></div>
+    <div class="tg-c" onclick="App.tool('timer')"><div class="tg-i" data-ico="timer"></div><span style="font-weight:600;font-size:.85rem;">จับเวลา</span></div>
+    <div class="tg-c" onclick="App.tool('noise')"><div class="tg-i" data-ico="sound"></div><span style="font-weight:600;font-size:.85rem;">วัดเสียง</span></div>
+    <div class="tg-c" onclick="App.tool('group')"><div class="tg-i" data-ico="group"></div><span style="font-weight:600;font-size:.85rem;">จัดกลุ่ม</span></div>
+    <div class="tg-c" onclick="App.tool('poll')"><div class="tg-i" data-ico="poll"></div><span style="font-weight:600;font-size:.85rem;">โหวตเข้าใจ</span></div>
+    <div class="tg-c" onclick="App.tool('formula')"><div class="tg-i" data-ico="formula"></div><span style="font-weight:600;font-size:.85rem;">สูตรลัด</span></div>
+    <div class="tg-c" onclick="App.tool('msgboard')"><div class="tg-i" data-ico="chat"></div><span style="font-weight:600;font-size:.85rem;">กระดานข้อความ</span></div>
   </div>
 </div>
+<button id="tgBack" class="btn btn-g btn-sm" style="display:none;margin-bottom:14px;" onclick="App.backTool()">← กลับเมนูเครื่องมือ</button>
+<div id="tgPanel" class="tg-panel" style="display:none;"></div>
 
-<!-- MODAL: FORMULA CALCULATOR -->
-<div class="moOv" id="moCalc">
-  <div class="mo" style="max-width:500px;">
-    <div class="mo-hdr"><div style="font-weight:700;" id="moCalcT">เครื่องคิดเลขสูตร</div><button class="btn btn-g btn-sm" onclick="closeM('moCalc')">✕</button></div>
-    <div class="mo-con" id="moCalcB"></div>
-  </div>
-</div>
-
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="tb-title">
-    <span>🔭</span>
-    <span>เครื่องมืออำนวยการสอนฟิสิกส์</span>
-  </div>
-  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-    <div class="th-sw">
-      <button class="th-btn" id="b-dk" onclick="setTh('dark')">มืด</button>
-      <button class="th-btn" id="b-lt" onclick="setTh('light')">สว่าง</button>
-      <button class="th-btn" id="b-au" onclick="setTh('auto')">Auto</button>
-    </div>
-    <a href="index.html" class="back-link">← ระบบส่งงาน</a>
-  </div>
-</div>
-
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-c">
-    <div class="hero-badge">🧪 Physics Teaching Tools</div>
-    <h1 style="font-size:2.2rem;font-weight:700;letter-spacing:-.5px;margin-bottom:8px;color:var(--t1);">เครื่องมืออำนวยการสอน</h1>
-    <p style="color:var(--t3);font-size:1rem;max-width:520px;margin:0 auto;">รวมเครื่องมือดิจิทัลสำหรับการสอนฟิสิกส์ครบชุด<br>ครูณัฐพล สุขยานุดิษฐ • โรงเรียนสนมวิทยาคาร</p>
-  </div>
-</div>
-
-<div class="con">
-
-  <!-- ══════════════════════════════════════════════════
-       GROUP 1: CLASSROOM & TIME
-  ══════════════════════════════════════════════════ -->
-  <div class="cat-label">
-    <div class="cat-ico" style="background:var(--ac-bg);color:var(--ac);">🏫</div>
-    <span class="cat-txt">ห้องเรียนและเวลา</span>
-    <div class="cat-line"></div>
-  </div>
-  <div class="tools-grid">
-
-    <!-- TIMER CARD (built-in) -->
-    <div class="tool-card" style="--accent-c:var(--ac);">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,var(--ac),var(--cy));"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:var(--ac-bg);">⏱️</div>
-        <div class="tool-name">จับเวลา (นาฬิกา)</div>
-        <div class="tool-desc">จับเวลานับถอยหลังสำหรับกิจกรรมในชั้นเรียน พร้อม Fullscreen mode</div>
-        <div class="tool-tags"><span class="tool-tag">ในตัว</span><span class="tool-tag">Real-time</span></div>
-        <div class="it-box">
-          <!-- Circular Timer -->
-          <div class="timer-ring">
-            <svg class="tmr-svg" viewBox="0 0 200 200" width="200" height="200">
-              <circle class="tmr-bg" cx="100" cy="100" r="88"/>
-              <circle class="tmr-arc" id="tmrArc" cx="100" cy="100" r="88"/>
-            </svg>
-            <div class="timer-num" id="tmrNum">5:00</div>
-          </div>
-          <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0;">
-            <button class="btn btn-sm btn-g" onclick="T.set(60)">1'</button>
-            <button class="btn btn-sm btn-g" onclick="T.set(120)">2'</button>
-            <button class="btn btn-sm btn-g" onclick="T.set(180)">3'</button>
-            <button class="btn btn-sm btn-g" onclick="T.set(300)">5'</button>
-            <button class="btn btn-sm btn-g" onclick="T.set(600)">10'</button>
-            <button class="btn btn-sm btn-g" onclick="T.set(900)">15'</button>
-          </div>
-          <div style="display:flex;gap:8px;margin-bottom:8px;">
-            <button class="btn btn-ok" style="flex:1;" onclick="T.start()">▶ เริ่ม</button>
-            <button class="btn btn-wn" style="flex:1;" onclick="T.pause()">⏸ หยุด</button>
-            <button class="btn btn-g" style="flex:1;" onclick="T.reset()">↺</button>
-          </div>
-          <button class="btn btn-g btn-lg" onclick="T.fs(true)">🖥️ เต็มจอ</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- RANDOMIZER CARD (built-in) -->
-    <div class="tool-card" style="--accent-c:var(--cy);">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,var(--cy),var(--ph3));"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:var(--cy-d);">🎲</div>
-        <div class="tool-name">สุ่มชื่อนักเรียน</div>
-        <div class="tool-desc">สุ่มชื่อนักเรียนแบบ animation เพื่อเรียกตอบ เลือกกลุ่มหรือกิจกรรม</div>
-        <div class="tool-tags"><span class="tool-tag">ในตัว</span><span class="tool-tag">Animation</span></div>
-        <div class="it-box">
-          <div class="rand-stage" id="randStage">
-            <div class="rand-result" id="randResult">กดปุ่มด้านล่างเพื่อสุ่ม</div>
-          </div>
-          <div class="lbl" style="margin-top:14px;">รายชื่อนักเรียน (1 ชื่อ/บรรทัด)</div>
-          <textarea class="fc" id="randNames" rows="4" placeholder="นาย ก อนุชา&#10;น.ส. ข วรรณา&#10;นาย ค ชัยยา&#10;..." style="margin-bottom:10px;resize:vertical;"></textarea>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-cy btn-lg" onclick="R.spin()">🎲 สุ่มชื่อ!</button>
-            <button class="btn btn-g btn-sm" onclick="R.clear()">รีเซต</button>
-          </div>
-          <div id="randHistory" style="font-size:.75rem;color:var(--t4);margin-top:8px;"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- GROUP MAKER CARD (built-in) -->
-    <div class="tool-card" style="--accent-c:var(--ok);">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,var(--ok),var(--cy));"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:var(--ok-b);">👥</div>
-        <div class="tool-name">จัดกลุ่มนักเรียน</div>
-        <div class="tool-desc">แบ่งนักเรียนออกเป็นกลุ่มแบบสุ่ม กำหนดจำนวนกลุ่มหรือขนาดกลุ่มได้</div>
-        <div class="tool-tags"><span class="tool-tag">ในตัว</span><span class="tool-tag">สุ่มอัตโนมัติ</span></div>
-        <div class="it-box">
-          <div class="lbl">รายชื่อ (1 ชื่อ/บรรทัด)</div>
-          <textarea class="fc" id="grpNames" rows="4" placeholder="นาย ก อนุชา&#10;น.ส. ข วรรณา&#10;..." style="margin-bottom:10px;resize:vertical;"></textarea>
-          <div style="display:flex;gap:10px;align-items:flex-end;margin-bottom:12px;flex-wrap:wrap;">
-            <div style="flex:1;min-width:90px;"><label class="lbl">จำนวนกลุ่ม</label><input type="number" class="fc" id="grpCount" value="4" min="2" max="20"></div>
-            <div style="flex:1;min-width:90px;"><label class="lbl">โหมด</label>
-              <select class="fc" id="grpMode"><option value="count">กำหนดจำนวนกลุ่ม</option><option value="size">กำหนดขนาดกลุ่ม</option></select>
-            </div>
-          </div>
-          <button class="btn btn-ok btn-lg" onclick="G.make()">👥 แบ่งกลุ่มสุ่ม</button>
-          <div class="grp-grid" id="grpResult"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- POLL CARD (built-in) -->
-    <div class="tool-card" style="--accent-c:var(--wn);">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,var(--wn),var(--ph5));"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:var(--wn-b);">📊</div>
-        <div class="tool-name">โหวตเข้าใจ (Poll)</div>
-        <div class="tool-desc">นักเรียนกดโหวตระดับความเข้าใจแบบ Real-time แสดงผลทันที</div>
-        <div class="tool-tags"><span class="tool-tag">ในตัว</span><span class="tool-tag">Real-time</span></div>
-        <div class="it-box">
-          <div id="pollOpts"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
-            <span style="font-size:.78rem;color:var(--t4);">รวม: <b id="pollTotal">0</b> โหวต</span>
-            <button class="btn btn-g btn-sm" onclick="P.reset()">รีเซต</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- NOISE METER -->
-    <div class="tool-card" style="--accent-c:var(--er);">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,var(--ok),var(--wn),var(--er));"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:var(--er-b);">🔊</div>
-        <div class="tool-name">มิเตอร์เสียงรบกวน</div>
-        <div class="tool-desc">วัดระดับเสียงในห้องเรียนผ่านไมโครโฟน แจ้งเตือนเมื่อเสียงดังเกินกว่าที่กำหนด</div>
-        <div class="tool-tags"><span class="tool-tag">ไมโครโฟน</span><span class="tool-tag">ในตัว</span></div>
-        <div class="it-box">
-          <div class="noise-level" id="noiseLvl">🎙️</div>
-          <div class="noise-bar-outer"><div class="noise-bar-inner" id="noiseBar" style="width:0%;"></div></div>
-          <div style="font-size:.78rem;color:var(--t4);text-align:center;margin-bottom:10px;" id="noiseTxt">กด "เริ่ม" เพื่อวัดเสียง</div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-ok" style="flex:1;" id="noiseBtnStart" onclick="N.start()">▶ เริ่มวัด</button>
-            <button class="btn btn-g" style="flex:1;" id="noiseBtnStop" onclick="N.stop()" disabled>■ หยุด</button>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:10px;">
-            <label class="lbl" style="margin:0;white-space:nowrap;font-size:.78rem;">เกณฑ์เสียง:</label>
-            <input type="range" id="noiseThresh" min="5" max="80" value="40" style="flex:1;">
-            <span style="font-size:.8rem;font-weight:700;min-width:28px;" id="noiseThV">40</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tools-grid group1 -->
-
-
-  <!-- ══════════════════════════════════════════════════
-       GROUP 2: LAB, SIM & SENSOR
-  ══════════════════════════════════════════════════ -->
-  <div class="cat-label">
-    <div class="cat-ico" style="background:var(--ok-b);color:var(--ok);">🔬</div>
-    <span class="cat-txt">ห้องปฏิบัติการ, จำลอง & เซนเซอร์</span>
-    <div class="cat-line"></div>
-  </div>
-  <div class="tools-grid">
-
-    <!-- PhET SIMULATIONS -->
-    <div class="tool-card" style="--accent-c:var(--ok);">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,#e8640c,#f5a623);"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:rgba(232,100,12,.2);font-size:1.4rem;">⚛️</div>
-        <div class="tool-name">PhET Interactive Simulations</div>
-        <div class="tool-desc">Simulation ฟิสิกส์เชิงโต้ตอบจาก University of Colorado Boulder รองรับภาษาไทย</div>
-        <div class="tool-tags"><span class="tool-tag">ฟรี</span><span class="tool-tag">HTML5</span><span class="tool-tag">ภาษาไทย</span></div>
-        <div class="tool-actions">
-          <button class="btn btn-p" onclick="openPhet('https://phet.colorado.edu/sims/html/projectile-motion/latest/projectile-motion_th.html','การเคลื่อนที่แบบโพรเจกไทล์')">🎯 โพรเจกไทล์</button>
-          <button class="btn btn-p" onclick="openPhet('https://phet.colorado.edu/sims/html/ohms-law/latest/ohms-law_th.html','กฎของโอห์ม')">⚡ กฎโอห์ม</button>
-          <button class="btn btn-p" onclick="openPhet('https://phet.colorado.edu/sims/html/wave-on-a-string/latest/wave-on-a-string_th.html','คลื่นบนเส้นเชือก')">〰️ คลื่น</button>
-          <button class="btn btn-p" onclick="openPhet('https://phet.colorado.edu/sims/html/charges-and-fields/latest/charges-and-fields_th.html','ประจุและสนาม')">🔋 ไฟฟ้า</button>
-          <button class="btn btn-p" onclick="openPhet('https://phet.colorado.edu/sims/html/energy-skate-park/latest/energy-skate-park_th.html','พลังงาน Skate')">🛹 พลังงาน</button>
-          <button class="btn btn-g" onclick="window.open('https://phet.colorado.edu/th/simulations/filter?subjects=physics','_blank')">📋 ดูทั้งหมด →</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PHYPHOX -->
-    <div class="tool-card" style="--accent-c:var(--ph3);">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,#e53270,var(--ph3));"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:var(--ph3-b);font-size:1.4rem;">📱</div>
-        <div class="tool-name">Phyphox — เซนเซอร์สมาร์ตโฟน</div>
-        <div class="tool-desc">ใช้สมาร์ตโฟนเป็นอุปกรณ์วัด: accelerometer, gyroscope, barometer, microphone เหมาะสำหรับทดลองจริง</div>
-        <div class="tool-tags"><span class="tool-tag">iOS & Android</span><span class="tool-tag">ฟรี</span><span class="tool-tag">Lab จริง</span></div>
-        <div class="tool-actions">
-          <button class="btn btn-ph3" onclick="window.open('https://phyphox.org/experiment-collection/','_blank')">🔬 Experiment Collection</button>
-          <button class="btn btn-g" onclick="window.open('https://phyphox.org/','_blank')">🌐 เว็บไซต์หลัก</button>
-        </div>
-        <div style="margin-top:12px;background:var(--ph3-b);border:1px solid var(--ph3);border-radius:8px;padding:10px;">
-          <div style="font-size:.78rem;font-weight:700;color:var(--ph3);margin-bottom:6px;">💡 แนะนำสำหรับฟิสิกส์</div>
-          <div style="font-size:.75rem;color:var(--t3);line-height:1.7;">
-            • <b>Acceleration:</b> ทดลองการเคลื่อนที่<br>
-            • <b>Acoustic Stopwatch:</b> วัดความเร็วเสียง<br>
-            • <b>Pendulum:</b> คาบการแกว่งลูกตุ้ม<br>
-            • <b>Inclined Plane:</b> ทางลาด + ความเร่ง
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- VIDEO ANALYSIS — Tracker -->
-    <div class="tool-card" style="--accent-c:#e8640c;">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,#e8640c,#f5a623);"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:rgba(232,100,12,.18);font-size:1.4rem;">🎬</div>
-        <div class="tool-name">Tracker — Video Analysis</div>
-        <div class="tool-desc">วิเคราะห์การเคลื่อนที่จากวิดีโอด้วย Tracker (Open Source) หรือ Vernier Logger Pro เหมาะสำหรับ Lab ฟิสิกส์</div>
-        <div class="tool-tags"><span class="tool-tag">ฟรี</span><span class="tool-tag">Windows/Mac</span><span class="tool-tag">Video</span></div>
-        <div class="tool-actions">
-          <button class="btn btn-p" onclick="window.open('https://physlets.org/tracker/','_blank')">⬇️ ดาวน์โหลด Tracker</button>
-          <button class="btn btn-g" onclick="window.open('https://www.youtube.com/results?search_query=tracker+physics+lab+thai','_blank')">📹 วิดีโอสอน</button>
-        </div>
-        <div style="margin-top:12px;background:rgba(232,100,12,.12);border:1px solid rgba(232,100,12,.35);border-radius:8px;padding:10px;">
-          <div style="font-size:.78rem;font-weight:700;color:#e8640c;margin-bottom:4px;">🎯 ขั้นตอนใช้งาน</div>
-          <div style="font-size:.75rem;color:var(--t3);line-height:1.7;">
-            1. บันทึกวิดีโอการเคลื่อนที่ 120fps+<br>
-            2. เปิดใน Tracker → Calibrate scale<br>
-            3. Auto-track วัตถุ → ดูกราฟ x-t, v-t, a-t<br>
-            4. Export ข้อมูลเป็น CSV
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- DESMOS PHYSICS -->
-    <div class="tool-card" style="--accent-c:#2d70b3;">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,#2d70b3,#4ab7e8);"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:rgba(45,112,179,.2);font-size:1.4rem;">📈</div>
-        <div class="tool-name">Desmos Graphing Calculator</div>
-        <div class="tool-desc">เครื่องคิดเลขกราฟเชิงโต้ตอบ ใช้วาดกราฟสมการฟิสิกส์, Sliders, Animation ได้เลย</div>
-        <div class="tool-tags"><span class="tool-tag">ออนไลน์</span><span class="tool-tag">ฟรี</span><span class="tool-tag">กราฟ</span></div>
-        <div class="tool-actions">
-          <button class="btn btn-p" onclick="window.open('https://www.desmos.com/calculator','_blank')">📈 เปิด Desmos</button>
-          <button class="btn btn-g" onclick="window.open('https://teacher.desmos.com/','_blank')">🎓 Teacher Edition</button>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tools-grid group2 -->
-
-
-  <!-- ══════════════════════════════════════════════════
-       GROUP 3: VISUAL & WHITEBOARD
-  ══════════════════════════════════════════════════ -->
-  <div class="cat-label">
-    <div class="cat-ico" style="background:var(--ph3-b);color:var(--ph3);">🎨</div>
-    <span class="cat-txt">ภาพนิ่ง, กระดาน & วาดกราฟ</span>
-    <div class="cat-line"></div>
-  </div>
-  <div class="tools-grid">
-
-    <!-- WHITEBOARD (built-in canvas) -->
-    <div class="tool-card" style="--accent-c:var(--ph3);grid-column:span 2;" id="wbCard">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,var(--ph3),var(--ac));"></div>
-      <div class="tool-card-body">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;flex-wrap:wrap;">
-          <div class="tool-icon" style="background:var(--ph3-b);margin:0;">🖊️</div>
-          <div>
-            <div class="tool-name" style="margin:0 0 4px;">กระดานดิจิทัล (Whiteboard)</div>
-            <div class="tool-desc" style="margin:0;">วาดบนกระดานดิจิทัลแบบ Infinite Canvas รองรับสัมผัส, ปากกา, ยางลบ และสีต่างๆ</div>
-          </div>
-        </div>
-        <div class="wb-wrap">
-          <canvas id="wbCanvas" width="900" height="400" style="background:#fff;"></canvas>
-          <div class="wb-bar">
-            <span style="font-size:.78rem;color:var(--t4);font-weight:600;flex-shrink:0;">สี:</span>
-            <div class="wb-color on" style="background:#222;" data-c="#222" onclick="WB.setColor(this)"></div>
-            <div class="wb-color" style="background:#e53270;" data-c="#e53270" onclick="WB.setColor(this)"></div>
-            <div class="wb-color" style="background:#0a84ff;" data-c="#0a84ff" onclick="WB.setColor(this)"></div>
-            <div class="wb-color" style="background:#30d158;" data-c="#30d158" onclick="WB.setColor(this)"></div>
-            <div class="wb-color" style="background:#ff9f0a;" data-c="#ff9f0a" onclick="WB.setColor(this)"></div>
-            <div class="wb-color" style="background:#bf5af2;" data-c="#bf5af2" onclick="WB.setColor(this)"></div>
-            <div class="wb-color" style="background:#fff;border:1px solid #ccc;" data-c="#fff" onclick="WB.setColor(this)"></div>
-            <div style="flex:1;"></div>
-            <span style="font-size:.72rem;color:var(--t4);">ขนาด:</span>
-            <input type="range" id="wbSize" min="2" max="40" value="5" style="width:80px;" oninput="WB.setSize(this.value)">
-            <button class="wb-tool-btn on" id="wbPen" onclick="WB.setTool('pen')">✏️ ปากกา</button>
-            <button class="wb-tool-btn" id="wbErase" onclick="WB.setTool('eraser')">🧹 ยางลบ</button>
-            <button class="wb-tool-btn" id="wbLine" onclick="WB.setTool('line')">╱ เส้นตรง</button>
-            <button class="wb-tool-btn" id="wbRect" onclick="WB.setTool('rect')">▭ สี่เหลี่ยม</button>
-            <button class="wb-tool-btn" id="wbCircle" onclick="WB.setTool('circle')">○ วงกลม</button>
-            <button class="wb-tool-btn" onclick="WB.undo()">↩ Undo</button>
-            <button class="wb-tool-btn" onclick="WB.clear()">🗑️ ลบทั้งหมด</button>
-            <button class="wb-tool-btn" onclick="WB.save()">⬇️ บันทึก</button>
-          </div>
-        </div>
-        <div class="tool-tags" style="margin-top:10px;"><span class="tool-tag">ในตัว</span><span class="tool-tag">Touch</span><span class="tool-tag">Stylus</span></div>
-      </div>
-    </div>
-
-    <!-- GeoGebra -->
-    <div class="tool-card" style="--accent-c:#4e9af1;">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,#4e9af1,#9c3cd6);"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:rgba(78,154,241,.2);font-size:1.4rem;">📐</div>
-        <div class="tool-name">GeoGebra — Physics Grapher</div>
-        <div class="tool-desc">เครื่องมือวาดกราฟ, Geometry และ Simulation สำหรับฟิสิกส์ รองรับ 3D, CAS, Spreadsheet</div>
-        <div class="tool-tags"><span class="tool-tag">ออนไลน์</span><span class="tool-tag">ฟรี</span><span class="tool-tag">3D</span></div>
-        <div class="tool-actions">
-          <button class="btn btn-p" onclick="window.open('https://www.geogebra.org/graphing','_blank')">📈 Graphing Calculator</button>
-          <button class="btn btn-p" onclick="window.open('https://www.geogebra.org/3d','_blank')">🧊 3D Calculator</button>
-          <button class="btn btn-g" onclick="window.open('https://www.geogebra.org/m/physics','_blank')">⚛️ Physics Resources</button>
-          <button class="btn btn-g" onclick="window.open('https://www.geogebra.org/classic','_blank')">🖥️ Classic</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Excalidraw -->
-    <div class="tool-card" style="--accent-c:#6965db;">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,#6965db,#e8640c);"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:rgba(105,101,219,.2);font-size:1.4rem;">✏️</div>
-        <div class="tool-name">Excalidraw — Infinite Canvas</div>
-        <div class="tool-desc">กระดานวาดรูปแบบ Sketch ที่ดูเหมือนวาดด้วยมือ เหมาะสำหรับแผนภาพ, Diagram ฟิสิกส์</div>
-        <div class="tool-tags"><span class="tool-tag">ออนไลน์</span><span class="tool-tag">ฟรี</span><span class="tool-tag">Collaborative</span></div>
-        <div class="tool-actions">
-          <button class="btn btn-ph3" onclick="window.open('https://excalidraw.com/','_blank')">🎨 เปิด Excalidraw</button>
-          <button class="btn btn-g" onclick="window.open('https://excalidraw.com/physics','_blank')">⚛️ Physics Templates</button>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tools-grid group3 -->
-
-
-  <!-- ══════════════════════════════════════════════════
-       GROUP 4: INTERACTIVE ASSESSMENT
-  ══════════════════════════════════════════════════ -->
-  <div class="cat-label">
-    <div class="cat-ico" style="background:var(--ph5-b);color:var(--ph5);">🎯</div>
-    <span class="cat-txt">ประเมินแบบ Interactive</span>
-    <div class="cat-line"></div>
-  </div>
-  <div class="tools-grid">
-
-    <!-- CLASSPOINT -->
-    <div class="tool-card" style="--accent-c:#7c5cbf;">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,#7c5cbf,#b573f0);"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:rgba(124,92,191,.2);font-size:1.4rem;">📡</div>
-        <div class="tool-name">ClassPoint — Interactive Slides</div>
-        <div class="tool-desc">เปลี่ยน PowerPoint / Google Slides ให้เป็น Interactive ได้เลย: Multiple Choice, Word Cloud, Short Answer</div>
-        <div class="tool-tags"><span class="tool-tag">PowerPoint Add-in</span><span class="tool-tag">Real-time</span><span class="tool-tag">Gamification</span></div>
-        <div class="tool-actions">
-          <button class="btn btn-ph3" onclick="window.open('https://www.classpoint.io/','_blank')">🚀 เปิด ClassPoint</button>
-          <button class="btn btn-g" onclick="window.open('https://www.classpoint.io/get-started','_blank')">📖 เริ่มต้นใช้งาน</button>
-        </div>
-        <div style="margin-top:10px;background:rgba(124,92,191,.12);border:1px solid rgba(124,92,191,.35);border-radius:8px;padding:10px;">
-          <div style="font-size:.75rem;color:var(--t3);line-height:1.7;">💡 <b>ฟิสิกส์:</b> ใช้ Poll ถามเรื่องทิศแรง, Word Cloud "ฟิสิกส์คืออะไร", Short Answer คำนวณ</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- KAHOOT -->
-    <div class="tool-card" style="--accent-c:#46178f;">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,#46178f,#f3a505);"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:rgba(70,23,143,.25);font-size:1.4rem;">🎮</div>
-        <div class="tool-name">Kahoot! — Quick Quiz</div>
-        <div class="tool-desc">เกมแข่งตอบคำถามในชั้นเรียน สร้าง Quiz ฟิสิกส์แบบ Multiple Choice พร้อมจับเวลา</div>
-        <div class="tool-tags"><span class="tool-tag">เกม</span><span class="tool-tag">Real-time</span><span class="tool-tag">ฟรี</span></div>
-        <div class="tool-actions">
-          <button class="btn btn-p" onclick="window.open('https://kahoot.com/schools-u/','_blank')">🎮 เปิด Kahoot!</button>
-          <button class="btn btn-g" onclick="window.open('https://kahoot.com/library/#/', '_blank')">📚 ค้นหา Quiz</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- QUIZIZZ -->
-    <div class="tool-card" style="--accent-c:#8854c0;">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,#8854c0,#e2566a);"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:rgba(136,84,192,.2);font-size:1.4rem;">⚡</div>
-        <div class="tool-name">Quizizz — Self-paced Quiz</div>
-        <div class="tool-desc">Quiz แบบ Self-paced ให้นักเรียนทำเองในเวลาที่ตัวเองพร้อม รองรับ Math Equation</div>
-        <div class="tool-tags"><span class="tool-tag">Self-paced</span><span class="tool-tag">Math</span><span class="tool-tag">ฟรี</span></div>
-        <div class="tool-actions">
-          <button class="btn btn-ph3" onclick="window.open('https://quizizz.com/','_blank')">⚡ เปิด Quizizz</button>
-          <button class="btn btn-g" onclick="window.open('https://quizizz.com/admin/search/physics','_blank')">🔍 ค้นหา Physics</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PADLET -->
-    <div class="tool-card" style="--accent-c:#ff6b6b;">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,#ff6b6b,#f7b731);"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:rgba(255,107,107,.2);font-size:1.4rem;">📌</div>
-        <div class="tool-name">Padlet — กระดานข้อความรวม</div>
-        <div class="tool-desc">กระดานแชร์ความคิดร่วมกัน ให้นักเรียนโพสต์ภาพ, คลิป, ข้อความ, สมการ พร้อมกันได้เลย</div>
-        <div class="tool-tags"><span class="tool-tag">Collaborative</span><span class="tool-tag">Real-time</span><span class="tool-tag">ฟรี</span></div>
-        <div class="tool-actions">
-          <button class="btn btn-p" onclick="window.open('https://padlet.com/dashboard','_blank')">📌 เปิด Padlet</button>
-          <button class="btn btn-g" onclick="window.open('https://padlet.com/auth/signup','_blank')">➕ สมัครฟรี</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MENTIMETER -->
-    <div class="tool-card" style="--accent-c:#593380;">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,#593380,#8c52ff);"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:rgba(89,51,128,.22);font-size:1.4rem;">📣</div>
-        <div class="tool-name">Mentimeter — Presentation Poll</div>
-        <div class="tool-desc">สร้าง Interactive Presentation พร้อม Live Poll, Word Cloud, Open Questions สดๆ ระหว่างสอน</div>
-        <div class="tool-tags"><span class="tool-tag">Presentation</span><span class="tool-tag">Live Vote</span><span class="tool-tag">ฟรี (จำกัด)</span></div>
-        <div class="tool-actions">
-          <button class="btn btn-ph3" onclick="window.open('https://www.mentimeter.com/','_blank')">📣 เปิด Mentimeter</button>
-          <button class="btn btn-g" onclick="window.open('https://www.mentimeter.com/templates/education','_blank')">📂 เทมเพลต</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- GOOGLE FORMS QUICK -->
-    <div class="tool-card" style="--accent-c:#7248bd;">
-      <div class="tool-card-top" style="background:linear-gradient(90deg,#7248bd,#34a853);"></div>
-      <div class="tool-card-body">
-        <div class="tool-icon" style="background:rgba(114,72,189,.2);font-size:1.4rem;">📝</div>
-        <div class="tool-name">Google Forms — แบบทดสอบ</div>
-        <div class="tool-desc">สร้างแบบทดสอบ, Quiz และ Survey ที่เชื่อมกับ Google Sheets โดยตรง ดูผลได้ทันที</div>
-        <div class="tool-tags"><span class="tool-tag">Google</span><span class="tool-tag">ฟรี</span><span class="tool-tag">Auto-grade</span></div>
-        <div class="tool-actions">
-          <button class="btn btn-ok" onclick="window.open('https://forms.google.com/','_blank')">📝 สร้าง Forms</button>
-          <button class="btn btn-g" onclick="window.open('https://docs.google.com/forms/u/0/','_blank')">📂 แบบฟอร์มของฉัน</button>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tools-grid group4 -->
-
-
-  <!-- ══════════════════════════════════════════════════
-       FORMULA REFERENCE (built-in)
-  ══════════════════════════════════════════════════ -->
-  <div class="cat-label">
-    <div class="cat-ico" style="background:var(--cy-d);color:var(--cy);">📐</div>
-    <span class="cat-txt">สูตรฟิสิกส์อ้างอิง</span>
-    <div class="cat-line"></div>
-  </div>
-  <div class="tool-card" style="--accent-c:var(--cy);margin-bottom:32px;">
-    <div class="tool-card-top" style="background:linear-gradient(90deg,var(--cy),var(--ph3));"></div>
-    <div class="tool-card-body">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
-        <button class="btn btn-cy btn-sm" onclick="showFormulas('mech')" id="ftab-mech">⚙️ กลศาสตร์</button>
-        <button class="btn btn-g btn-sm" onclick="showFormulas('elec')" id="ftab-elec">⚡ ไฟฟ้า</button>
-        <button class="btn btn-g btn-sm" onclick="showFormulas('wave')" id="ftab-wave">〰️ คลื่น</button>
-        <button class="btn btn-g btn-sm" onclick="showFormulas('thermo')" id="ftab-thermo">🌡️ ความร้อน</button>
-        <button class="btn btn-g btn-sm" onclick="showFormulas('modern')" id="ftab-modern">🔬 ฟิสิกส์ใหม่</button>
-      </div>
-      <div class="tw" style="border:1px solid var(--gb);border-radius:10px;overflow:hidden;background:var(--g0);">
-        <table class="fm-table" id="fmTable"></table>
-      </div>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <div style="text-align:center;padding:24px 0;color:var(--t4);font-size:.74rem;line-height:1.8;">
-    เครื่องมืออำนวยการสอนฟิสิกส์ • ครูณัฐพล สุขยานุดิษฐ<br>
-    กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี โรงเรียนสนมวิทยาคาร<br>
-    <a href="index.html" style="color:var(--ac);text-decoration:none;font-weight:600;">← กลับสู่ระบบติดตามงาน</a>
-  </div>
-
-</div><!-- /con -->
-
-
-<!-- ══════════════════════════════════════════════════════
-     JAVASCRIPT
-═══════════════════════════════════════════════════════ -->
 <script>
-/* ─────── FORMULA DATA ─────── */
-const FORMULAS = {
-  mech: [
-    ['v = u + at','ความเร็ว','v=ความเร็วสุดท้าย(m/s), u=ความเร็วต้น(m/s), a=ความเร่ง(m/s²), t=เวลา(s)','v'],
-    ['s = ut + ½at²','การกระจัด','s=การกระจัด(m), u=ความเร็วต้น(m/s), a=ความเร่ง(m/s²), t=เวลา(s)','s'],
-    ['v² = u² + 2as','ความเร็ว-ระยะทาง','v=ความเร็วสุดท้าย(m/s), u=ความเร็วต้น(m/s), a=ความเร่ง(m/s²), s=การกระจัด(m)','v'],
-    ['F = ma','กฎนิวตัน 2','F=แรงลัพธ์(N), m=มวล(kg), a=ความเร่ง(m/s²)','F'],
-    ['W = Fs cosθ','งาน','W=งาน(J), F=แรง(N), s=ระยะทาง(m), θ=มุมระหว่างแรงกับการกระจัด','W'],
-    ['KE = ½mv²','พลังงานจลน์','KE=พลังงานจลน์(J), m=มวล(kg), v=ความเร็ว(m/s)','KE'],
-    ['PE = mgh','พลังงานศักย์โน้มถ่วง','PE=พลังงานศักย์(J), m=มวล(kg), g=9.8(m/s²), h=ความสูง(m)','PE'],
-    ['P = W/t = Fv','กำลัง','P=กำลัง(W), W=งาน(J), t=เวลา(s), F=แรง(N), v=ความเร็ว(m/s)','P'],
-    ['p = mv','โมเมนตัม','p=โมเมนตัม(kg⋅m/s), m=มวล(kg), v=ความเร็ว(m/s)','p'],
-    ['F = kx','กฎฮุก','F=แรง(N), k=ค่าคงที่สปริง(N/m), x=การยืด/หดตัว(m)','F'],
-    ['T = 2π√(l/g)','คาบลูกตุ้ม','T=คาบ(s), l=ความยาวเชือก(m), g=9.8(m/s²)','T'],
-  ],
-  elec: [
-    ['F = kq₁q₂/r²','คูลอมบ์','F=แรง(N), k=9×10⁹(N⋅m²/C²), q₁,q₂=ประจุ(C), r=ระยะห่าง(m)','F'],
-    ['E = F/q = kQ/r²','สนามไฟฟ้า','E=สนามไฟฟ้า(N/C), F=แรง(N), q=ประจุทดสอบ(C), k=9×10⁹','E'],
-    ['V = W/q = kQ/r','ศักย์ไฟฟ้า','V=ศักย์(V), W=งาน(J), q=ประจุ(C), k=9×10⁹, Q=แหล่งประจุ(C)','V'],
-    ['C = Q/V','ความจุไฟฟ้า','C=ความจุ(F), Q=ประจุ(C), V=ความต่างศักย์(V)','C'],
-    ['I = Q/t','กระแสไฟฟ้า','I=กระแส(A), Q=ประจุ(C), t=เวลา(s)','I'],
-    ['V = IR','กฎโอห์ม','V=ความต่างศักย์(V), I=กระแส(A), R=ความต้านทาน(Ω)','V'],
-    ['P = VI = I²R = V²/R','กำลังไฟฟ้า','P=กำลัง(W), V=แรงดัน(V), I=กระแส(A), R=ความต้านทาน(Ω)','P'],
-    ['E_c = ½CV²','พลังงานในตัวเก็บ','E_c=พลังงาน(J), C=ความจุ(F), V=แรงดัน(V)','E_c'],
-  ],
-  wave: [
-    ['v = fλ','ความสัมพันธ์คลื่น','v=ความเร็วคลื่น(m/s), f=ความถี่(Hz), λ=ความยาวคลื่น(m)','v'],
-    ['T = 1/f','คาบและความถี่','T=คาบ(s), f=ความถี่(Hz)','T'],
-    ['v_sound = 331 + 0.6T','ความเร็วเสียงในอากาศ','T=อุณหภูมิ(°C), v_sound=ความเร็วเสียง(m/s)','v_s'],
-    ['f\' = f(v±v_o)/(v∓v_s)','ปรากฏการณ์ดอปเปลอร์','f\'=ความถี่ที่ได้ยิน, v=ความเร็วเสียง, v_o=ผู้สังเกต, v_s=แหล่งกำเนิด','f\''],
-    ['I = P/(4πr²)','ความเข้มเสียง','I=ความเข้ม(W/m²), P=กำลัง(W), r=ระยะห่าง(m)','I'],
-    ['n = c/v_m','ดัชนีหักเห','n=ดัชนีหักเห, c=3×10⁸ m/s, v_m=ความเร็วในตัวกลาง','n'],
-    ['n₁sinθ₁ = n₂sinθ₂','กฎของสเนลล์','n=ดัชนีหักเห, θ=มุมของแสง','θ₂'],
-  ],
-  thermo: [
-    ['PV = nRT','กฎแก๊สอุดมคติ','P=ความดัน(Pa), V=ปริมาตร(m³), n=จำนวนโมล(mol), R=8.314, T=อุณหภูมิ(K)','P'],
-    ['P₁V₁/T₁ = P₂V₂/T₂','กฎแก๊สรวม','สำหรับแก๊สชนิดเดียวกัน เปรียบเทียบ 2 สภาวะ','P₂'],
-    ['Q = mcΔT','ปริมาณความร้อน','Q=ความร้อน(J), m=มวล(kg), c=ความจุความร้อนจำเพาะ(J/kg⋅K), ΔT=การเปลี่ยนแปลงอุณหภูมิ(K)','Q'],
-    ['Q = mL','ความร้อนแฝง','Q=ความร้อน(J), m=มวล(kg), L=ความร้อนแฝง(J/kg)','Q'],
-    ['e = W_out/Q_H = 1 - T_L/T_H','ประสิทธิภาพเครื่องยนต์ Carnot','e=ประสิทธิภาพ, T_H=อุณหภูมิแหล่งร้อน(K), T_L=อุณหภูมิแหล่งเย็น(K)','e'],
-    ['ΔU = Q - W','กฎข้อ 1 ของเทอร์โมไดนามิกส์','ΔU=การเปลี่ยนแปลงพลังงานภายใน, Q=ความร้อน(J), W=งาน(J)','ΔU'],
-  ],
-  modern: [
-    ['E = hf = hc/λ','พลังงานโฟตอน','E=พลังงาน(J), h=6.626×10⁻³⁴(J⋅s), f=ความถี่(Hz), c=3×10⁸(m/s), λ=ความยาวคลื่น(m)','E'],
-    ['E = mc²','สมมูลมวล-พลังงาน','E=พลังงาน(J), m=มวล(kg), c=3×10⁸(m/s)','E'],
-    ['λ = h/mv','ความยาวคลื่นเดอบรอย','λ=ความยาวคลื่น(m), h=6.626×10⁻³⁴(J⋅s), m=มวล(kg), v=ความเร็ว(m/s)','λ'],
-    ['KE_max = hf - φ','ปรากฏการณ์โฟโตอิเล็กทริก','KE=พลังงานจลน์สูงสุดอิเล็กตรอน, h=6.626×10⁻³⁴, f=ความถี่, φ=ฟังก์ชันงาน','KE'],
-    ['E_n = -13.6/n² eV','ระดับพลังงานไฮโดรเจน','E_n=พลังงานระดับ n (eV), n=หมายเลขควอนตัม','E_n'],
-    ['t_{1/2} = ln2/λ_d','ครึ่งชีวิต','t_{1/2}=ครึ่งชีวิต, λ_d=ค่าคงที่การสลาย(s⁻¹)','t_{1/2}'],
-  ]
+function $(id){return document.getElementById(id);}
+var IcoPaths={
+  dice:'<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1.2" fill="currentColor" stroke="none"/>',
+  timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v5l3 2"/><path d="M10 2h4"/>',
+  formula:'<path d="M4 7h6M7 4v6M14 7l6 10M20 7L14 17"/>',
+  sound:'<path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M16 9a4 4 0 0 1 0 6M18 7a7 7 0 0 1 0 10"/>',
+  group:'<circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M4 19c0-3 2.5-5 5-5s5 2 5 5M13 19c0-2 1.5-4 3.5-4"/>',
+  poll:'<path d="M4 19V5M4 19h4M4 13h7M4 7h10"/><path d="M16 16l3-3-3-3"/>',
+  chat:'<path d="M4 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/>'
 };
-
-function showFormulas(cat) {
-  const rows = FORMULAS[cat] || [];
-  document.getElementById('fmTable').innerHTML = `
-    <thead><tr><th>สูตร</th><th>ชื่อ</th><th>ตัวแปร</th></tr></thead>
-    <tbody>${rows.map(([f,n,d,_]) => `<tr><td><span class="fm-sym">${f}</span></td><td style="font-weight:600;white-space:nowrap;">${n}</td><td style="font-size:.78rem;color:var(--t3);">${d}</td></tr>`).join('')}</tbody>`;
-  ['mech','elec','wave','thermo','modern'].forEach(k => {
-    const el = document.getElementById('ftab-'+k);
-    if (!el) return;
-    el.className = 'btn btn-sm ' + (k===cat ? 'btn-cy' : 'btn-g');
-  });
-}
-
-/* ─────── TIMER ─────── */
-const T = {
-  sec:300, max:300, running:false, iv:null,
-  set(s){ T.sec=s; T.max=s; T.running=false; clearInterval(T.iv); T.render(); },
-  render(){
-    const m=Math.floor(T.sec/60), s=T.sec%60;
-    const str=`${m}:${s.toString().padStart(2,'0')}`;
-    ['tmrNum','tmrFSNum'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=str; });
-    // SVG arc
-    const arc=document.getElementById('tmrArc');
-    if(arc){ const pct=T.max>0?T.sec/T.max:0; arc.style.strokeDashoffset=565.5*(1-pct); arc.style.stroke=pct>.5?'var(--ac)':pct>.2?'var(--wn)':'var(--er)'; }
-  },
-  start(){
-    if(T.running||T.sec<=0) return;
-    T.running=true;
-    T.iv=setInterval(()=>{ T.sec--; T.render(); if(T.sec<=0){ clearInterval(T.iv); T.running=false; T.alarm(); }}, 1000);
-  },
-  pause(){ clearInterval(T.iv); T.running=false; },
-  reset(){ T.pause(); T.sec=T.max; T.render(); },
-  alarm(){ toast('⏰ หมดเวลา!','ok',5000); try{ const a=new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAA=='); a.play(); }catch(e){} },
-  fs(on){ document.getElementById('tmrFS').classList.toggle('open',on); T.render(); },
+var Ico={
+  svg:function(n){var p=IcoPaths[n];return p?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>':'';},
+  bindData:function(root){(root||document).querySelectorAll('[data-ico]').forEach(function(el){el.innerHTML=Ico.svg(el.getAttribute('data-ico'));});}
 };
-T.render();
-
-/* ─────── RANDOMIZER ─────── */
-const R = {
-  history:[],
-  spin(){
-    const raw=(document.getElementById('randNames')?.value||'').split('\n').map(s=>s.trim()).filter(Boolean);
-    if(!raw.length){ toast('⚠️ กรอกรายชื่อก่อน','wn'); return; }
-    const stage=document.getElementById('randStage');
-    const res=document.getElementById('randResult');
-    let i=0;
-    stage.classList.add('rand-animate');
-    const iv=setInterval(()=>{
-      res.textContent=raw[Math.floor(Math.random()*raw.length)];
-      i++;
-      if(i>25){
-        clearInterval(iv);
-        stage.classList.remove('rand-animate');
-        const picked=raw[Math.floor(Math.random()*raw.length)];
-        res.textContent=`🎉 ${picked}`;
-        R.history.unshift(picked);
-        if(R.history.length>5) R.history.pop();
-        document.getElementById('randHistory').innerHTML='ก่อนหน้า: ' + R.history.map(h=>`<b style="color:var(--cy);">${h}</b>`).join(' → ');
-      }
-    },60);
-  },
-  clear(){ document.getElementById('randResult').textContent='กดปุ่มด้านล่างเพื่อสุ่ม'; R.history=[]; document.getElementById('randHistory').innerHTML=''; },
-};
-
-/* ─────── GROUP MAKER ─────── */
-const G = {
-  make(){
-    const raw=(document.getElementById('grpNames')?.value||'').split('\n').map(s=>s.trim()).filter(Boolean);
-    const mode=document.getElementById('grpMode')?.value||'count';
-    const n=parseInt(document.getElementById('grpCount')?.value)||4;
-    if(raw.length<2){ toast('⚠️ ต้องมีรายชื่ออย่างน้อย 2 คน','wn'); return; }
-    const shuffled=[...raw].sort(()=>Math.random()-.5);
-    let groups;
-    if(mode==='count'){
-      groups=Array.from({length:Math.min(n,shuffled.length)},()=>[]);
-      shuffled.forEach((name,i)=>groups[i%groups.length].push(name));
-    } else {
-      groups=[]; let g=[];
-      shuffled.forEach(name=>{ g.push(name); if(g.length>=n){ groups.push([...g]); g=[]; }});
-      if(g.length) groups.push(g);
-    }
-    const colors=['var(--ac)','var(--ok)','var(--ph3)','var(--wn)','var(--cy)','var(--ph5)'];
-    document.getElementById('grpResult').innerHTML=groups.map((g,i)=>`
-      <div class="grp-box">
-        <div class="grp-head" style="background:${colors[i%colors.length]}20;color:${colors[i%colors.length]};">กลุ่มที่ ${i+1} (${g.length} คน)</div>
-        ${g.map(name=>`<div class="grp-name">${name}</div>`).join('')}
-      </div>`).join('');
-    toast(`✅ แบ่ง ${groups.length} กลุ่ม (${shuffled.length} คน)`,'ok');
+var UI={
+  h:(id,h)=>{const e=$(id);if(e)e.innerHTML=h;},
+  v:id=>{const e=$(id);return e?e.value:'';},
+  sv:(id,v)=>{const e=$(id);if(e)e.value=v;},
+  toast:(msg,tp='ok')=>{
+    const t=document.createElement('div');t.className=`toast ${tp}`;t.textContent=msg;
+    $('toastBox').appendChild(t);
+    setTimeout(()=>{t.remove();},tp==='er'?6000:3000);
   }
 };
+function _esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 
-/* ─────── POLL ─────── */
-const P = {
-  opts:[
-    {emo:'😄',label:'เข้าใจมาก',cnt:0,c:'var(--ok)'},
-    {emo:'🙂',label:'เข้าใจพอได้',cnt:0,c:'var(--ac)'},
-    {emo:'😐',label:'เข้าใจบ้าง',cnt:0,c:'var(--wn)'},
-    {emo:'😕',label:'ยังไม่เข้าใจ',cnt:0,c:'var(--er)'},
-  ],
-  render(){
-    const total=P.opts.reduce((a,o)=>a+o.cnt,0);
-    document.getElementById('pollTotal').textContent=total;
-    document.getElementById('pollOpts').innerHTML=P.opts.map((o,i)=>`
-      <div class="poll-opt" onclick="P.vote(${i})" style="border-color:${o.cnt>0?o.c:'var(--in-bd)'};">
-        <div class="poll-emo">${o.emo}</div>
-        <div style="flex:1;"><div style="font-size:.85rem;font-weight:600;color:var(--t1);margin-bottom:4px;">${o.label}</div>
-          <div class="poll-bar-wrap"><div class="poll-bar" style="width:${total>0?o.cnt/total*100:0}%;background:${o.c};"></div></div>
-        </div>
-        <div class="poll-cnt">${o.cnt}</div>
-      </div>`).join('');
-  },
-  vote(i){ P.opts[i].cnt++; P.render(); },
-  reset(){ P.opts.forEach(o=>o.cnt=0); P.render(); }
+/* ===== สถานะ: รับข้อมูลจากหน้าแม่ (index.html) ผ่าน postMessage ===== */
+var S={
+  ready:false, tab:'', students:{}, formulas:{}, apiUrl:'',
+  tmrIv:null,tmrOn:false,tmrSec:0,tmrInit:false,tmrDown:true,tmrFS:false,wakeLock:null,
+  noStream:null,noAnim:null,randIv:null,poll:{y:0,m:0,n:0},
+  msgIv:null,msgCache:[]
 };
-P.render();
 
-/* ─────── NOISE METER ─────── */
-const N = {
-  stream:null, analyzer:null, iv:null,
-  async start(){
+const API={
+  call:async(a,p)=>{
+    if(!S.apiUrl)return {error:'ยังไม่ได้รับ API URL จากหน้าหลัก'};
     try{
-      N.stream=await navigator.mediaDevices.getUserMedia({audio:true});
-      const ctx=new (window.AudioContext||window.webkitAudioContext)();
-      const src=ctx.createMediaStreamSource(N.stream);
-      N.analyzer=ctx.createAnalyser(); N.analyzer.fftSize=256;
-      src.connect(N.analyzer);
-      const buf=new Uint8Array(N.analyzer.frequencyBinCount);
-      document.getElementById('noiseBtnStart').disabled=true;
-      document.getElementById('noiseBtnStop').disabled=false;
-      N.iv=setInterval(()=>{
-        N.analyzer.getByteFrequencyData(buf);
-        const avg=buf.reduce((a,v)=>a+v,0)/buf.length;
-        const pct=Math.min(100,avg*2);
-        const thresh=parseInt(document.getElementById('noiseThresh')?.value||40);
-        const lvl=document.getElementById('noiseLvl');
-        const bar=document.getElementById('noiseBar');
-        const txt=document.getElementById('noiseTxt');
-        if(bar) bar.style.width=pct+'%';
-        if(lvl) lvl.textContent=pct>thresh*1.5?'📢':pct>thresh?'🔊':pct>thresh*.5?'🔉':'🔇';
-        if(txt) txt.textContent=`ระดับเสียง: ${pct.toFixed(0)}% ${pct>thresh?'⚠️ เสียงดังเกินกำหนด!':'✅ เสียงปกติ'}`;
-        if(lvl) lvl.style.color=pct>thresh?'var(--er)':pct>thresh*.7?'var(--wn)':'var(--ok)';
-      },100);
-    }catch(e){ toast('❌ ไม่สามารถเข้าถึงไมโครโฟน: '+e.message,'er'); }
-  },
-  stop(){
-    clearInterval(N.iv);
-    N.stream?.getTracks().forEach(t=>t.stop());
-    document.getElementById('noiseBtnStart').disabled=false;
-    document.getElementById('noiseBtnStop').disabled=true;
-    document.getElementById('noiseLvl').textContent='🎙️';
-    document.getElementById('noiseBar').style.width='0%';
-    document.getElementById('noiseTxt').textContent='กด "เริ่ม" เพื่อวัดเสียง';
+      const res=await fetch(S.apiUrl,{method:'POST',body:JSON.stringify({action:a,payload:p||{}})});
+      const j=await res.json();
+      return j||{_n:true};
+    }catch(e){return {error:'เชื่อมต่อเซิร์ฟเวอร์ล้มเหลว'};}
   }
 };
-document.getElementById('noiseThresh')?.addEventListener('input',e=>{
-  document.getElementById('noiseThV').textContent=e.target.value;
+
+/* รับข้อความจากหน้าแม่ */
+window.addEventListener('message',function(ev){
+  const d=ev.data||{};
+  if(d.type==='ttInit'){
+    S.tab=d.subject||Object.keys(d.students||{})[0]||'';
+    S.students=d.students||{};
+    S.formulas=d.formulas||{};
+    S.apiUrl=d.apiUrl||'';
+    document.documentElement.setAttribute('data-theme',d.theme||'dark');
+    S.ready=true;
+    $('notReady').style.display='none';
+    $('tgMain').style.display='block';
+    Ico.bindData($('tgMain'));
+  }else if(d.type==='ttSubjectChange'){
+    S.tab=d.subject||S.tab;
+    // ถ้าแผงเครื่องมือที่เปิดอยู่มีตัวเลือกห้องเรียน ให้รีเฟรชรายการห้องให้ตรงวิชาใหม่
+    const panel=$('tgPanel');
+    if(panel&&panel.style.display!=='none'&&panel.dataset.tool){App.tool(panel.dataset.tool);}
+  }else if(d.type==='ttTheme'){
+    document.documentElement.setAttribute('data-theme',d.theme||'dark');
+  }else if(d.type==='ttStop'){
+    App.backTool();
+  }
 });
-
-/* ─────── WHITEBOARD ─────── */
-const WB = (()=>{
-  const canvas=document.getElementById('wbCanvas');
-  const ctx=canvas.getContext('2d');
-  let drawing=false, tool='pen', color='#222', size=5;
-  let sx=0, sy=0, snap=null, history=[];
-
-  function resize(){
-    const w=canvas.parentElement.clientWidth;
-    const h=Math.max(350,Math.min(600,w*.56));
-    if(canvas.width!==w||canvas.height!==h){
-      const tmp=ctx.getImageData(0,0,canvas.width,canvas.height);
-      canvas.width=w; canvas.height=h;
-      ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);
-      ctx.putImageData(tmp,0,0);
-    }
-  }
-  window.addEventListener('resize',()=>{ resize(); });
-  resize();
-  ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  function pos(e){
-    const r=canvas.getBoundingClientRect();
-    if(e.touches){ return{x:(e.touches[0].clientX-r.left),y:(e.touches[0].clientY-r.top)}; }
-    return{x:e.clientX-r.left,y:e.clientY-r.top};
-  }
-  function saveH(){ if(history.length>=20) history.shift(); history.push(canvas.toDataURL()); }
-
-  canvas.addEventListener('mousedown', e=>{ drawing=true; const p=pos(e); sx=p.x; sy=p.y; if(tool==='pen'||tool==='eraser'){ saveH(); ctx.beginPath(); ctx.moveTo(sx,sy); } if(tool!=='pen'&&tool!=='eraser'){ snap=ctx.getImageData(0,0,canvas.width,canvas.height); saveH(); } });
-  canvas.addEventListener('mousemove', e=>{ if(!drawing) return; const p=pos(e); if(tool==='pen'){ ctx.lineWidth=size; ctx.strokeStyle=color; ctx.lineCap='round'; ctx.lineTo(p.x,p.y); ctx.stroke(); } else if(tool==='eraser'){ ctx.clearRect(p.x-size,p.y-size,size*2,size*2); } else if(snap){ ctx.putImageData(snap,0,0); ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=size; ctx.lineCap='round'; if(tool==='line'){ ctx.moveTo(sx,sy); ctx.lineTo(p.x,p.y); ctx.stroke(); } else if(tool==='rect'){ ctx.strokeRect(sx,sy,p.x-sx,p.y-sy); } else if(tool==='circle'){ const rx=(p.x-sx)/2, ry=(p.y-sy)/2; ctx.ellipse(sx+rx,sy+ry,Math.abs(rx),Math.abs(ry),0,0,Math.PI*2); ctx.stroke(); } } });
-  ['mouseup','mouseleave'].forEach(ev=>canvas.addEventListener(ev,()=>{ drawing=false; snap=null; }));
-  canvas.addEventListener('touchstart',e=>{ e.preventDefault(); canvas.dispatchEvent(new MouseEvent('mousedown',{clientX:e.touches[0].clientX,clientY:e.touches[0].clientY})); },{passive:false});
-  canvas.addEventListener('touchmove',e=>{ e.preventDefault(); canvas.dispatchEvent(new MouseEvent('mousemove',{clientX:e.touches[0].clientX,clientY:e.touches[0].clientY})); },{passive:false});
-  canvas.addEventListener('touchend',()=>canvas.dispatchEvent(new MouseEvent('mouseup')));
-
-  return {
-    setColor(el){ color=el.dataset.c; document.querySelectorAll('.wb-color').forEach(b=>b.classList.remove('on')); el.classList.add('on'); },
-    setSize(v){ size=parseInt(v); },
-    setTool(t){ tool=t; ['wbPen','wbErase','wbLine','wbRect','wbCircle'].forEach(id=>document.getElementById(id)?.classList.remove('on')); const m={pen:'wbPen',eraser:'wbErase',line:'wbLine',rect:'wbRect',circle:'wbCircle'}; document.getElementById(m[t])?.classList.add('on'); },
-    undo(){ if(!history.length) return; const img=new Image(); img.onload=()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0); }; img.src=history.pop(); },
-    clear(){ if(!confirm('ลบทุกอย่างบนกระดาน?')) return; saveH(); ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height); },
-    save(){ const a=document.createElement('a'); a.download='whiteboard.png'; a.href=canvas.toDataURL('image/png'); a.click(); toast('✅ บันทึกกระดานแล้ว','ok'); }
-  };
+// แจ้งหน้าแม่ว่าพร้อมรับข้อมูลแล้ว — ส่งซ้ำเผื่อกรณี parent ยังไม่ทัน attach listener (race condition ตอนโหลดหน้า)
+(function(){
+  let tries=0;
+  const iv=setInterval(()=>{
+    if(S.ready||tries>=20){clearInterval(iv);return;}
+    window.parent.postMessage({type:'ttReady'},'*');
+    tries++;
+  },300);
+  window.parent.postMessage({type:'ttReady'},'*');
 })();
 
-/* ─────── PhET POPUP ─────── */
-function openPhet(url, name){
-  document.getElementById('moPhetT').textContent = `⚛️ ${name}`;
-  document.getElementById('phetFrame').src = url;
-  openM('moPhet');
-}
+var App={
+  tool:t=>{
+    $('tgMain').style.display='none';$('tgBack').style.display='block';
+    const p=$('tgPanel');p.style.display='block';p.dataset.tool=t;
+    const rooms=Object.keys(S.students[S.tab]||{});
+    if(t==='rand'){
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">สุ่มเรียกชื่อนักเรียน</div><select class="fc" id="randRm" style="margin-bottom:10px;font-weight:700;">'+rooms.map(r=>'<option>'+r+'</option>').join('')+'</select><div id="randDisp">พร้อมสุ่ม!</div><button class="btn btn-p btn-lg" onclick="App.doRand()">สุ่มเลย</button>';
+    }else if(t==='timer'){
+      S.tmrInit=false;S.tmrOn=false;clearInterval(S.tmrIv);
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">จับเวลา</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;"><input type="number" class="fc" id="tmrIn" value="5" min="1" max="90" style="width:70px;text-align:center;"><span style="color:var(--t3);font-size:.82rem;">นาที</span><select class="fc" id="tmrMd" style="flex:1;"><option value="down">นับถอยหลัง</option><option value="up">นับขึ้น</option></select></div><div class="timer-d" id="tmrDisp">5:00</div><div style="display:flex;gap:8px;"><button class="btn btn-ok" style="flex:1;" onclick="App.tmrStart()">เริ่ม</button><button class="btn btn-g" style="flex:1;" onclick="App.tmrPause()">หยุด</button><button class="btn btn-d" style="flex:1;" onclick="App.tmrReset()">รีเซต</button></div><button class="btn btn-o btn-lg" style="margin-top:10px;" onclick="App.tmrFullscreen()">⛶ เต็มจอ (กันจอดับ)</button><div class="wl-badge" id="wlBadgeSm" style="display:none;">🔒 หน้าจอจะไม่ดับระหว่างจับเวลา</div>';
+    }else if(t==='formula'){
+      const list=S.formulas[S.tab]||[];
+      p.innerHTML='<div class="lbl" style="margin-bottom:8px;">สูตร '+S.tab+'</div><div class="fm-grid">'+list.map(f=>'<div class="fm-item"><span class="fm-sym">'+f.s+'</span><span style="font-size:.74rem;color:var(--t3);">'+f.d+'</span></div>').join('')+'</div>';
+    }else if(t==='noise'){
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">วัดระดับเสียงห้องเรียน</div><div class="noise-lv"><div class="noise-b" id="noiseB" style="width:0%;background:var(--ok);"></div></div><div style="text-align:center;font-size:1.4rem;font-weight:700;color:var(--cy);margin:8px 0;" id="noiseLbl">-- %</div><div id="noiseSt" style="text-align:center;font-size:.78rem;color:var(--t3);margin-bottom:10px;">กด เริ่มวัด เพื่อเปิดไมโครโฟน</div><div style="display:flex;gap:9px;"><button class="btn btn-ok" style="flex:1;" onclick="App.startNoise()">เริ่มวัด</button><button class="btn btn-d" style="flex:1;" onclick="App.stopNoise()">หยุด</button></div>';
+    }else if(t==='group'){
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">แบ่งกลุ่มนักเรียน</div><div style="display:flex;gap:9px;margin-bottom:10px;flex-wrap:wrap;"><select class="fc" id="grpRm" style="flex:1;min-width:120px;">'+rooms.map(r=>'<option>'+r+'</option>').join('')+'</select><div style="display:flex;align-items:center;gap:6px;"><input type="number" class="fc" id="grpSz" value="4" min="2" max="10" style="width:60px;text-align:center;"><span style="color:var(--t3);font-size:.8rem;">คน/กลุ่ม</span></div></div><button class="btn btn-p" style="width:100%;margin-bottom:10px;" onclick="App.doGroup()">สุ่มจัดกลุ่ม</button><div id="grpRes"></div>';
+    }else if(t==='poll'){
+      S.poll={y:0,m:0,n:0};
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">โหวตความเข้าใจ</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:12px;"><div style="text-align:center;cursor:pointer;padding:14px;background:var(--ok-b);border:1.5px solid var(--ok-bd);border-radius:12px;" onclick="App.vote(\'y\',this)"><div style="font-weight:700;font-size:1.1rem;color:var(--ok);">Y</div><div style="font-weight:700;color:var(--ok);margin-top:5px;" id="py">0</div><div style="font-size:.72rem;color:var(--t3);">เข้าใจ</div></div><div style="text-align:center;cursor:pointer;padding:14px;background:var(--wn-b);border:1.5px solid var(--wn-bd);border-radius:12px;" onclick="App.vote(\'m\',this)"><div style="font-weight:700;font-size:1.1rem;color:var(--wn);">?</div><div style="font-weight:700;color:var(--wn);margin-top:5px;" id="pm">0</div><div style="font-size:.72rem;color:var(--t3);">ยังงง</div></div><div style="text-align:center;cursor:pointer;padding:14px;background:var(--er-b);border:1.5px solid var(--er-bd);border-radius:12px;" onclick="App.vote(\'n\',this)"><div style="font-weight:700;font-size:1.1rem;color:var(--er);">N</div><div style="font-weight:700;color:var(--er);margin-top:5px;" id="pn">0</div><div style="font-size:.72rem;color:var(--t3);">ไม่เข้าใจ</div></div></div><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:.8rem;color:var(--t3);">รวม:</span><span id="ptot" style="font-weight:700;color:var(--cy);">0</span><span style="font-size:.8rem;color:var(--t3);">โหวต</span></div><button class="btn btn-g btn-sm" onclick="App.resetPoll()">รีเซตผล</button>';
+    }else if(t==='msgboard'){
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">กระดานข้อความสด</div><div style="display:flex;gap:8px;margin-bottom:10px;"><select class="fc" id="msgRm" style="flex:1;" onchange="App.refreshMsgBoard(true)">'+rooms.map(r=>'<option>'+r+'</option>').join('')+'</select><button class="btn btn-d btn-sm" onclick="App.clearMsgBoard()">ลบทั้งหมด</button></div><div id="msgList" style="max-height:380px;overflow-y:auto;"></div><div style="font-size:.7rem;color:var(--t4);margin-top:8px;text-align:center;">🔄 อัปเดตอัตโนมัติทุก 4 วินาที ขณะเปิดหน้านี้ค้างไว้</div>';
+      App.refreshMsgBoard(true);
+      clearInterval(S.msgIv);
+      S.msgIv=setInterval(()=>App.refreshMsgBoard(false),4000);
+    }
+  },
+  backTool:()=>{
+    App.stopNoise();App.tmrExitFS();clearInterval(S.tmrIv);S.tmrOn=false;App.releaseWakeLock();
+    clearInterval(S.msgIv);S.msgIv=null;
+    $('tgMain').style.display='block';const p=$('tgPanel');p.style.display='none';p.dataset.tool='';$('tgBack').style.display='none';UI.h('tgPanel','');
+  },
+  doRand:()=>{
+    const list=S.students[S.tab][UI.v('randRm')];if(!list)return;
+    clearInterval(S.randIv);let ticks=0;
+    S.randIv=setInterval(()=>{const el=$('randDisp');if(!el)return;const nm=list[Math.floor(Math.random()*list.length)];el.textContent=nm;if(++ticks>28){clearInterval(S.randIv);el.textContent='>> '+nm+' <<';}},55);
+  },
+  requestWakeLock:async()=>{
+    try{
+      if('wakeLock' in navigator){
+        S.wakeLock=await navigator.wakeLock.request('screen');
+        S.wakeLock.addEventListener('release',()=>{S.wakeLock=null;App._wlUI(false);});
+        App._wlUI(true);
+      }
+    }catch(e){console.warn('wakeLock',e);}
+  },
+  releaseWakeLock:()=>{ if(S.wakeLock){try{S.wakeLock.release();}catch(e){}S.wakeLock=null;} App._wlUI(false); },
+  _wlUI:on=>{ const b1=$('wlBadge'),b2=$('wlBadgeSm'); if(b1)b1.style.display=on?'inline-flex':'none'; if(b2)b2.style.display=on?'inline-flex':'none'; },
+  tmrFullscreen:async()=>{
+    const el=$('tmrFS');if(!el)return;
+    el.classList.add('open');S.tmrFS=true;
+    try{ if(el.requestFullscreen)await el.requestFullscreen(); else if(el.webkitRequestFullscreen)await el.webkitRequestFullscreen(); }catch(e){/* บาง browser ไม่รองรับเต็มจอในนี้ - ใช้โหมดคลุมจอแทนได้เลย */}
+    App.tmrSyncFS();
+    if(!S.tmrOn)App.tmrStart(); else App.requestWakeLock();
+  },
+  tmrExitFS:()=>{
+    const el=$('tmrFS');if(el)el.classList.remove('open');S.tmrFS=false;
+    try{ if(document.fullscreenElement)document.exitFullscreen(); else if(document.webkitFullscreenElement)document.webkitExitFullscreen(); }catch(e){}
+  },
+  tmrSyncFS:()=>{ const src=$('tmrDisp'),dst=$('tmrFSNum'); if(dst)dst.textContent=src?src.textContent:App._fmtSec(S.tmrSec); },
+  _fmtSec:sec=>{const m=Math.floor(sec/60),s=sec%60;return `${m}:${String(s).padStart(2,'0')}`;},
+  tmrStart:()=>{
+    if(S.tmrOn)return;
+    if(!S.tmrInit){const m=parseInt(UI.v('tmrIn'))||5,md=UI.v('tmrMd');S.tmrSec=md==='down'?m*60:0;S.tmrDown=md==='down';S.tmrInit=true;}
+    S.tmrOn=true;App.requestWakeLock();
+    S.tmrIv=setInterval(()=>{
+      if(S.tmrDown){if(S.tmrSec<=0){clearInterval(S.tmrIv);S.tmrOn=false;App.releaseWakeLock();UI.toast('⏰ หมดเวลาแล้ว!','wn');return;}S.tmrSec--;}else S.tmrSec++;
+      const txt=App._fmtSec(S.tmrSec);
+      const el=$('tmrDisp');if(el)el.textContent=txt;
+      const fel=$('tmrFSNum');if(fel)fel.textContent=txt;
+    },1000);
+  },
+  tmrPause:()=>{clearInterval(S.tmrIv);S.tmrOn=false;App.releaseWakeLock();},
+  tmrReset:()=>{clearInterval(S.tmrIv);S.tmrOn=false;S.tmrInit=false;App.releaseWakeLock();const m=parseInt(UI.v('tmrIn'))||5;const el=$('tmrDisp');if(el)el.textContent=`${m}:00`;const fel=$('tmrFSNum');if(fel)fel.textContent=`${m}:00`;S.tmrSec=0;},
+  startNoise:async()=>{
+    try{
+      const stream=await navigator.mediaDevices.getUserMedia({audio:true});S.noStream=stream;
+      const ctx=new(window.AudioContext||window.webkitAudioContext)();
+      const src=ctx.createMediaStreamSource(stream),ana=ctx.createAnalyser();ana.fftSize=256;src.connect(ana);
+      const data=new Uint8Array(ana.frequencyBinCount);
+      const tick=()=>{
+        ana.getByteFrequencyData(data);const avg=data.reduce((a,b)=>a+b,0)/data.length,pct=Math.min(100,avg/128*100);
+        const bar=$('noiseB'),lbl=$('noiseLbl'),st=$('noiseSt');
+        if(bar){bar.style.width=pct+'%';bar.style.background=pct>70?'var(--er)':pct>40?'var(--wn)':'var(--ok)';}
+        if(lbl)lbl.textContent=Math.round(pct)+' %';
+        if(st)st.textContent=pct>70?'[สูง] เสียงดังมาก!':pct>40?'[กลาง] เสียงปานกลาง':'[ต่ำ] เงียบดี';
+        S.noAnim=requestAnimationFrame(tick);
+      };tick();
+    }catch(e){UI.toast('ไม่สามารถเข้าถึงไมโครโฟน (เบราว์เซอร์อาจบล็อกสิทธิ์ในกรอบ iframe)','er');}
+  },
+  stopNoise:()=>{if(S.noAnim)cancelAnimationFrame(S.noAnim);if(S.noStream)S.noStream.getTracks().forEach(t=>t.stop());S.noStream=null;S.noAnim=null;},
+  doGroup:()=>{
+    const room=UI.v('grpRm'),size=parseInt(UI.v('grpSz'))||4;
+    const stus=[...(S.students[S.tab][room]||[])].sort(()=>Math.random()-.5);
+    const groups=[];let i=0;while(i<stus.length){groups.push(stus.slice(i,i+size));i+=size;}
+    UI.h('grpRes',`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;">${groups.map((g,i)=>`<div style="background:var(--g0);border:1px solid var(--gb);border-radius:8px;padding:9px;"><div style="font-weight:700;color:var(--cy);font-size:.76rem;margin-bottom:5px;">กลุ่ม ${i+1}</div>${g.map(n=>`<div style="font-size:.76rem;color:var(--t2);padding:1px 0;">• ${n}</div>`).join('')}</div>`).join('')}</div>`);
+  },
+  vote:(t,el)=>{S.poll[t]=(S.poll[t]||0)+1;const tot=S.poll.y+S.poll.m+S.poll.n;UI.h('py',S.poll.y);UI.h('pm',S.poll.m);UI.h('pn',S.poll.n);UI.h('ptot',tot);el.style.transform='scale(1.06)';setTimeout(()=>el.style.transform='',200);},
+  resetPoll:()=>{S.poll={y:0,m:0,n:0};UI.h('py',0);UI.h('pm',0);UI.h('pn',0);UI.h('ptot',0);},
+  refreshMsgBoard:async(showToastOnFail)=>{
+    const rm=UI.v('msgRm');if(!rm)return;
+    const r=await API.call('getMessages',{subject:S.tab,room:rm});
+    const list=$('msgList');if(!list)return;
+    if(!r||r.error){if(showToastOnFail)UI.toast('โหลดข้อความไม่สำเร็จ','er');return;}
+    const msgs=r.messages||[];S.msgCache=msgs;
+    UI.h('msgList',msgs.length?msgs.map(m=>
+      '<div class="msg-row"><div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:.82rem;color:var(--cy);margin-bottom:2px;">'+_esc(m.student)+'</div>'
+      +'<div style="font-size:.92rem;color:var(--t1);word-break:break-word;white-space:pre-wrap;">'+_esc(m.message)+'</div>'
+      +'<div style="font-size:.68rem;color:var(--t4);margin-top:4px;">'+_esc(m.time)+'</div></div>'
+      +'<button class="btn btn-d btn-sm" onclick="App.delMsg(\''+m.id+'\')">ลบ</button></div>'
+    ).join(''):'<div style="text-align:center;padding:26px 10px;color:var(--t3);font-size:.85rem;">ยังไม่มีข้อความในห้องนี้<br>รอนักเรียนพิมพ์เข้ามาได้เลยครับ</div>');
+  },
+  delMsg:async(id)=>{
+    const r=await API.call('deleteMessage',{id});
+    if(r&&r.success)App.refreshMsgBoard(false);
+    else UI.toast((r&&r.error)||'ลบไม่สำเร็จ','er');
+  },
+  clearMsgBoard:async()=>{
+    const rm=UI.v('msgRm');if(!rm)return;
+    if(!confirm('ยืนยันลบข้อความทั้งหมดในห้อง '+rm+' หรือไม่?'))return;
+    const r=await API.call('clearMessages',{subject:S.tab,room:rm});
+    if(r&&r.success){UI.toast('ลบข้อความทั้งหมดแล้ว','ok');App.refreshMsgBoard(false);}
+    else UI.toast((r&&r.error)||'ลบไม่สำเร็จ','er');
+  }
+};
 
-/* ─────── MODAL HELPERS ─────── */
-function openM(id){ const el=document.getElementById(id); el.style.display='flex'; requestAnimationFrame(()=>el.classList.add('open')); }
-function closeM(id){ const el=document.getElementById(id); el.classList.remove('open'); setTimeout(()=>el.style.display='none',300); }
-
-/* ─────── TOAST ─────── */
-function toast(msg,type='',dur=3200){
-  const box=document.getElementById('toastBox');
-  const t=document.createElement('div');
-  t.className=`toast ${type}`; t.textContent=msg;
-  box.appendChild(t);
-  setTimeout(()=>t.remove(),dur);
-}
-
-/* ─────── THEME ─────── */
-function setTh(mode){
-  const html=document.documentElement;
-  if(mode==='auto') html.removeAttribute('data-theme');
-  else html.setAttribute('data-theme',mode);
-  localStorage.setItem('theme',mode);
-  ['b-dk','b-lt','b-au'].forEach(id=>{
-    const el=document.getElementById(id); if(!el) return;
-    const m=id==='b-dk'?'dark':id==='b-lt'?'light':'auto';
-    el.classList.toggle('on',m===mode);
-  });
-}
-function initTheme(){ setTh(localStorage.getItem('theme')||'auto'); }
-
-/* ─────── INIT ─────── */
-document.addEventListener('DOMContentLoaded',()=>{
-  initTheme();
-  showFormulas('mech');
-
-  // whiteboard card spans 2 cols only on wide screens
-  const wbCard=document.getElementById('wbCard');
-  const adjustWB=()=>{
-    if(wbCard) wbCard.style.gridColumn=window.innerWidth>=700?'span 2':'';
-  };
-  adjustWB(); window.addEventListener('resize',adjustWB);
-
-  // noise threshold display
-  const nt=document.getElementById('noiseThresh');
-  const ntv=document.getElementById('noiseThV');
-  if(nt&&ntv){ nt.addEventListener('input',()=>ntv.textContent=nt.value); }
-});
+$('tmrFSExitBtn').addEventListener('click',()=>App.tmrExitFS());
+document.addEventListener('fullscreenchange',()=>{ if(!document.fullscreenElement && S.tmrFS){ $('tmrFS').classList.remove('open'); S.tmrFS=false; } });
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && S.tmrOn && !S.wakeLock){ App.requestWakeLock(); } });
 </script>
 </body>
 </html>
