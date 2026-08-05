@@ -1418,7 +1418,8 @@ var App={
     const subs=S.subs.filter(s=>s.subject===S.tab&&s.room===room&&s.student===stu);
     const grds=S.grds.filter(g=>g.subject===S.tab&&g.room===room&&g.student===stu);
     const exam=S.exMap.get(`${S.tab}|${room}|${stu}`);
-    let html='<div class="exam-blk"><div class="exam-blk-title">คะแนนรวม (100 คะแนน)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px;"><div><label class="lbl">เก็บก่อนกลางภาค /25</label><input type="number" id="epre" class="fc" min="0" max="25" value="'+(exam&&exam.preMid!=null?exam.preMid:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div><div><label class="lbl">สอบกลางภาค /20</label><input type="number" id="emid" class="fc" min="0" max="20" value="'+(exam&&exam.midExam!=null?exam.midExam:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div><div><label class="lbl">เก็บหลังกลางภาค /25</label><input type="number" id="epost" class="fc" min="0" max="25" value="'+(exam&&exam.postMid!=null?exam.postMid:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div><div><label class="lbl">สอบปลายภาค /30</label><input type="number" id="efin" class="fc" min="0" max="30" value="'+(exam&&exam.finalExam!=null?exam.finalExam:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div></div><div class="ph5-panel" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:5px;"><span style="font-weight:700;font-size:.82rem;color:var(--ph5);">รวมเท่าที่กรอก</span><div><span style="font-weight:700;font-size:1.35rem;color:var(--ph5);letter-spacing:-.03em;" id="etot">'+(exam&&exam.total!=null?exam.total:0)+'</span><span style="font-size:.76rem;color:var(--t3);">/ 100</span></div></div><div style="font-size:.68rem;color:var(--t4);margin-bottom:9px;" id="etotNote">ช่องไหนเว้นว่างไว้ ระบบจะถือว่า "ยังไม่กรอก" ไม่ใช่ 0 คะแนน — ไม่นำมารวมหรือคิดวิเคราะห์ให้นักเรียน</div><button class="btn btn-5" style="width:100%;font-size:.82rem;" onclick="App.saveEx(\''+room+'\',\''+stu.replace(/'/g,"\\'").replace(/"/g,"&quot;")+'\')">บันทึกคะแนนรวม</button></div>';
+    const stuEsc=stu.replace(/'/g,"\\'").replace(/"/g,"&quot;");
+    let html='<div class="exam-blk"><div class="exam-blk-title">คะแนนรวม (100 คะแนน)</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px;"><div><label class="lbl">เก็บก่อนกลางภาค /25</label><input type="number" id="epre" class="fc" min="0" max="25" value="'+(exam&&exam.preMid!=null?exam.preMid:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()" style="margin-bottom:5px;"><button class="btn btn-o btn-sm" style="width:100%;font-size:.7rem;padding:5px;" onclick="App.pullCatScore(\'pre\',\''+room+'\',\''+stuEsc+'\')">⬇️ ดึงจากคะแนนเก็บ</button></div><div><label class="lbl">สอบกลางภาค /20</label><input type="number" id="emid" class="fc" min="0" max="20" value="'+(exam&&exam.midExam!=null?exam.midExam:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div><div><label class="lbl">เก็บหลังกลางภาค /25</label><input type="number" id="epost" class="fc" min="0" max="25" value="'+(exam&&exam.postMid!=null?exam.postMid:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()" style="margin-bottom:5px;"><button class="btn btn-o btn-sm" style="width:100%;font-size:.7rem;padding:5px;" onclick="App.pullCatScore(\'post\',\''+room+'\',\''+stuEsc+'\')">⬇️ ดึงจากคะแนนเก็บ</button></div><div><label class="lbl">สอบปลายภาค /30</label><input type="number" id="efin" class="fc" min="0" max="30" value="'+(exam&&exam.finalExam!=null?exam.finalExam:'')+'" placeholder="ยังไม่กรอก" oninput="App.prevEx()"></div></div><div class="ph5-panel" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:5px;"><span style="font-weight:700;font-size:.82rem;color:var(--ph5);">รวมเท่าที่กรอก</span><div><span style="font-weight:700;font-size:1.35rem;color:var(--ph5);letter-spacing:-.03em;" id="etot">'+(exam&&exam.total!=null?exam.total:0)+'</span><span style="font-size:.76rem;color:var(--t3);">/ 100</span></div></div><div style="font-size:.68rem;color:var(--t4);margin-bottom:9px;" id="etotNote">ช่องไหนเว้นว่างไว้ ระบบจะถือว่า "ยังไม่กรอก" ไม่ใช่ 0 คะแนน — ไม่นำมารวมหรือคิดวิเคราะห์ให้นักเรียน<br>ปุ่ม "ดึงจากคะแนนเก็บ" จะแปลงสัดส่วนคะแนนที่ตั้งเป็นชิ้นงานช่วงนั้นๆ ให้เป็นคะแนนเต็ม 25 อัตโนมัติ ปรับแก้ต่อได้ก่อนบันทึก</div><button class="btn btn-5" style="width:100%;font-size:.82rem;" onclick="App.saveEx(\''+room+'\',\''+stuEsc+'\')">บันทึกคะแนนรวม</button></div>';
     const chs={};asns.forEach(a=>{const c=a.chapter||'1';if(!chs[c])chs[c]=[];chs[c].push(a);});
     Object.keys(chs).sort((a,b)=>+a-+b).forEach(ch=>{
       const items=chs[ch];
@@ -1455,6 +1456,22 @@ var App={
     API.call('saveGrade',{subject:S.tab,room,student:stu,assignment:name,score,comment,maxScore})
       .then(r=>{if(r.success){UI.toast('บันทึกคะแนนสำเร็จ','ok');App.renderTbl();}else if(r.error)UI.toast(r.error,'er');})
       .catch(function(){UI.toast('การเชื่อมต่อขัดข้อง','er');});
+  },
+  pullCatScore:(cat,room,stu)=>{
+    const asns=S.asns.filter(a=>a.subject===S.tab&&(a.category==='pre'||a.category==='post')&&a.category===cat);
+    const grds=S.grds.filter(g=>g.subject===S.tab&&g.room===room&&g.student===stu);
+    let score=0,max=0;
+    asns.forEach(a=>{
+      max+=Number(a.maxScore)||0;
+      const g=grds.find(x=>x.assignment===a.name);
+      if(g)score+=Number(g.score)||0;
+    });
+    const catName=cat==='pre'?'ก่อนกลางภาค':'หลังกลางภาค';
+    if(max===0)return UI.toast('ยังไม่มีชิ้นงานที่ตั้งเป็นช่วง "'+catName+'" เลยครับ — ไปตั้งค่าที่ฟอร์มสร้าง/แก้ไขงานก่อน','wn');
+    const scaled=Math.max(0,Math.min(25,Math.round(score/max*25)));
+    UI.sv(cat==='pre'?'epre':'epost',scaled);
+    App.prevEx();
+    UI.toast('ดึงคะแนนแล้ว: ได้ '+score+'/'+max+' จากชิ้นงาน → แปลงสัดส่วนเป็น '+scaled+'/25','ok');
   },
   prevEx:()=>{
     const raw=id=>{const v=UI.v(id).trim();return v===''?null:Number(v);};
@@ -1571,8 +1588,31 @@ var App={
     ctx.clearRect(0,0,W,H);
     ctx.textAlign='center';
 
-    // กรอบขอบเขตการ์ดทั้งหมด (ทุกกล่องด้านล่างใช้ความกว้างเท่ากันเพื่อความเรียบร้อย เป็นระเบียบ)
     const CARD_M=64, CARD_X=CARD_M, CARD_W=W-CARD_M*2;
+    const innerW=CARD_W-56;
+
+    /* ===== PASS 1: วัดจำนวนบรรทัดของข้อความยาวๆ ล่วงหน้า ก่อนคำนวณตำแหน่งใดๆ
+       วิธีนี้การันตีว่าตัวอักษรจะไม่มีวันล้นขอบการ์ดอีก ไม่ว่าข้อความจะสั้นหรือยาวแค่ไหน === */
+    const QUOTE_FONT='italic 600 23px Kanit, sans-serif', QUOTE_LH=31;
+    const quoteLines=App._wrapLines(ctx,'"'+S.shareQuote.q+'"',innerW,QUOTE_FONT);
+    const ANALYSIS_FONT='600 20px Kanit, sans-serif', ANALYSIS_LH=28;
+    const analysis=App._analysisFor(scoreRatio,exSt,doneRatio);
+    const analysisLines=App._wrapLines(ctx,analysis,innerW,ANALYSIS_FONT);
+
+    /* ===== PASS 2: คำนวณความสูงกล่องจริงจากจำนวนบรรทัดที่วัดได้ (ไม่เดาตัวเลขคงที่แล้ว) ===== */
+    const quoteH = 40 + quoteLines.length*QUOTE_LH + 44;      // padding บน + เนื้อหา + (ช่องว่าง+บรรทัดผู้แต่ง+padding ล่าง)
+    const anaH   = 46 + analysisLines.length*ANALYSIS_LH + 22; // title + เนื้อหา + padding ล่าง
+    const exMiniH=118, statH=126;
+
+    /* ===== ตำแหน่งบล็อกทั้งหมด ไล่จากล่างขึ้นบน โดยใช้ความสูงจริง ===== */
+    const footerY=H-32;
+    const gap=16;
+    const anaBottom=footerY-30, anaTop=anaBottom-anaH;
+    const quoteBottom=anaTop-gap, quoteTop=quoteBottom-quoteH;
+    const exMiniBottom=quoteTop-gap, exMiniTop=exMiniBottom-exMiniH;
+    const statBottom=exMiniTop-gap, statTop=statBottom-statH;
+    const nameY=statTop-36;
+    const captionY=nameY-40;
 
     /* === พื้นหลัง: รูปที่นักเรียนเลือก (แบบ Strava) หรือ gradient สำรอง === */
     if(S.avatarImg){
@@ -1588,7 +1628,7 @@ var App={
       ctx.fillStyle='#bf5af2';ctx.beginPath();ctx.arc(W*0.12,H*0.28,220,0,7);ctx.fill();
       ctx.globalAlpha=1;
       ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 24px Kanit, sans-serif';
-      App._wrapText(ctx,'📷 แนบรูปตัวเองเพื่อให้การ์ดดูเหมือน Strava',W/2,H*0.28,CARD_W-40,32);
+      App._wrapText(ctx,'📷 แนบรูปตัวเองเพื่อให้การ์ดดูเหมือน Strava',W/2,H*0.28,innerW,32);
     }
 
     /* === vignette บาง ๆ รอบขอบภาพ ให้ดูมีมิติขึ้น === */
@@ -1601,18 +1641,8 @@ var App={
     topG.addColorStop(0,'rgba(0,0,0,.55)');topG.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=topG;ctx.fillRect(0,0,W,180);
 
-    /* === ตำแหน่งบล็อกด้านล่างทั้งหมด (คำนวณจากล่างขึ้นบน) === */
-    const footerY=H-32;
-    const anaH=210, anaBottom=H-64, anaTop=anaBottom-anaH;
-    const gap=18;
-    const quoteH=200, quoteBottom=anaTop-gap, quoteTop=quoteBottom-quoteH;
-    const exMiniH=196, exMiniBottom=quoteTop-gap, exMiniTop=exMiniBottom-exMiniH;
-    const statH=126, statBottom=exMiniTop-gap, statTop=statBottom-statH;
-    const nameY=statTop-36;
-    const captionY=nameY-40;
-
     /* === gradient มืดด้านล่าง (สำหรับวางสถิติ แบบสรุปกิจกรรม Strava) === */
-    const gStart=captionY-100;
+    const gStart=Math.max(180,captionY-100);
     const botG=ctx.createLinearGradient(0,gStart,0,H);
     botG.addColorStop(0,'rgba(0,0,0,0)');
     botG.addColorStop(.28,'rgba(0,0,0,.5)');
@@ -1650,7 +1680,6 @@ var App={
     const colX=[CARD_X+colW*0.5,CARD_X+colW*1.5,CARD_X+colW*2.5];
     ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=8;
     cols.forEach((c,i)=>{
-      // วัดความกว้างรวมของ "ตัวเลข+หน่วย" ก่อน แล้วค่อยจัดกึ่งกลางทั้งคู่ไปด้วยกัน (กันบั๊กเหลื่อมขวา)
       ctx.font='700 42px Kanit, sans-serif';
       const bigW=ctx.measureText(c.big).width;
       ctx.font='600 17px Kanit, sans-serif';
@@ -1670,61 +1699,87 @@ var App={
       App._fitText(ctx,c.label,colX[i],statTop+statH-10,colW-16,17,'600','Kanit, sans-serif');
     });
     ctx.shadowBlur=0;ctx.shadowColor='transparent';
-    // เส้นแบ่งคอลัมน์
     ctx.strokeStyle='rgba(255,255,255,.22)';ctx.lineWidth=2;
     [CARD_X+colW,CARD_X+colW*2].forEach(dx=>{
       ctx.beginPath();ctx.moveTo(dx,statTop+18);ctx.lineTo(dx,statTop+statH-18);ctx.stroke();
     });
 
-    /* === กล่องคะแนนสอบรายส่วน 4 ช่อง (ครูกรอกเอง) === */
+    /* === แถว "คะแนนสอบรายส่วน" สไตล์ splits ของ Strava — แถวเดียว 4 คอลัมน์ กะทัดรัด === */
     ctx.fillStyle='rgba(255,255,255,.09)';App._rr(ctx,CARD_X,exMiniTop,CARD_W,exMiniH,18);ctx.fill();
     ctx.strokeStyle='rgba(255,255,255,.14)';ctx.lineWidth=1.5;App._rr(ctx,CARD_X,exMiniTop,CARD_W,exMiniH,18);ctx.stroke();
-    ctx.fillStyle='rgba(255,255,255,.88)';ctx.font='700 19px Kanit, sans-serif';
-    ctx.fillText('📋 คะแนนสอบรายส่วน (ครูกรอกเอง)',W/2,exMiniTop+32);
     const exCells=[
-      {l:'เก็บก่อนกลาง',v:ex?ex.preMid:null,m:25},
-      {l:'สอบกลางภาค',v:ex?ex.midExam:null,m:20},
-      {l:'เก็บหลังกลาง',v:ex?ex.postMid:null,m:25},
-      {l:'สอบปลายภาค',v:ex?ex.finalExam:null,m:30}
+      {l:'ก่อนกลาง',v:ex?ex.preMid:null,m:25},
+      {l:'กลางภาค',v:ex?ex.midExam:null,m:20},
+      {l:'หลังกลาง',v:ex?ex.postMid:null,m:25},
+      {l:'ปลายภาค',v:ex?ex.finalExam:null,m:30}
     ];
-    const ecColW=CARD_W/2;
-    const ecX=[CARD_X+ecColW*0.5,CARD_X+ecColW*1.5],ecY=[exMiniTop+78,exMiniTop+146];
+    const exColW=CARD_W/4,exMidY=exMiniTop+exMiniH*0.44;
     exCells.forEach((c,i)=>{
-      const cx=ecX[i%2],cy=ecY[Math.floor(i/2)];
+      const cx=CARD_X+exColW*(i+0.5);
       if(ex&&c.v!=null&&c.v!==''){
-        ctx.fillStyle='#fff';ctx.font='700 25px Kanit, sans-serif';
-        ctx.fillText(c.v+'/'+c.m,cx,cy);
+        ctx.fillStyle='#fff';
+        App._fitText(ctx,c.v+'/'+c.m,cx,exMidY,exColW-14,24,'700','Kanit, sans-serif');
       }else{
-        ctx.fillStyle='rgba(255,255,255,.42)';ctx.font='600 15px Kanit, sans-serif';
-        ctx.fillText('ยังไม่กรอก',cx,cy);
+        ctx.fillStyle='rgba(255,255,255,.4)';ctx.font='600 14px Kanit, sans-serif';
+        ctx.fillText('ยังไม่กรอก',cx,exMidY);
       }
-      ctx.fillStyle='rgba(255,255,255,.58)';ctx.font='600 14px Kanit, sans-serif';
-      ctx.fillText(c.l,cx,cy+21);
+      ctx.fillStyle='rgba(255,255,255,.58)';ctx.font='600 13px Kanit, sans-serif';
+      ctx.fillText(c.l,cx,exMiniTop+exMiniH-16);
+    });
+    ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=1.5;
+    [1,2,3].forEach(i=>{
+      const dx=CARD_X+exColW*i;
+      ctx.beginPath();ctx.moveTo(dx,exMiniTop+16);ctx.lineTo(dx,exMiniTop+exMiniH-16);ctx.stroke();
     });
 
-    /* === การ์ดคำคม + ข้อความกวนๆ (ตำแหน่งไล่ต่อกันแบบไดนามิก กันทับกันถ้าข้อความยาว) === */
+    /* === การ์ดคำคมนักวิทยาศาสตร์ (ใช้บรรทัดที่วัดไว้แล้วจาก Pass 1 — ไม่มีทางล้นขอบ) === */
     ctx.fillStyle='rgba(255,255,255,.11)';App._rr(ctx,CARD_X,quoteTop,CARD_W,quoteH,18);ctx.fill();
     ctx.strokeStyle='rgba(255,255,255,.14)';ctx.lineWidth=1.5;App._rr(ctx,CARD_X,quoteTop,CARD_W,quoteH,18);ctx.stroke();
-    ctx.fillStyle='#fff';ctx.font='italic 600 23px Kanit, sans-serif';
-    let qy=App._wrapText(ctx,'"'+S.shareQuote.q+'"',W/2,quoteTop+40,CARD_W-56,31);
+    ctx.fillStyle='#fff';ctx.font=QUOTE_FONT;
+    const qLastY=App._drawLines(ctx,quoteLines,W/2,quoteTop+40,QUOTE_LH);
     ctx.fillStyle='#bf5af2';ctx.font='700 19px Kanit, sans-serif';
-    qy+=28;ctx.fillText('— '+S.shareQuote.a,W/2,qy);
-    const tease=App._teaseFor(doneRatio);
-    ctx.fillStyle='#ff9f0a';ctx.font='700 22px Kanit, sans-serif';
-    App._wrapText(ctx,tease,W/2,qy+34,CARD_W-40,27);
+    ctx.fillText('— '+S.shareQuote.a,W/2,qLastY+30);
 
-    /* === กล่องวิเคราะห์ผลการเรียน + ข้อความให้กำลังใจ (จากระบบ) === */
+    /* === กล่องวิเคราะห์ผลการเรียน + ให้กำลังใจ (จากระบบ) === */
     ctx.fillStyle='rgba(48,209,88,.15)';App._rr(ctx,CARD_X,anaTop,CARD_W,anaH,18);ctx.fill();
     ctx.strokeStyle='rgba(48,209,88,.4)';ctx.lineWidth=1.5;App._rr(ctx,CARD_X,anaTop,CARD_W,anaH,18);ctx.stroke();
     ctx.fillStyle='#30d158';ctx.font='700 19px Kanit, sans-serif';
     ctx.fillText('🔍 คำแนะนำจากระบบ',W/2,anaTop+32);
-    const analysis=App._analysisFor(scoreRatio,exSt,doneRatio);
-    ctx.fillStyle='#fff';ctx.font='600 20px Kanit, sans-serif';
-    App._wrapText(ctx,analysis,W/2,anaTop+66,CARD_W-56,28);
+    ctx.fillStyle='#fff';ctx.font=ANALYSIS_FONT;
+    App._drawLines(ctx,analysisLines,W/2,anaTop+64,ANALYSIS_LH);
 
     /* === footer === */
     ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='600 16px Kanit, sans-serif';
     App._fitText(ctx,'ระบบติดตามการเรียน • ครูณัฐพล สุขยานุดิษฐ • ร.ร.สนมวิทยาคาร',W/2,footerY,CARD_W,16,'600','Kanit, sans-serif');
+  },
+  /* วัดข้อความล่วงหน้าแล้วตัดเป็นอาร์เรย์บรรทัด (รองรับภาษาไทยที่ไม่มีเว้นวรรคในคำด้วยการตัดทีละตัวอักษรเมื่อจำเป็น) */
+  _wrapLines:(ctx,text,maxW,font)=>{
+    ctx.font=font;
+    const words=text.split(' ');
+    const lines=[];let line='';
+    const push=()=>{ if(line){lines.push(line);line='';} };
+    words.forEach(w=>{
+      const piece=line?line+' '+w:w;
+      if(ctx.measureText(piece).width<=maxW){ line=piece; return; }
+      push();
+      if(ctx.measureText(w).width<=maxW){ line=w; }
+      else{
+        let seg='';
+        Array.from(w).forEach(ch=>{
+          const test=seg+ch;
+          if(ctx.measureText(test).width>maxW&&seg){ lines.push(seg); seg=ch; }
+          else seg=test;
+        });
+        line=seg;
+      }
+    });
+    push();
+    return lines.length?lines:[''];
+  },
+  /* วาดอาร์เรย์บรรทัดที่ผ่านการวัดไว้แล้ว คืนค่า y ของบรรทัดสุดท้ายเผื่อวางองค์ประกอบถัดไปต่อ */
+  _drawLines:(ctx,lines,x,yTop,lh)=>{
+    lines.forEach((l,i)=>ctx.fillText(l,x,yTop+i*lh));
+    return yTop+(lines.length-1)*lh;
   },
   _rr:(ctx,x,y,w,h,r)=>{ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();},
   _wrapText:(ctx,text,x,y,maxW,lh)=>{
