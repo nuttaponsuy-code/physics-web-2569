@@ -455,7 +455,10 @@ tr { cursor: pointer; transition: background .15s; }
   <div class="mo">
     <div class="mo-hdr">
       <div style="font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:8px;">อำนวยการสอน</div>
-      <button class="btn btn-g btn-sm" onclick="App.closeTools()">✕</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-g btn-sm" id="toolsFsBtn" onclick="App.toggleToolsFullscreen()">⛶ เต็มจอ</button>
+        <button class="btn btn-g btn-sm" onclick="App.closeTools()">✕</button>
+      </div>
     </div>
     <div class="mo-con" style="padding:0;display:flex;flex-direction:column;flex:1;overflow:hidden;">
       <iframe id="toolsFrame" src="teach-tools.html" allow="microphone; fullscreen" allowfullscreen style="width:100%;flex:1;min-height:70vh;border:none;background:transparent;"></iframe>
@@ -472,7 +475,7 @@ tr { cursor: pointer; transition: background .15s; }
       <div class="avatar-pick">
         <img id="avatarPrev" class="avatar-preview" src="" style="display:none;">
         <div style="flex:1;">
-          <div class="lbl" style="margin-bottom:4px;">แนบรูปเป็นพื้นหลังการ์ด (แนะนำ — เหมือน Strava)</div>
+          <div class="lbl" style="margin-bottom:4px;">แนบรูปตัวเอง (ขึ้นในกรอบเหรียญตราบนการ์ด)</div>
           <input type="file" class="fc" id="avatarIn" accept="image/*" style="padding:7px 10px;font-size:.8rem;">
         </div>
       </div>
@@ -501,6 +504,23 @@ tr { cursor: pointer; transition: background .15s; }
       <textarea id="msgText" class="fc" rows="4" maxlength="300" placeholder="พิมพ์ข้อความ เช่น คำถามเกี่ยวกับบทเรียน..." style="resize:vertical;" oninput="UI.h('msgCharCount',this.value.length)"></textarea>
       <div style="text-align:right;font-size:.7rem;color:var(--t4);margin:4px 0 14px;"><span id="msgCharCount">0</span>/300</div>
       <button class="btn btn-p btn-lg" onclick="App.sendMsg()">ส่งข้อความ</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: MOOD CHECK -->
+<div class="moOv" id="mMoodSend">
+  <div class="mo">
+    <div class="mo-hdr"><div style="font-weight:700;font-size:1.05rem;">🙂 วันนี้รู้สึกยังไงบ้าง?</div><button class="btn btn-g btn-sm" onclick="closeM('mMoodSend')">✕</button></div>
+    <div class="mo-con">
+      <div style="font-size:.78rem;color:var(--t3);margin-bottom:16px;">แตะอีโมจิที่ตรงกับความรู้สึกตอนนี้ได้เลย ครูจะเห็นภาพรวมของห้องแบบไม่ระบุชื่อใครครับ</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        <button class="btn btn-g" style="flex-direction:column;padding:16px 8px;height:auto;gap:6px;" onclick="App.sendMood('sleepy')"><span style="font-size:1.8rem;">😴</span><span style="font-size:.78rem;">ง่วง</span></button>
+        <button class="btn btn-g" style="flex-direction:column;padding:16px 8px;height:auto;gap:6px;" onclick="App.sendMood('happy')"><span style="font-size:1.8rem;">😊</span><span style="font-size:.78rem;">สนุก</span></button>
+        <button class="btn btn-g" style="flex-direction:column;padding:16px 8px;height:auto;gap:6px;" onclick="App.sendMood('confused')"><span style="font-size:1.8rem;">😕</span><span style="font-size:.78rem;">งง</span></button>
+        <button class="btn btn-g" style="flex-direction:column;padding:16px 8px;height:auto;gap:6px;" onclick="App.sendMood('stressed')"><span style="font-size:1.8rem;">😣</span><span style="font-size:.78rem;">เครียด</span></button>
+        <button class="btn btn-g" style="flex-direction:column;padding:16px 8px;height:auto;gap:6px;" onclick="App.sendMood('fired')"><span style="font-size:1.8rem;">🔥</span><span style="font-size:.78rem;">มีไฟ</span></button>
+      </div>
     </div>
   </div>
 </div>
@@ -617,6 +637,7 @@ tr { cursor: pointer; transition: background .15s; }
           <button class="btn btn-g btn-sm" onclick="App.step(3)">เปลี่ยนชื่อ</button>
           <button class="btn btn-3 btn-sm" onclick="App.openShare()">แชร์คะแนน 📸</button>
           <button class="btn btn-g btn-sm" onclick="App.openMsgSend()">💬 ส่งข้อความถึงครู</button>
+          <button class="btn btn-g btn-sm" onclick="App.openMoodSend()">🙂 เช็คอารมณ์วันนี้</button>
         </div>
       </div>
 
@@ -858,7 +879,7 @@ let S={
   noStream:null,noAnim:null,poll:{y:0,m:0,n:0},randIv:null,
   shareQuote:null,avatarImg:null,
   msgIv:null,msgCache:[],
-  impRows:[]
+  impRows:[],photos:[]
 };
 
 
@@ -980,7 +1001,7 @@ var App={
             S.asns=d.asns||[];
             const valid=new Set(S.asns.map(a=>a.name));
             const sm={};(d.subs||[]).forEach(s=>{if(valid.has(s.assignment))sm[`${s.subject}|${s.room}|${s.student}|${s.assignment}`]=s;});
-            S.subs=Object.values(sm); S.grds=(d.grds||[]).filter(g=>valid.has(g.assignment)); S.exams=d.exams||[];
+            S.subs=Object.values(sm); S.grds=(d.grds||[]).filter(g=>valid.has(g.assignment)); S.exams=d.exams||[]; S.photos=d.photos||[];
             rebuildIdx(); App.refresh(); S._cached = true;
          }
       }
@@ -993,7 +1014,7 @@ var App={
       S.asns=d.asns||[];
       const valid=new Set(S.asns.map(a=>a.name));
       const sm={};(d.subs||[]).forEach(s=>{if(valid.has(s.assignment))sm[`${s.subject}|${s.room}|${s.student}|${s.assignment}`]=s;});
-      S.subs=Object.values(sm); S.grds=(d.grds||[]).filter(g=>valid.has(g.assignment)); S.exams=d.exams||[];
+      S.subs=Object.values(sm); S.grds=(d.grds||[]).filter(g=>valid.has(g.assignment)); S.exams=d.exams||[]; S.photos=d.photos||[];
       rebuildIdx();
       if(show||forceLoad)UI.toast('อัปเดตข้อมูลล่าสุดแล้ว','ok');
       App.refresh();
@@ -1600,7 +1621,26 @@ var App={
   closeTools:()=>{
     const f=$('toolsFrame');
     if(f&&f.contentWindow)f.contentWindow.postMessage({type:'ttStop'},'*');
+    if(document.fullscreenElement)try{document.exitFullscreen();}catch(e){}
     closeM('mTools');
+  },
+  toggleToolsFullscreen:async()=>{
+    const f=$('toolsFrame');if(!f)return;
+    const isFs=!!(document.fullscreenElement||document.webkitFullscreenElement);
+    try{
+      if(!isFs){
+        if(f.requestFullscreen)await f.requestFullscreen();
+        else if(f.webkitRequestFullscreen)await f.webkitRequestFullscreen();
+        else throw new Error('unsupported');
+        UI.h('toolsFsBtn','ออกจากเต็มจอ ✕');
+      }else{
+        if(document.exitFullscreen)await document.exitFullscreen();
+        else if(document.webkitExitFullscreen)await document.webkitExitFullscreen();
+        UI.h('toolsFsBtn','⛶ เต็มจอ');
+      }
+    }catch(e){
+      UI.toast('เบราว์เซอร์นี้ไม่รองรับโหมดเต็มจอ (พบมากใน iPhone Safari) — ลองหมุนจอเป็นแนวนอนแทนได้ครับ','wn');
+    }
   },
   postToolsInit:()=>{
     const f=$('toolsFrame');if(!f||!f.contentWindow)return;
@@ -1610,7 +1650,8 @@ var App={
       theme:document.documentElement.getAttribute('data-theme')||'dark',
       students:STUDENTS,
       formulas:FM,
-      apiUrl:API_URL
+      apiUrl:API_URL,
+      photos:S.photos
     },'*');
   },
   openMsgSend:()=>{UI.sv('msgText','');UI.h('msgCharCount','0');openM('mMsgSend');},
@@ -1621,6 +1662,12 @@ var App={
     const r=await API.call('postMessage',{subject:S.subj,room:S.room,student:S.stu,message:txt});
     if(r&&r.success){UI.toast('ส่งข้อความแล้ว ครูจะเห็นบนจอเลยครับ','ok');closeM('mMsgSend');}
     else UI.toast((r&&r.error)||'ส่งข้อความไม่สำเร็จ','er');
+  },
+  openMoodSend:()=>{openM('mMoodSend');},
+  sendMood:async(mood)=>{
+    const r=await API.call('postMood',{subject:S.subj,room:S.room,mood});
+    if(r&&r.success){UI.toast('ส่งความรู้สึกแล้ว ขอบคุณครับ 🙏','ok');closeM('mMoodSend');}
+    else UI.toast((r&&r.error)||'ส่งไม่สำเร็จ','er');
   },
 
   /* === SHARE SCORE CARD === */
@@ -1647,7 +1694,7 @@ var App={
   /* วิเคราะห์ภาพรวม (คะแนนเก็บ + คะแนนสอบเท่าที่กรอกแล้ว + อัตราส่งงาน) แล้วให้คำแนะนำ+กำลังใจแบบสุ่ม
      หมายเหตุ: exSt คือผลจาก examStat(ex) — ใช้ ratio ที่คำนวณเฉพาะส่วนที่ครูกรอกแล้วเท่านั้น
      ไม่เอาช่องที่ยังไม่กรอกมาคิดเป็น 0 เพื่อความเป็นธรรมกับนักเรียน */
-  _analysisFor:(scoreRatio,exSt,doneRatio)=>{
+  _perfTier:(scoreRatio,exSt,doneRatio)=>{
     const examRatio=exSt?exSt.ratio:null;
     const parts=[doneRatio];
     if(scoreRatio!=null)parts.push(scoreRatio);
@@ -1657,6 +1704,10 @@ var App={
     if(overall<0.4)tier='low';
     else if(overall<0.65)tier='mid';
     else if(overall<0.85)tier='good';
+    return tier;
+  },
+  _analysisFor:(scoreRatio,exSt,doneRatio)=>{
+    const tier=App._perfTier(scoreRatio,exSt,doneRatio);
     const msg=ANALYSIS_MSGS[tier][Math.floor(Math.random()*ANALYSIS_MSGS[tier].length)];
     let examNote='';
     if(!exSt||!exSt.hasAny)examNote=' (ยังไม่มีคะแนนสอบให้วิเคราะห์ ลองถามครูดูนะ)';
@@ -1676,24 +1727,27 @@ var App={
     const scoreRatio=maxTotal?score/maxTotal:null;
     const ex=S.exMap.get(`${S.subj}|${S.room}|${S.stu}`);
     const exSt=examStat(ex);
+    const tier=App._perfTier(scoreRatio,exSt,doneRatio);
+    const tierColor={low:'#ff6b6b',mid:'#ffd23f',good:'#22d3ee',hi:'#7cff6b'}[tier];
+    const tierEmoji={low:'💪',mid:'⚡',good:'🌟',hi:'🔥'}[tier];
 
     ctx.clearRect(0,0,W,H);
     ctx.textAlign='center';
 
     const CARD_M=64, CARD_X=CARD_M, CARD_W=W-CARD_M*2;
     const innerW=CARD_W-56;
+    const INK='#1a1030', PAPER='#fdf6e3';
 
-    /* ===== PASS 1: วัดจำนวนบรรทัดของข้อความยาวๆ ล่วงหน้า ก่อนคำนวณตำแหน่งใดๆ
-       วิธีนี้การันตีว่าตัวอักษรจะไม่มีวันล้นขอบการ์ดอีก ไม่ว่าข้อความจะสั้นหรือยาวแค่ไหน === */
+    /* ===== PASS 1: วัดจำนวนบรรทัดของข้อความยาวๆ ล่วงหน้า ก่อนคำนวณตำแหน่งใดๆ ===== */
     const QUOTE_FONT='italic 600 23px Kanit, sans-serif', QUOTE_LH=31;
     const quoteLines=App._wrapLines(ctx,'"'+S.shareQuote.q+'"',innerW,QUOTE_FONT);
     const ANALYSIS_FONT='600 20px Kanit, sans-serif', ANALYSIS_LH=28;
     const analysis=App._analysisFor(scoreRatio,exSt,doneRatio);
     const analysisLines=App._wrapLines(ctx,analysis,innerW,ANALYSIS_FONT);
 
-    /* ===== PASS 2: คำนวณความสูงกล่องจริงจากจำนวนบรรทัดที่วัดได้ (ไม่เดาตัวเลขคงที่แล้ว) ===== */
-    const quoteH = 40 + quoteLines.length*QUOTE_LH + 44;      // padding บน + เนื้อหา + (ช่องว่าง+บรรทัดผู้แต่ง+padding ล่าง)
-    const anaH   = 46 + analysisLines.length*ANALYSIS_LH + 22; // title + เนื้อหา + padding ล่าง
+    /* ===== PASS 2: คำนวณความสูงกล่องจริงจากจำนวนบรรทัดที่วัดได้ ===== */
+    const quoteH = 46 + quoteLines.length*QUOTE_LH + 44;
+    const anaH   = 46 + analysisLines.length*ANALYSIS_LH + 22;
     const exMiniH=118, statH=126;
 
     /* ===== ตำแหน่งบล็อกทั้งหมด ไล่จากล่างขึ้นบน โดยใช้ความสูงจริง ===== */
@@ -1706,99 +1760,102 @@ var App={
     const nameY=statTop-36;
     const captionY=nameY-40;
 
-    /* === พื้นหลัง: รูปที่นักเรียนเลือก (แบบ Strava) หรือ gradient สำรอง === */
-    if(S.avatarImg){
-      const iw=S.avatarImg.width,ih=S.avatarImg.height;
-      const s=Math.max(W/iw,H/ih),dw=iw*s,dh=ih*s;
-      ctx.drawImage(S.avatarImg,(W-dw)/2,(H-dh)/2,dw,dh);
-    }else{
-      const grad=ctx.createLinearGradient(0,0,W,H);
-      grad.addColorStop(0,'#0a2540');grad.addColorStop(.5,'#123a63');grad.addColorStop(1,'#3a1155');
-      ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
-      ctx.globalAlpha=.15;
-      ctx.fillStyle='#64d2ff';ctx.beginPath();ctx.arc(W*0.85,H*0.14,180,0,7);ctx.fill();
-      ctx.fillStyle='#bf5af2';ctx.beginPath();ctx.arc(W*0.12,H*0.28,220,0,7);ctx.fill();
-      ctx.globalAlpha=1;
-      ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 24px Kanit, sans-serif';
-      App._wrapText(ctx,'📷 แนบรูปตัวเองเพื่อให้การ์ดดูเหมือน Strava',W/2,H*0.28,innerW,32);
-    }
+    /* === พื้นหลัง: ไล่สีสดม่วง→ชมพู→ส้ม แบบสติกเกอร์ Gen Z (ไม่ใช้รูปนักเรียนเป็นพื้นหลังอีกต่อไป กันภาพเพี้ยน) === */
+    const bgGrad=ctx.createLinearGradient(0,0,W,H);
+    bgGrad.addColorStop(0,'#3b1e78');bgGrad.addColorStop(.52,'#e6357f');bgGrad.addColorStop(1,'#ff8a3d');
+    ctx.fillStyle=bgGrad;ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;
+    for(let gx=0;gx<=W;gx+=40){ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();}
+    for(let gy=0;gy<=H;gy+=40){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}
 
-    /* === vignette บาง ๆ รอบขอบภาพ ให้ดูมีมิติขึ้น === */
-    const vig=ctx.createRadialGradient(W/2,H*0.38,H*0.25,W/2,H*0.38,H*0.72);
-    vig.addColorStop(0,'rgba(0,0,0,0)');vig.addColorStop(1,'rgba(0,0,0,.35)');
+    /* กากเพชร/สปาร์กเกิลกระจายเป็นพื้นผิว */
+    const sparkles=[
+      [0.08,0.045,10,'#fff'],[0.9,0.04,7,'#ffd23f'],[0.85,0.13,5,'#fff'],[0.05,0.17,6,'#fff'],
+      [0.94,0.27,9,'#fff'],[0.04,0.34,7,'#ffd23f'],[0.9,0.4,6,'#fff'],[0.48,0.035,6,'#fff'],
+      [0.14,0.5,8,'#fff'],[0.88,0.56,5,'#ffd23f'],[0.1,0.65,7,'#fff'],[0.92,0.72,9,'#fff'],
+      [0.13,0.85,7,'#ffd23f'],[0.87,0.9,10,'#fff'],[0.5,0.96,6,'#fff']
+    ];
+    sparkles.forEach(([fx,fy,s,c])=>App._drawSparkle(ctx,W*fx,H*fy,s,c,0.5));
+
+    const vig=ctx.createRadialGradient(W/2,H*0.4,H*0.2,W/2,H*0.4,H*0.78);
+    vig.addColorStop(0,'rgba(0,0,0,0)');vig.addColorStop(1,'rgba(0,0,0,.32)');
     ctx.fillStyle=vig;ctx.fillRect(0,0,W,H);
-
-    /* === gradient มืดด้านบน (ให้ badge อ่านง่าย) === */
-    const topG=ctx.createLinearGradient(0,0,0,180);
-    topG.addColorStop(0,'rgba(0,0,0,.55)');topG.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=topG;ctx.fillRect(0,0,W,180);
-
-    /* === gradient มืดด้านล่าง (สำหรับวางสถิติ แบบสรุปกิจกรรม Strava) === */
-    const gStart=Math.max(180,captionY-100);
-    const botG=ctx.createLinearGradient(0,gStart,0,H);
-    botG.addColorStop(0,'rgba(0,0,0,0)');
-    botG.addColorStop(.28,'rgba(0,0,0,.5)');
-    botG.addColorStop(.58,'rgba(0,0,0,.8)');
-    botG.addColorStop(1,'rgba(0,0,0,.97)');
-    ctx.fillStyle=botG;ctx.fillRect(0,gStart,W,H-gStart);
 
     /* === badge บนซ้าย: วิชา/ห้อง === */
     ctx.textAlign='left';
     ctx.font='700 21px Kanit, sans-serif';
     const badgeTxt='⚛️  '+S.subj+' • '+S.room;
     const badgeW=Math.min(CARD_W,ctx.measureText(badgeTxt).width+40);
-    ctx.fillStyle='rgba(0,0,0,.42)';App._rr(ctx,CARD_X,32,badgeW,44,22);ctx.fill();
+    ctx.fillStyle='rgba(0,0,0,.35)';App._rr(ctx,CARD_X,32,badgeW,44,22);ctx.fill();
     ctx.fillStyle='#fff';
     ctx.fillText(badgeTxt,CARD_X+20,60);
     ctx.textAlign='center';
 
-    /* === ชื่อนักเรียน === */
-    ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=10;
-    ctx.fillStyle='rgba(255,255,255,.82)';ctx.font='600 21px Kanit, sans-serif';
+    /* === สติกเกอร์เส้นสเก็ตช์ "นักวิทยาศาสตร์ผมฟู" — ความเข้ม/ทึบของเส้นสะท้อนสัดส่วนการส่งงาน
+       ส่งครบ 100% เส้นจะทึบเต็ม ต่อกันสนิท / ส่งไม่ครบเส้นจะจางและเป็นเส้นประ เหมือนร่างยังไม่เสร็จ === */
+    const doodleCY=captionY-296;
+    App._drawGeniusDoodle(ctx,W/2,doodleCY,200,doneRatio,3);
+    ctx.textAlign='center';
+    ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='700 15px Kanit, sans-serif';
+    ctx.fillText('ภาพจะเต็มเมื่อส่งงานครบ 100% 🎯 ตอนนี้ '+Math.round(doneRatio*100)+'%',W/2,doodleCY+140);
+
+    /* === กรอบรูปตัวเอง (เหรียญตราสติกเกอร์) แทนการใช้เป็นพื้นหลัง === */
+    const medCY=captionY-116,medR=66;
+    App._drawAvatarMedallion(ctx,W/2,medCY,medR,-6);
+    ctx.textAlign='center';
+
+    /* === ชื่อนักเรียน (มีไฮไลต์มาร์กเกอร์หลังตัวหนังสือ) === */
+    ctx.font='700 42px Kanit, sans-serif';
+    const nameTxt=S.stu||'-';
+    const nameW=Math.min(ctx.measureText(nameTxt).width,CARD_W-20);
+    ctx.save();
+    ctx.translate(W/2,nameY-13);ctx.rotate(-1*Math.PI/180);
+    ctx.fillStyle='rgba(255,210,63,.5)';
+    ctx.fillRect(-nameW/2-16,-4,nameW+32,36);
+    ctx.restore();
+    ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=8;
+    ctx.fillStyle='rgba(255,255,255,.85)';ctx.font='600 21px Kanit, sans-serif';
     ctx.fillText('รายงานคะแนนของ',W/2,captionY);
-    ctx.fillStyle='#fff';ctx.font='700 42px Kanit, sans-serif';
-    ctx.shadowBlur=12;
-    App._fitText(ctx,S.stu||'-',W/2,nameY,CARD_W-20,42,'700','Kanit, sans-serif');
+    ctx.fillStyle='#fff';
+    ctx.shadowBlur=10;
+    App._fitText(ctx,nameTxt,W/2,nameY,CARD_W-20,42,'700','Kanit, sans-serif');
     ctx.shadowBlur=0;ctx.shadowColor='transparent';
 
-    /* === แถวสถิติแบบ Strava: คะแนนเก็บ | คะแนนรวม(ครู) | ส่งงานแล้ว === */
-    const statMidY=statTop+statH*0.58;
+    /* === แถวสถิติ 3 การ์ดสีสด สไตล์ Spotify Wrapped: คะแนนเก็บ | คะแนนรวม(ครู) | ส่งงานแล้ว === */
     const cols=[
-      {big:String(score),unit:'/'+maxTotal,label:'คะแนนเก็บ'},
-      {big: exSt.hasAny?String(exSt.total):'—',unit: exSt.hasAny?(exSt.complete?'/100':'('+exSt.enteredCount+'/4)'):'ยังไม่กรอก',label:'คะแนนรวม (ครู)'},
-      {big:Math.round(doneRatio*100)+'%',unit:'',label:'ส่งงานแล้ว '+done+'/'+total}
+      {big:String(score),unit:'/'+maxTotal,label:'คะแนนเก็บ',bg:'#ff3cac'},
+      {big: exSt.hasAny?String(exSt.total):'—',unit: exSt.hasAny?(exSt.complete?'/100':'('+exSt.enteredCount+'/4)'):'ยังไม่กรอก',label:'คะแนนรวม (ครู)',bg:'#22d3ee'},
+      {big:Math.round(doneRatio*100)+'%',unit:'',label:'ส่งงานแล้ว '+done+'/'+total,bg:'#ffd23f'}
     ];
-    const colW=CARD_W/3;
-    const colX=[CARD_X+colW*0.5,CARD_X+colW*1.5,CARD_X+colW*2.5];
-    ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=8;
+    const cGap=10,cardW=(CARD_W-cGap*2)/3;
     cols.forEach((c,i)=>{
-      ctx.font='700 42px Kanit, sans-serif';
+      const cx0=CARD_X+i*(cardW+cGap),midx=cx0+cardW/2;
+      ctx.save();ctx.shadowColor='rgba(0,0,0,.28)';ctx.shadowBlur=10;ctx.shadowOffsetY=4;
+      ctx.fillStyle=c.bg;App._rr(ctx,cx0,statTop,cardW,statH,20);ctx.fill();
+      ctx.restore();
+      ctx.font='800 32px Kanit, sans-serif';
       const bigW=ctx.measureText(c.big).width;
-      ctx.font='600 17px Kanit, sans-serif';
+      ctx.font='700 13px Kanit, sans-serif';
       const unitW=c.unit?ctx.measureText(c.unit).width:0;
-      const pairGap=c.unit?8:0;
+      const pairGap=c.unit?5:0;
       const totalW=bigW+pairGap+unitW;
-      const startX=colX[i]-totalW/2;
+      const startX=midx-totalW/2;
       ctx.textAlign='left';
-      ctx.font='700 42px Kanit, sans-serif';ctx.fillStyle='#fff';
-      ctx.fillText(c.big,startX,statMidY);
+      ctx.font='800 32px Kanit, sans-serif';ctx.fillStyle=INK;
+      ctx.fillText(c.big,startX,statTop+statH*0.52);
       if(c.unit){
-        ctx.font='600 17px Kanit, sans-serif';ctx.fillStyle='rgba(255,255,255,.72)';
-        ctx.fillText(c.unit,startX+bigW+pairGap,statMidY);
+        ctx.font='700 13px Kanit, sans-serif';ctx.fillStyle='rgba(26,16,48,.65)';
+        ctx.fillText(c.unit,startX+bigW+pairGap,statTop+statH*0.52);
       }
       ctx.textAlign='center';
-      ctx.fillStyle='rgba(255,255,255,.7)';ctx.font='600 17px Kanit, sans-serif';
-      App._fitText(ctx,c.label,colX[i],statTop+statH-10,colW-16,17,'600','Kanit, sans-serif');
-    });
-    ctx.shadowBlur=0;ctx.shadowColor='transparent';
-    ctx.strokeStyle='rgba(255,255,255,.22)';ctx.lineWidth=2;
-    [CARD_X+colW,CARD_X+colW*2].forEach(dx=>{
-      ctx.beginPath();ctx.moveTo(dx,statTop+18);ctx.lineTo(dx,statTop+statH-18);ctx.stroke();
+      ctx.fillStyle='rgba(26,16,48,.75)';ctx.font='700 12.5px Kanit, sans-serif';
+      App._fitText(ctx,c.label,midx,statTop+statH-14,cardW-14,12.5,'700','Kanit, sans-serif');
     });
 
-    /* === แถว "คะแนนสอบรายส่วน" สไตล์ splits ของ Strava — แถวเดียว 4 คอลัมน์ กะทัดรัด === */
-    ctx.fillStyle='rgba(255,255,255,.09)';App._rr(ctx,CARD_X,exMiniTop,CARD_W,exMiniH,18);ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,.14)';ctx.lineWidth=1.5;App._rr(ctx,CARD_X,exMiniTop,CARD_W,exMiniH,18);ctx.stroke();
+    /* === แถว "คะแนนสอบรายส่วน" การ์ดม่วงสด 4 คอลัมน์ === */
+    ctx.save();ctx.shadowColor='rgba(0,0,0,.28)';ctx.shadowBlur=10;ctx.shadowOffsetY=4;
+    ctx.fillStyle='#8b5cf6';App._rr(ctx,CARD_X,exMiniTop,CARD_W,exMiniH,20);ctx.fill();
+    ctx.restore();
     const exCells=[
       {l:'ก่อนกลาง',v:ex?ex.preMid:null,m:25},
       {l:'กลางภาค',v:ex?ex.midExam:null,m:20},
@@ -1812,36 +1869,45 @@ var App={
         ctx.fillStyle='#fff';
         App._fitText(ctx,c.v+'/'+c.m,cx,exMidY,exColW-14,24,'700','Kanit, sans-serif');
       }else{
-        ctx.fillStyle='rgba(255,255,255,.4)';ctx.font='600 14px Kanit, sans-serif';
+        ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='600 14px Kanit, sans-serif';
         ctx.fillText('ยังไม่กรอก',cx,exMidY);
       }
-      ctx.fillStyle='rgba(255,255,255,.58)';ctx.font='600 13px Kanit, sans-serif';
+      ctx.fillStyle='rgba(255,255,255,.75)';ctx.font='600 13px Kanit, sans-serif';
       ctx.fillText(c.l,cx,exMiniTop+exMiniH-16);
     });
-    ctx.strokeStyle='rgba(255,255,255,.16)';ctx.lineWidth=1.5;
+    ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=1.5;
     [1,2,3].forEach(i=>{
       const dx=CARD_X+exColW*i;
       ctx.beginPath();ctx.moveTo(dx,exMiniTop+16);ctx.lineTo(dx,exMiniTop+exMiniH-16);ctx.stroke();
     });
 
-    /* === การ์ดคำคมนักวิทยาศาสตร์ (ใช้บรรทัดที่วัดไว้แล้วจาก Pass 1 — ไม่มีทางล้นขอบ) === */
-    ctx.fillStyle='rgba(255,255,255,.11)';App._rr(ctx,CARD_X,quoteTop,CARD_W,quoteH,18);ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,.14)';ctx.lineWidth=1.5;App._rr(ctx,CARD_X,quoteTop,CARD_W,quoteH,18);ctx.stroke();
-    ctx.fillStyle='#fff';ctx.font=QUOTE_FONT;
-    const qLastY=App._drawLines(ctx,quoteLines,W/2,quoteTop+40,QUOTE_LH);
-    ctx.fillStyle='#bf5af2';ctx.font='700 19px Kanit, sans-serif';
+    /* === การ์ดคำคมนักวิทยาศาสตร์ สไตล์สติกกี้โน้ตเอียงเล็กน้อย === */
+    const qCX=CARD_X+CARD_W/2,qCY=quoteTop+quoteH/2;
+    ctx.save();
+    ctx.translate(qCX,qCY);ctx.rotate(-1.2*Math.PI/180);ctx.translate(-qCX,-qCY);
+    ctx.shadowColor='rgba(0,0,0,.25)';ctx.shadowBlur=12;ctx.shadowOffsetY=5;
+    ctx.fillStyle=PAPER;App._rr(ctx,CARD_X,quoteTop,CARD_W,quoteH,14);ctx.fill();
+    ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+    ctx.save();ctx.translate(qCX,quoteTop);ctx.rotate(2.5*Math.PI/180);
+    ctx.fillStyle='rgba(255,210,63,.85)';ctx.fillRect(-40,-10,80,20);
+    ctx.restore();
+    ctx.fillStyle=INK;ctx.font=QUOTE_FONT;
+    const qLastY=App._drawLines(ctx,quoteLines,W/2,quoteTop+44,QUOTE_LH);
+    ctx.fillStyle='#e6357f';ctx.font='700 19px Kanit, sans-serif';
     ctx.fillText('— '+S.shareQuote.a,W/2,qLastY+30);
+    ctx.restore();
 
-    /* === กล่องวิเคราะห์ผลการเรียน + ให้กำลังใจ (จากระบบ) === */
-    ctx.fillStyle='rgba(48,209,88,.15)';App._rr(ctx,CARD_X,anaTop,CARD_W,anaH,18);ctx.fill();
-    ctx.strokeStyle='rgba(48,209,88,.4)';ctx.lineWidth=1.5;App._rr(ctx,CARD_X,anaTop,CARD_W,anaH,18);ctx.stroke();
-    ctx.fillStyle='#30d158';ctx.font='700 19px Kanit, sans-serif';
-    ctx.fillText('🔍 คำแนะนำจากระบบ',W/2,anaTop+32);
-    ctx.fillStyle='#fff';ctx.font=ANALYSIS_FONT;
+    /* === กล่องวิเคราะห์ผลการเรียน + ให้กำลังใจ (สีตามระดับผลงาน) === */
+    ctx.save();ctx.shadowColor='rgba(0,0,0,.28)';ctx.shadowBlur=10;ctx.shadowOffsetY=4;
+    ctx.fillStyle=tierColor;App._rr(ctx,CARD_X,anaTop,CARD_W,anaH,20);ctx.fill();
+    ctx.restore();
+    ctx.fillStyle=INK;ctx.font='800 19px Kanit, sans-serif';
+    ctx.fillText(tierEmoji+' คำแนะนำจากระบบ',W/2,anaTop+32);
+    ctx.fillStyle='rgba(26,16,48,.82)';ctx.font=ANALYSIS_FONT;
     App._drawLines(ctx,analysisLines,W/2,anaTop+64,ANALYSIS_LH);
 
     /* === footer === */
-    ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='600 16px Kanit, sans-serif';
+    ctx.fillStyle='rgba(255,255,255,.65)';ctx.font='600 16px Kanit, sans-serif';
     App._fitText(ctx,'ระบบติดตามการเรียน • ครูณัฐพล สุขยานุดิษฐ • ร.ร.สนมวิทยาคาร',W/2,footerY,CARD_W,16,'600','Kanit, sans-serif');
   },
   /* วัดข้อความล่วงหน้าแล้วตัดเป็นอาร์เรย์บรรทัด (รองรับภาษาไทยที่ไม่มีเว้นวรรคในคำด้วยการตัดทีละตัวอักษรเมื่อจำเป็น) */
@@ -1874,6 +1940,91 @@ var App={
     return yTop+(lines.length-1)*lh;
   },
   _rr:(ctx,x,y,w,h,r)=>{ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();},
+  /* สปาร์กเกิล/กากเพชร 4 แฉก สำหรับโรยเป็นพื้นผิวตกแต่งบนพื้นหลัง */
+  _drawSparkle:(ctx,x,y,s,color,alpha)=>{
+    ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=color;ctx.translate(x,y);
+    ctx.beginPath();
+    ctx.moveTo(0,-s);ctx.quadraticCurveTo(s*0.15,-s*0.15,s,0);
+    ctx.quadraticCurveTo(s*0.15,s*0.15,0,s);
+    ctx.quadraticCurveTo(-s*0.15,s*0.15,-s,0);
+    ctx.quadraticCurveTo(-s*0.15,-s*0.15,0,-s);
+    ctx.closePath();ctx.fill();
+    ctx.restore();
+  },
+  /* ร่างเส้นการ์ตูน "นักวิทยาศาสตร์ผมฟู" บนสติกเกอร์วงกลม (ต้นฉบับ ไม่ได้ลอกภาพจริงของใคร)
+     t คือสัดส่วนงานที่ส่งแล้ว (0..1) — t ต่ำ: เส้นจาง เว้นระยะเป็นเส้นประ เหมือนร่างสเก็ตช์ยังไม่เสร็จ
+     t=1: เส้นทึบเข้มต่อกันสนิท เหมือนวาดเสร็จสมบูรณ์ / ผมใช้ก้อนวงกลมซ้อนกันแทนเส้นแฉก กันดูเป็นไวรัส */
+  _drawGeniusDoodle:(ctx,cx,cy,size,t,rotDeg)=>{
+    const scale=size/200;
+    const tt=Math.max(0,Math.min(1,t));
+    const opacity=0.3+0.7*tt;
+    const dashGap=(1-tt)*8;
+    ctx.save();
+    ctx.translate(cx,cy);ctx.rotate((rotDeg||0)*Math.PI/180);
+    ctx.scale(scale,scale);
+
+    // สติกเกอร์วงกลมสีขาวรองพื้น ให้เส้นอ่านง่ายไม่ว่าพื้นหลังจะสีอะไร
+    ctx.beginPath();ctx.arc(0,0,96,0,Math.PI*2);
+    ctx.fillStyle='#fdf6e3';ctx.fill();
+    ctx.setLineDash([5,5]);ctx.lineWidth=2;ctx.strokeStyle='rgba(26,16,48,.25)';ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.globalAlpha=opacity;
+    ctx.strokeStyle='#1a1030';
+    ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.lineWidth=3+1.6*tt;
+    ctx.setLineDash(dashGap>0.6?[4,dashGap]:[]);
+
+    // ผมฟูทรงพัฟฟ์ (ก้อนวงกลมซ้อนกัน แทนเส้นแฉกที่ดูเหมือนไวรัส)
+    const puffs=[
+      {x:-50,y:-26,r:24},{x:-28,y:-50,r:28},{x:0,y:-58,r:30},
+      {x:28,y:-50,r:28},{x:50,y:-26,r:24},
+      {x:-60,y:0,r:20},{x:60,y:0,r:20}
+    ];
+    puffs.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.stroke();});
+    // ศีรษะ/ใบหน้า
+    ctx.beginPath();ctx.arc(0,4,46,0,Math.PI*2);ctx.stroke();
+    // คิ้ว
+    ctx.beginPath();ctx.moveTo(-28,-10);ctx.quadraticCurveTo(-16,-19,-4,-11);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(4,-11);ctx.quadraticCurveTo(16,-19,28,-10);ctx.stroke();
+    // ตายิ้ม
+    ctx.beginPath();ctx.moveTo(-24,6);ctx.quadraticCurveTo(-15,-2,-6,6);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(6,6);ctx.quadraticCurveTo(15,-2,24,6);ctx.stroke();
+    // หนวด
+    ctx.beginPath();ctx.moveTo(-2,26);ctx.quadraticCurveTo(-14,22,-30,29);ctx.quadraticCurveTo(-14,33,-2,26);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(2,26);ctx.quadraticCurveTo(14,22,30,29);ctx.quadraticCurveTo(14,33,2,26);ctx.stroke();
+    // ลิ้นแลบ
+    ctx.beginPath();ctx.ellipse(0,40,8,11,0,0,Math.PI*2);ctx.stroke();
+
+    ctx.setLineDash([]);
+    ctx.restore();
+  },
+  /* กรอบรูปวงกลมสติกเกอร์ สำหรับแนบรูปตัวเองโดยเฉพาะ — ไม่ยืดภาพเป็นพื้นหลังอีกต่อไป กันภาพเพี้ยน */
+  _drawAvatarMedallion:(ctx,cx,cy,r,rotDeg)=>{
+    ctx.save();
+    ctx.translate(cx,cy);ctx.rotate((rotDeg||0)*Math.PI/180);
+    ctx.shadowColor='rgba(0,0,0,.35)';ctx.shadowBlur=14;ctx.shadowOffsetY=4;
+    ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);
+    ctx.fillStyle='#fdf6e3';ctx.fill();
+    ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+    ctx.save();
+    ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.clip();
+    if(S.avatarImg){
+      const img=S.avatarImg,iw=img.width,ih=img.height;
+      const s=Math.max((r*2)/iw,(r*2)/ih),dw=iw*s,dh=ih*s;
+      ctx.drawImage(img,-dw/2,-dh/2,dw,dh);
+    }else{
+      ctx.font=Math.round(r*0.55)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillStyle='rgba(26,16,48,.55)';ctx.fillText('📷',0,-6);
+      ctx.textBaseline='alphabetic';
+      ctx.font='600 12px Kanit, sans-serif';ctx.fillStyle='rgba(26,16,48,.55)';
+      ctx.fillText('แนบรูปตรงนี้',0,r*0.5);
+    }
+    ctx.restore();
+    ctx.lineWidth=5;ctx.strokeStyle='#fdf6e3';ctx.stroke();
+    ctx.lineWidth=2;ctx.strokeStyle='rgba(26,16,48,.2)';ctx.stroke();
+    ctx.restore();
+  },
   _wrapText:(ctx,text,x,y,maxW,lh)=>{
     const words=text.split(' ');
     let line='',yy=y;
@@ -2078,6 +2229,10 @@ function bindNav(){
   window.addEventListener('message',function(ev){
     const d=ev.data||{};
     if(d.type==='ttReady')App.postToolsInit();
+  });
+  document.addEventListener('fullscreenchange',function(){
+    const btn=$('toolsFsBtn');if(!btn)return;
+    btn.textContent=document.fullscreenElement?'ออกจากเต็มจอ ✕':'⛶ เต็มจอ';
   });
   var avatarIn=$('avatarIn');
   if(avatarIn)avatarIn.addEventListener('change',function(e){
