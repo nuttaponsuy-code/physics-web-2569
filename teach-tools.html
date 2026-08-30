@@ -79,6 +79,15 @@ select.fc { appearance: none; background-image: url('data:image/svg+xml;utf8,<sv
 .toast.wn { box-shadow: var(--sh-2), inset 0 0 0 1px var(--wn-bd); }
 .not-ready { text-align: center; padding: 60px 20px; color: var(--t3); }
 .msg-row { background: var(--in-b); border: 1px solid var(--in-bd); border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+.rand-reveal { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 24px; background: var(--in-b); border-radius: 16px; border: 1px dashed var(--cy); margin: 10px 0; }
+.rand-reveal-ph { width: 92px; height: 92px; border-radius: 50%; background: var(--g1); display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 2rem; box-shadow: var(--sh-1); border: 3px solid var(--in-bd); color: var(--t2); font-weight: 700; }
+.rand-reveal-ph.final { border-color: var(--cy); box-shadow: 0 0 0 5px var(--cy-d); }
+.rand-reveal-ph img { width: 100%; height: 100%; object-fit: cover; }
+.rand-reveal-name { font-size: 1.25rem; font-weight: 700; color: var(--t1); text-align: center; }
+.photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 8px; }
+.photo-item { cursor: pointer; }
+.photo-thumb { width: 100%; aspect-ratio: 1/1; border-radius: 50%; object-fit: cover; background: var(--in-b); border: 2px solid var(--in-bd); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--t3); font-size: 1rem; }
+.mood-cell { display: flex; align-items: center; justify-content: center; background: var(--in-b); border: 1.5px solid var(--in-bd); border-radius: 12px; padding: 12px 4px; }
 </style>
 </head>
 <body>
@@ -109,10 +118,12 @@ select.fc { appearance: none; background-image: url('data:image/svg+xml;utf8,<sv
     <div class="tg-c" onclick="App.tool('poll')"><div class="tg-i" data-ico="poll"></div><span style="font-weight:600;font-size:.85rem;">โหวตเข้าใจ</span></div>
     <div class="tg-c" onclick="App.tool('formula')"><div class="tg-i" data-ico="formula"></div><span style="font-weight:600;font-size:.85rem;">สูตรลัด</span></div>
     <div class="tg-c" onclick="App.tool('msgboard')"><div class="tg-i" data-ico="chat"></div><span style="font-weight:600;font-size:.85rem;">กระดานข้อความ</span></div>
+    <div class="tg-c" onclick="App.tool('mood')"><div class="tg-i" data-ico="mood"></div><span style="font-weight:600;font-size:.85rem;">เช็คอารมณ์</span></div>
   </div>
 </div>
 <button id="tgBack" class="btn btn-g btn-sm" style="display:none;margin-bottom:14px;" onclick="App.backTool()">← กลับเมนูเครื่องมือ</button>
 <div id="tgPanel" class="tg-panel" style="display:none;"></div>
+<input type="file" id="photoFileIn" accept="image/*" style="display:none;">
 
 <script>
 function $(id){return document.getElementById(id);}
@@ -123,7 +134,8 @@ var IcoPaths={
   sound:'<path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M16 9a4 4 0 0 1 0 6M18 7a7 7 0 0 1 0 10"/>',
   group:'<circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M4 19c0-3 2.5-5 5-5s5 2 5 5M13 19c0-2 1.5-4 3.5-4"/>',
   poll:'<path d="M4 19V5M4 19h4M4 13h7M4 7h10"/><path d="M16 16l3-3-3-3"/>',
-  chat:'<path d="M4 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/>'
+  chat:'<path d="M4 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/>',
+  mood:'<circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/>'
 };
 var Ico={
   svg:function(n){var p=IcoPaths[n];return p?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>':'';},
@@ -143,10 +155,10 @@ function _esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,
 
 /* ===== สถานะ: รับข้อมูลจากหน้าแม่ (index.html) ผ่าน postMessage ===== */
 var S={
-  ready:false, tab:'', students:{}, formulas:{}, apiUrl:'',
+  ready:false, tab:'', students:{}, formulas:{}, apiUrl:'', photos:[],
   tmrIv:null,tmrOn:false,tmrSec:0,tmrInit:false,tmrDown:true,tmrFS:false,wakeLock:null,
   noStream:null,noAnim:null,randIv:null,poll:{y:0,m:0,n:0},
-  msgIv:null,msgCache:[]
+  msgIv:null,msgCache:[],moodIv:null,pendingPhotoTarget:null
 };
 
 const API={
@@ -168,6 +180,7 @@ window.addEventListener('message',function(ev){
     S.students=d.students||{};
     S.formulas=d.formulas||{};
     S.apiUrl=d.apiUrl||'';
+    S.photos=d.photos||[];
     document.documentElement.setAttribute('data-theme',d.theme||'dark');
     S.ready=true;
     $('notReady').style.display='none';
@@ -201,7 +214,8 @@ var App={
     const p=$('tgPanel');p.style.display='block';p.dataset.tool=t;
     const rooms=Object.keys(S.students[S.tab]||{});
     if(t==='rand'){
-      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">สุ่มเรียกชื่อนักเรียน</div><select class="fc" id="randRm" style="margin-bottom:10px;font-weight:700;">'+rooms.map(r=>'<option>'+r+'</option>').join('')+'</select><div id="randDisp">พร้อมสุ่ม!</div><button class="btn btn-p btn-lg" onclick="App.doRand()">สุ่มเลย</button>';
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">สุ่มตัวแทนทำโจทย์</div><select class="fc" id="randRm" style="margin-bottom:10px;font-weight:700;" onchange="App.renderPhotoGrid()">'+rooms.map(r=>'<option>'+r+'</option>').join('')+'</select><div id="randReveal" class="rand-reveal"><div class="rand-reveal-ph"><span>🎲</span></div><div class="rand-reveal-name">พร้อมสุ่ม!</div></div><button class="btn btn-p btn-lg" style="margin-top:10px;" onclick="App.doRand()">สุ่มเลย</button><div class="lbl" style="margin:18px 0 8px;">📷 จัดการรูปนักเรียน (แตะเพื่ออัปโหลด/เปลี่ยนรูป)</div><div id="photoGrid" class="photo-grid"></div>';
+      App.renderPhotoGrid();
     }else if(t==='timer'){
       S.tmrInit=false;S.tmrOn=false;clearInterval(S.tmrIv);
       p.innerHTML='<div class="lbl" style="margin-bottom:10px;">จับเวลา</div><div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;"><input type="number" class="fc" id="tmrIn" value="5" min="1" max="90" style="width:70px;text-align:center;"><span style="color:var(--t3);font-size:.82rem;">นาที</span><select class="fc" id="tmrMd" style="flex:1;"><option value="down">นับถอยหลัง</option><option value="up">นับขึ้น</option></select></div><div class="timer-d" id="tmrDisp">5:00</div><div style="display:flex;gap:8px;"><button class="btn btn-ok" style="flex:1;" onclick="App.tmrStart()">เริ่ม</button><button class="btn btn-g" style="flex:1;" onclick="App.tmrPause()">หยุด</button><button class="btn btn-d" style="flex:1;" onclick="App.tmrReset()">รีเซต</button></div><button class="btn btn-o btn-lg" style="margin-top:10px;" onclick="App.tmrFullscreen()">⛶ เต็มจอ (กันจอดับ)</button><div class="wl-badge" id="wlBadgeSm" style="display:none;">🔒 หน้าจอจะไม่ดับระหว่างจับเวลา</div>';
@@ -220,17 +234,78 @@ var App={
       App.refreshMsgBoard(true);
       clearInterval(S.msgIv);
       S.msgIv=setInterval(()=>App.refreshMsgBoard(false),4000);
+    }else if(t==='mood'){
+      p.innerHTML='<div class="lbl" style="margin-bottom:10px;">เช็คอารมณ์ห้องเรียน</div><div style="display:flex;gap:8px;margin-bottom:14px;"><select class="fc" id="moodRm" style="flex:1;" onchange="App.refreshMoodBoard(true)">'+rooms.map(r=>'<option>'+r+'</option>').join('')+'</select><button class="btn btn-d btn-sm" onclick="App.clearMoodBoard()">เริ่มรอบใหม่</button></div><div id="moodGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"></div><div style="font-size:.7rem;color:var(--t4);margin-top:10px;text-align:center;">🔄 อัปเดตอัตโนมัติทุก 4 วินาที • รวม <span id="moodTotal">0</span> คนตอบ</div>';
+      App.refreshMoodBoard(true);
+      clearInterval(S.moodIv);
+      S.moodIv=setInterval(()=>App.refreshMoodBoard(false),4000);
     }
   },
   backTool:()=>{
     App.stopNoise();App.tmrExitFS();clearInterval(S.tmrIv);S.tmrOn=false;App.releaseWakeLock();
     clearInterval(S.msgIv);S.msgIv=null;
+    clearInterval(S.moodIv);S.moodIv=null;
+    clearInterval(S.randIv);
     $('tgMain').style.display='block';const p=$('tgPanel');p.style.display='none';p.dataset.tool='';$('tgBack').style.display='none';UI.h('tgPanel','');
   },
   doRand:()=>{
-    const list=S.students[S.tab][UI.v('randRm')];if(!list)return;
+    const room=UI.v('randRm');
+    const list=S.students[S.tab][room];if(!list)return;
     clearInterval(S.randIv);let ticks=0;
-    S.randIv=setInterval(()=>{const el=$('randDisp');if(!el)return;const nm=list[Math.floor(Math.random()*list.length)];el.textContent=nm;if(++ticks>28){clearInterval(S.randIv);el.textContent='>> '+nm+' <<';}},55);
+    S.randIv=setInterval(()=>{
+      const nm=list[Math.floor(Math.random()*list.length)];
+      App._renderReveal(nm,room,false);
+      if(++ticks>28){clearInterval(S.randIv);App._renderReveal(nm,room,true);}
+    },55);
+  },
+  _renderReveal:(name,room,final)=>{
+    const rev=$('randReveal');if(!rev)return;
+    const url=App.photoFor(S.tab,room,name);
+    const initial=(name||'?').replace(/^(นาย|นางสาว|เด็กชาย|เด็กหญิง)/,'').charAt(0)||'?';
+    rev.innerHTML='<div class="rand-reveal-ph'+(final?' final':'')+'">'+(url?'<img src="'+url+'">':'<span>'+initial+'</span>')+'</div>'
+      +'<div class="rand-reveal-name">'+(final?'>> ':'')+_esc(name)+(final?' <<':'')+'</div>';
+  },
+  photoFor:(subject,room,student)=>{
+    const p=(S.photos||[]).find(x=>x.subject===subject&&x.room===room&&x.student===student);
+    return p?p.photoUrl:null;
+  },
+  renderPhotoGrid:()=>{
+    const room=UI.v('randRm');const grid=$('photoGrid');if(!grid||!room)return;
+    const stus=S.students[S.tab][room]||[];
+    grid.innerHTML=stus.map(stu=>{
+      const url=App.photoFor(S.tab,room,stu);
+      const initial=(stu||'?').replace(/^(นาย|นางสาว|เด็กชาย|เด็กหญิง)/,'').charAt(0)||'?';
+      return '<div class="photo-item" onclick="App.pickPhoto(\''+room+'\',\''+stu.replace(/'/g,"\\'")+'\')" title="'+_esc(stu)+'">'
+        +(url?'<img src="'+url+'" class="photo-thumb">':'<div class="photo-thumb">'+initial+'</div>')
+        +'</div>';
+    }).join('');
+  },
+  pickPhoto:(room,student)=>{
+    S.pendingPhotoTarget={room,student};
+    $('photoFileIn').click();
+  },
+  refreshMoodBoard:async(showToastOnFail)=>{
+    const rm=UI.v('moodRm');if(!rm)return;
+    const r=await API.call('getMoodStats',{subject:S.tab,room:rm});
+    const grid=$('moodGrid');if(!grid)return;
+    if(!r||r.error){if(showToastOnFail)UI.toast('โหลดข้อมูลไม่สำเร็จ','er');return;}
+    const c=r.counts||{};
+    const items=[
+      {k:'sleepy',e:'😴',l:'ง่วง',clr:'var(--t3)'},
+      {k:'happy',e:'😊',l:'สนุก',clr:'var(--ok)'},
+      {k:'confused',e:'😕',l:'งง',clr:'var(--wn)'},
+      {k:'stressed',e:'😣',l:'เครียด',clr:'var(--er)'},
+      {k:'fired',e:'🔥',l:'มีไฟ',clr:'var(--cy)'}
+    ];
+    grid.innerHTML=items.map(m=>'<div class="mood-cell"><div style="text-align:center;"><div style="font-size:1.6rem;">'+m.e+'</div><div style="font-size:1.1rem;font-weight:700;color:'+m.clr+';">'+(c[m.k]||0)+'</div><div style="font-size:.68rem;color:var(--t3);">'+m.l+'</div></div></div>').join('');
+    UI.h('moodTotal',r.total||0);
+  },
+  clearMoodBoard:async()=>{
+    const rm=UI.v('moodRm');if(!rm)return;
+    if(!confirm('ยืนยันเริ่มรอบใหม่ (ลบผลเช็คอารมณ์ทั้งหมดในห้อง '+rm+')?'))return;
+    const r=await API.call('clearMood',{subject:S.tab,room:rm});
+    if(r&&r.success){UI.toast('เริ่มรอบใหม่แล้ว','ok');App.refreshMoodBoard(false);}
+    else UI.toast((r&&r.error)||'ล้มเหลว','er');
   },
   requestWakeLock:async()=>{
     try{
@@ -324,6 +399,37 @@ var App={
 $('tmrFSExitBtn').addEventListener('click',()=>App.tmrExitFS());
 document.addEventListener('fullscreenchange',()=>{ if(!document.fullscreenElement && S.tmrFS){ $('tmrFS').classList.remove('open'); S.tmrFS=false; } });
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && S.tmrOn && !S.wakeLock){ App.requestWakeLock(); } });
+$('photoFileIn').addEventListener('change',function(e){
+  const f=e.target.files&&e.target.files[0];const target=S.pendingPhotoTarget;
+  if(!f||!target){e.target.value='';return;}
+  const rd=new FileReader();
+  rd.onload=function(ev){
+    const img=new Image();
+    img.onload=async function(){
+      // ย่อรูปให้เหลือด้านยาวไม่เกิน 320px ก่อนอัปโหลด กันไฟล์ใหญ่เกินจำเป็น (แค่ใช้เป็นรูปโปรไฟล์เล็กๆ)
+      const maxSide=320;
+      let w=img.width,h=img.height;
+      if(w>h){ if(w>maxSide){h=Math.round(h*maxSide/w);w=maxSide;} }
+      else{ if(h>maxSide){w=Math.round(w*maxSide/h);h=maxSide;} }
+      const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      const dataUrl=cv.toDataURL('image/jpeg',0.82);
+      UI.toast('กำลังอัปโหลดรูป...','wn');
+      const r=await API.call('savePhoto',{subject:S.tab,room:target.room,student:target.student,photoData:dataUrl,mime:'image/jpeg'});
+      if(r&&r.success){
+        const idx=(S.photos||[]).findIndex(x=>x.subject===S.tab&&x.room===target.room&&x.student===target.student);
+        if(idx>=0)S.photos[idx].photoUrl=r.photoUrl; else S.photos.push({subject:S.tab,room:target.room,student:target.student,photoUrl:r.photoUrl});
+        UI.toast('อัปโหลดรูปสำเร็จ','ok');
+        App.renderPhotoGrid();
+      }else UI.toast((r&&r.error)||'อัปโหลดไม่สำเร็จ','er');
+    };
+    img.onerror=function(){UI.toast('เปิดไฟล์รูปไม่สำเร็จ','er');};
+    img.src=ev.target.result;
+  };
+  rd.onerror=function(){UI.toast('อ่านไฟล์ไม่สำเร็จ','er');};
+  rd.readAsDataURL(f);
+  e.target.value='';
+});
 </script>
 </body>
 </html>
