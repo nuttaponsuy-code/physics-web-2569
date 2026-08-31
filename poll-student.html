@@ -32,7 +32,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-import { firebaseConfig, CLASS_ID } from "./firebase-config.js";
+import { firebaseConfig, CLASS_LIST } from "./firebase-config.js";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
