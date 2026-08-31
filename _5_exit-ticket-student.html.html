@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exit Ticket - นักเรียน</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Sarabun','Segoe UI',sans-serif; background:linear-gradient(135deg,#4f46e5,#818cf8); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .card { background:#fff; border-radius:20px; padding:28px; max-width:440px; width:100%; box-shadow:0 8px 30px rgba(0,0,0,0.2); }
+  h2 { color:#312e81; text-align:center; margin-bottom:20px; }
+  label { display:block; font-weight:700; margin-top:14px; margin-bottom:6px; color:#334155; }
+  input[type=text], textarea { width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:10px; font-size:15px; font-family:inherit; }
+  textarea { resize:vertical; min-height:70px; }
+  .stars { display:flex; gap:6px; justify-content:center; margin-top:8px; }
+  .star { font-size:32px; cursor:pointer; color:#d1d5db; user-select:none; }
+  .star.active { color:#f59e0b; }
+  .btn { width:100%; padding:14px; border:none; border-radius:12px; background:#4f46e5; color:#fff; font-size:16px; font-weight:700; cursor:pointer; margin-top:20px; }
+  .center-msg { text-align:center; }
+  .big-icon { font-size:48px; margin-bottom:12px; }
+  .msg { color:#64748b; }
+</style>
+</head>
+<body>
+<div class="card" id="mainCard">
+  <div class="center-msg" id="content">
+    <div class="big-icon">⏳</div>
+    <div class="msg">กำลังรอครูเปิดรับ Exit Ticket...</div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getFirestore, doc, onSnapshot, collection, addDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import { firebaseConfig, CLASS_ID } from "./firebase-config.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const params = new URLSearchParams(location.search);
+const classId = params.get("class") || CLASS_ID;
+const sessionRef = doc(db, "exitTickets", classId);
+const contentEl = document.getElementById("content");
+
+let currentSessionId = null;
+let selectedRating = 0;
+
+onSnapshot(sessionRef, (snap) => {
+  if (!snap.exists()) return renderWaiting();
+  const data = snap.data();
+  currentSessionId = data.sessionId;
+  const submittedId = localStorage.getItem(`exitSubmitted_${classId}`);
+  if (!data.active) return renderClosed();
+  if (submittedId === currentSessionId) return renderThanks();
+  renderForm();
+});
+
+function renderWaiting() { contentEl.innerHTML = `<div class="big-icon">⏳</div><div class="msg">กำลังรอครูเปิดรับ Exit Ticket...</div>`; }
+function renderClosed() { contentEl.innerHTML = `<div class="big-icon">🔒</div><div class="msg">ปิดรับ Exit Ticket แล้ว ขอบคุณครับ/ค่ะ</div>`; }
+function renderThanks() { contentEl.innerHTML = `<div class="big-icon">🙏</div><div class="msg">ส่ง Exit Ticket เรียบร้อยแล้ว ขอบคุณครับ/ค่ะ</div>`; }
+
+function renderForm() {
+  selectedRating = 0;
+  contentEl.innerHTML = `
+    <h2 style="margin-bottom:16px;">🎫 Exit Ticket</h2>
+    <label>ชื่อ-นามสกุล</label>
+    <input type="text" id="nameInput" placeholder="ชื่อของคุณ">
+    <label>วันนี้เรียนรู้อะไรบ้าง?</label>
+    <textarea id="learnedInput" placeholder="สรุปสิ่งที่ได้เรียนรู้ในคาบนี้"></textarea>
+    <label>ระดับความเข้าใจในบทเรียนวันนี้</label>
+    <div class="stars" id="starsBox">${[1,2,3,4,5].map(n => `<span class="star" data-val="${n}">★</span>`).join("")}</div>
+    <label>มีคำถามหรือสิ่งที่ยังไม่เข้าใจไหม? (ไม่บังคับ)</label>
+    <textarea id="questionInput" placeholder="พิมพ์คำถามที่นี่ (ถ้ามี)"></textarea>
+    <button class="btn" id="submitBtn">📤 ส่ง Exit Ticket</button>
+  `;
+  document.querySelectorAll("#starsBox .star").forEach(star => {
+    star.addEventListener("click", () => {
+      selectedRating = parseInt(star.dataset.val);
+      document.querySelectorAll("#starsBox .star").forEach(s => s.classList.toggle("active", parseInt(s.dataset.val) <= selectedRating));
+    });
+  });
+  document.getElementById("submitBtn").addEventListener("click", submitTicket);
+}
+
+async function submitTicket() {
+  const name = document.getElementById("nameInput").value.trim();
+  const learned = document.getElementById("learnedInput").value.trim();
+  const question = document.getElementById("questionInput").value.trim();
+  if (!name) return alert("กรุณากรอกชื่อ-นามสกุล");
+  if (!learned) return alert("กรุณาสรุปสิ่งที่เรียนรู้");
+  if (selectedRating === 0) return alert("กรุณาให้คะแนนความเข้าใจ");
+
+  try {
+    await addDoc(collection(db, "exitTickets", classId, "submissions"), {
+      name, learned, rating: selectedRating, question, sessionId: currentSessionId, timestamp: serverTimestamp()
+    });
+    localStorage.setItem(`exitSubmitted_${classId}`, currentSessionId);
+    renderThanks();
+  } catch (err) { alert("ส่งไม่สำเร็จ: " + err.message); }
+}
+</script>
+</body>
+</html>

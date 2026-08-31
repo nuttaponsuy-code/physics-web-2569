@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ร่วมโหวต - โพลสด</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Sarabun','Segoe UI',sans-serif; background:linear-gradient(135deg,#4f46e5,#818cf8); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .card { background:#fff; border-radius:20px; padding:28px; max-width:420px; width:100%; box-shadow:0 8px 30px rgba(0,0,0,0.2); text-align:center; }
+  h2 { color:#312e81; margin-bottom:20px; }
+  .question { font-size:19px; font-weight:700; margin-bottom:20px; color:#1e293b; }
+  .opt-btn { display:block; width:100%; padding:14px; margin-bottom:10px; border:2px solid #6366f1; background:#eef2ff; color:#4338ca; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; transition:.2s; }
+  .opt-btn:hover { background:#6366f1; color:#fff; }
+  .opt-btn.selected { background:#16a34a; border-color:#16a34a; color:#fff; }
+  .msg { color:#64748b; font-size:15px; margin-top:16px; }
+  .thankyou, .waiting { font-size:40px; margin-bottom:10px; }
+  .waiting { animation:pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+</style>
+</head>
+<body>
+<div class="card" id="mainCard">
+  <h2>🗳️ ร่วมโหวต</h2>
+  <div id="content">
+    <div class="waiting">⏳</div>
+    <div class="msg">กำลังรอครูเริ่มโพล...</div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import { firebaseConfig, CLASS_ID } from "./firebase-config.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const params = new URLSearchParams(location.search);
+const classId = params.get("class") || CLASS_ID;
+const pollRef = doc(db, "polls", classId);
+
+function getStudentId() {
+  let id = localStorage.getItem("studentDeviceId");
+  if (!id) { id = "dev_" + Math.random().toString(36).slice(2) + Date.now(); localStorage.setItem("studentDeviceId", id); }
+  return id;
+}
+const studentId = getStudentId();
+const contentEl = document.getElementById("content");
+
+onSnapshot(pollRef, (snap) => {
+  if (!snap.exists()) return renderWaiting();
+  const data = snap.data();
+  const votedInfo = getVotedInfo(classId);
+  if (!data.active) return renderClosed();
+  if (votedInfo && votedInfo.pollId === data.pollId) return renderVoted(data, votedInfo.optionIndex);
+  renderQuestion(data);
+});
+
+function getVotedInfo(classId) {
+  const raw = localStorage.getItem(`voted_${classId}`);
+  return raw ? JSON.parse(raw) : null;
+}
+function renderWaiting() { contentEl.innerHTML = `<div class="waiting">⏳</div><div class="msg">กำลังรอครูเริ่มโพล...</div>`; }
+function renderClosed() { contentEl.innerHTML = `<div class="thankyou">✅</div><div class="msg">โพลนี้ปิดแล้ว ขอบคุณที่ร่วมโหวตครับ/ค่ะ</div>`; }
+
+function renderQuestion(data) {
+  let html = `<div class="question">${data.question}</div>`;
+  data.options.forEach((opt, i) => html += `<button class="opt-btn" data-idx="${i}">${opt}</button>`);
+  contentEl.innerHTML = html;
+  contentEl.querySelectorAll(".opt-btn").forEach(btn => btn.addEventListener("click", () => vote(parseInt(btn.dataset.idx), data)));
+}
+
+function renderVoted(data, chosenIdx) {
+  let html = `<div class="question">${data.question}</div>`;
+  data.options.forEach((opt, i) => {
+    const isChosen = i === chosenIdx;
+    html += `<div class="opt-btn ${isChosen ? 'selected' : ''}" style="cursor:default;">${opt} ${isChosen ? '✓' : ''}</div>`;
+  });
+  html += `<div class="msg">คุณโหวตแล้ว ขอบคุณครับ/ค่ะ 🙏</div>`;
+  contentEl.innerHTML = html;
+}
+
+async function vote(optionIndex, data) {
+  const responseRef = doc(db, "polls", classId, "responses", studentId);
+  try {
+    await runTransaction(db, async (tx) => {
+      const pollSnap = await tx.get(pollRef);
+      if (!pollSnap.exists()) throw new Error("ไม่พบโพล");
+      const pollData = pollSnap.data();
+      if (!pollData.active) throw new Error("โพลปิดไปแล้ว");
+      const respSnap = await tx.get(responseRef);
+      if (respSnap.exists() && respSnap.data().pollId === pollData.pollId) throw new Error("คุณโหวตไปแล้ว");
+      const counts = [...pollData.counts];
+      counts[optionIndex] = (counts[optionIndex] || 0) + 1;
+      tx.update(pollRef, { counts });
+      tx.set(responseRef, { pollId: pollData.pollId, optionIndex, votedAt: serverTimestamp() });
+    });
+    localStorage.setItem(`voted_${classId}`, JSON.stringify({ pollId: data.pollId, optionIndex }));
+    renderVoted(data, optionIndex);
+  } catch (err) { alert(err.message); }
+}
+</script>
+</body>
+</html>

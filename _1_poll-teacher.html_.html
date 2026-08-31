@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>โพลสด - ครู</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body { font-family:'Sarabun','Segoe UI',sans-serif; background:#f1f5f9; color:#1e293b; padding:20px; }
+  .container { max-width:720px; margin:0 auto; }
+  h1 { text-align:center; color:#4338ca; margin-bottom:20px; }
+  .card { background:#fff; border-radius:16px; padding:24px; box-shadow:0 4px 16px rgba(0,0,0,0.08); margin-bottom:16px; }
+  label { display:block; font-weight:600; margin-bottom:6px; margin-top:14px; }
+  input[type=text], select { width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:16px; font-family:inherit; }
+  .option-row { display:flex; gap:8px; margin-bottom:8px; align-items:center; }
+  .option-row input { flex:1; }
+  .btn-remove { background:#fee2e2; color:#dc2626; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; font-weight:600; }
+  .btn { display:inline-block; padding:12px 20px; border:none; border-radius:10px; font-size:16px; font-weight:700; cursor:pointer; margin-top:16px; margin-right:8px; }
+  .btn-primary { background:#4f46e5; color:#fff; }
+  .btn-secondary { background:#e2e8f0; color:#1e293b; }
+  .btn-danger { background:#dc2626; color:#fff; }
+  .btn-add { background:#eef2ff; color:#4338ca; border:1px dashed #a5b4fc; }
+  #liveSection { display:none; }
+  .class-badge { display:inline-block; background:#4f46e5; color:#fff; padding:6px 16px; border-radius:999px; font-weight:700; font-size:14px; margin-bottom:12px; }
+  .qr-box { text-align:center; margin:16px 0; }
+  .qr-box img { border:8px solid #fff; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+  .link-box { text-align:center; font-size:14px; color:#64748b; word-break:break-all; margin-top:8px; }
+  .question-display { font-size:20px; font-weight:700; text-align:center; margin-bottom:16px; color:#312e81; }
+  .bar-row { margin-bottom:14px; }
+  .bar-label { display:flex; justify-content:space-between; font-weight:600; margin-bottom:4px; }
+  .bar-track { background:#e2e8f0; border-radius:8px; height:28px; overflow:hidden; }
+  .bar-fill { background:linear-gradient(90deg,#6366f1,#818cf8); height:100%; display:flex; align-items:center; justify-content:flex-end; padding-right:8px; color:#fff; font-weight:700; font-size:13px; transition:width .4s ease; white-space:nowrap; }
+  .total-votes { text-align:center; color:#64748b; margin-top:8px; font-size:14px; }
+  .status-msg { text-align:center; padding:10px; border-radius:8px; margin-top:12px; font-weight:600; }
+  .status-ok { background:#dcfce7; color:#166534; }
+  .status-err { background:#fee2e2; color:#991b1b; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🗳️ โพลสด (Live Poll) — สำหรับครู</h1>
+
+  <div class="card" id="setupSection">
+    <label>เลือกห้องเรียน</label>
+    <select id="classSelect"></select>
+
+    <label>คำถามโพล</label>
+    <input type="text" id="questionInput" placeholder="เช่น แรงลัพธ์ที่กระทำต่อวัตถุนี้มีทิศทางใด?">
+    <label>ตัวเลือกคำตอบ</label>
+    <div id="optionsContainer"></div>
+    <button class="btn btn-add" id="addOptionBtn">+ เพิ่มตัวเลือก</button>
+    <br>
+    <button class="btn btn-primary" id="startPollBtn">🚀 เริ่มโพล</button>
+  </div>
+
+  <div class="card" id="liveSection">
+    <div class="class-badge" id="classBadge"></div>
+    <div class="question-display" id="liveQuestion"></div>
+    <div class="qr-box">
+      <img id="qrImg" src="" alt="QR Code" width="200" height="200">
+      <div class="link-box" id="linkText"></div>
+    </div>
+    <div id="resultsContainer"></div>
+    <div class="total-votes" id="totalVotes"></div>
+    <div style="text-align:center;">
+      <button class="btn btn-danger" id="closePollBtn">⏹️ ปิดโพล & บันทึกลง Sheet</button>
+      <button class="btn btn-secondary" id="newPollBtn">🔄 เริ่มโพลใหม่</button>
+    </div>
+    <div id="statusMsg"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getFirestore, doc, setDoc, updateDoc, onSnapshot, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import { firebaseConfig, APPS_SCRIPT_URL, CLASS_LIST } from "./firebase-config.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ===== สร้างดรอปดาวน์เลือกห้องเรียน =====
+const classSelect = document.getElementById("classSelect");
+CLASS_LIST.forEach(c => {
+  const opt = document.createElement("option");
+  opt.value = c;
+  opt.textContent = "ม." + c.replace("-", "/");
+  classSelect.appendChild(opt);
+});
+
+let CLASS_ID = classSelect.value;
+function getPollRef() { return doc(db, "polls", CLASS_ID); }
+
+let unsub = null;
+let latestPollData = null;
+
+const optionsContainer = document.getElementById("optionsContainer");
+function addOptionRow(value = "") {
+  const row = document.createElement("div");
+  row.className = "option-row";
+  row.innerHTML = `<input type="text" class="opt-input" value="${value}" placeholder="ตัวเลือก"><button class="btn-remove" type="button">✕</button>`;
+  row.querySelector(".btn-remove").addEventListener("click", () => {
+    if (optionsContainer.children.length > 2) row.remove();
+    else alert("ต้องมีอย่างน้อย 2 ตัวเลือก");
+  });
+  optionsContainer.appendChild(row);
+}
+addOptionRow(); addOptionRow();
+document.getElementById("addOptionBtn").addEventListener("click", () => addOptionRow());
+document.getElementById("startPollBtn").addEventListener("click", startPoll);
+document.getElementById("closePollBtn").addEventListener("click", closePoll);
+document.getElementById("newPollBtn").addEventListener("click", resetToSetup);
+
+async function startPoll() {
+  CLASS_ID = classSelect.value; // ล็อกห้องที่เลือกไว้ตอนกดเริ่ม
+  const question = document.getElementById("questionInput").value.trim();
+  const optionInputs = [...document.querySelectorAll(".opt-input")].map(i => i.value.trim()).filter(v => v);
+  if (!question) return alert("กรุณากรอกคำถาม");
+  if (optionInputs.length < 2) return alert("ต้องมีอย่างน้อย 2 ตัวเลือก");
+
+  const pollId = Date.now().toString();
+  await setDoc(getPollRef(), {
+    active: true, question, options: optionInputs,
+    counts: optionInputs.map(() => 0), pollId, createdAt: serverTimestamp()
+  });
+
+  document.getElementById("setupSection").style.display = "none";
+  document.getElementById("liveSection").style.display = "block";
+  document.getElementById("statusMsg").textContent = "";
+  document.getElementById("classBadge").textContent = "ห้อง ม." + CLASS_ID.replace("-", "/");
+
+  const studentUrl = `${location.origin}${location.pathname.replace('poll-teacher.html','poll-student.html')}?class=${encodeURIComponent(CLASS_ID)}`;
+  document.getElementById("qrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(studentUrl)}`;
+  document.getElementById("linkText").textContent = studentUrl;
+
+  listenLive();
+}
+
+function listenLive() {
+  if (unsub) unsub();
+  unsub = onSnapshot(getPollRef(), (snap) => {
+    if (!snap.exists()) return;
+    latestPollData = snap.data();
+    renderResults(latestPollData);
+  });
+}
+
+function renderResults(data) {
+  document.getElementById("liveQuestion").textContent = data.question;
+  const total = data.counts.reduce((a, b) => a + b, 0) || 0;
+  const container = document.getElementById("resultsContainer");
+  container.innerHTML = "";
+  data.options.forEach((opt, i) => {
+    const count = data.counts[i] || 0;
+    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    row.innerHTML = `<div class="bar-label"><span>${opt}</span><span>${count} โหวต (${pct}%)</span></div><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>`;
+    container.appendChild(row);
+  });
+  document.getElementById("totalVotes").textContent = `รวมทั้งหมด ${total} คน`;
+}
+
+async function closePoll() {
+  if (!latestPollData) return;
+  if (!confirm("ปิดโพลและบันทึกผลลง Google Sheet ใช่หรือไม่?")) return;
+  await updateDoc(getPollRef(), { active: false });
+
+  const results = latestPollData.options.map((opt, i) => ({ option: opt, count: latestPollData.counts[i] || 0 }));
+  const statusEl = document.getElementById("statusMsg");
+  statusEl.textContent = "กำลังบันทึก...";
+  statusEl.className = "status-msg";
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({ action: "savePollResult", payload: { classId: "ม." + CLASS_ID.replace("-", "/"), question: latestPollData.question, results } })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    statusEl.textContent = "✅ บันทึกลง Sheet สำเร็จแล้ว";
+    statusEl.className = "status-msg status-ok";
+  } catch (err) {
+    statusEl.textContent = "❌ บันทึกไม่สำเร็จ: " + err.message;
+    statusEl.className = "status-msg status-err";
+  }
+}
+
+function resetToSetup() {
+  if (unsub) unsub();
+  document.getElementById("liveSection").style.display = "none";
+  document.getElementById("setupSection").style.display = "block";
+  document.getElementById("questionInput").value = "";
+  optionsContainer.innerHTML = "";
+  addOptionRow(); addOptionRow();
+}
+</script>
+</body>
+</html>

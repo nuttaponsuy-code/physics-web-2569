@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exit Ticket - ครู</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Sarabun','Segoe UI',sans-serif; background:#f1f5f9; color:#1e293b; padding:20px; }
+  .container { max-width:720px; margin:0 auto; }
+  h1 { text-align:center; color:#4338ca; margin-bottom:20px; }
+  .card { background:#fff; border-radius:16px; padding:24px; box-shadow:0 4px 16px rgba(0,0,0,0.08); margin-bottom:16px; }
+  label { display:block; font-weight:600; margin-bottom:6px; margin-top:14px; }
+  select { width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:16px; font-family:inherit; }
+  .btn { display:inline-block; padding:12px 20px; border:none; border-radius:10px; font-size:16px; font-weight:700; cursor:pointer; margin-top:12px; margin-right:8px; }
+  .btn-primary { background:#4f46e5; color:#fff; }
+  .btn-danger { background:#dc2626; color:#fff; }
+  .btn-secondary { background:#e2e8f0; color:#1e293b; }
+  #liveSection { display:none; }
+  .class-badge { display:inline-block; background:#4f46e5; color:#fff; padding:6px 16px; border-radius:999px; font-weight:700; font-size:14px; margin-bottom:12px; }
+  .qr-box { text-align:center; margin:16px 0; }
+  .qr-box img { border:8px solid #fff; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+  .link-box { text-align:center; font-size:14px; color:#64748b; word-break:break-all; margin-top:8px; }
+  .stats { display:flex; justify-content:space-around; margin:16px 0; text-align:center; }
+  .stat-num { font-size:32px; font-weight:800; color:#4f46e5; }
+  .stat-label { font-size:13px; color:#64748b; }
+  .ticket-item { border-bottom:1px solid #e2e8f0; padding:12px 0; }
+  .ticket-item:last-child { border-bottom:none; }
+  .ticket-name { font-weight:700; color:#312e81; }
+  .ticket-rating { color:#f59e0b; font-weight:700; }
+  .ticket-text { color:#475569; font-size:14px; margin-top:4px; }
+  .status-msg { text-align:center; padding:10px; border-radius:8px; margin-top:12px; font-weight:600; }
+  .status-ok { background:#dcfce7; color:#166534; }
+  .status-err { background:#fee2e2; color:#991b1b; }
+  #ticketList { max-height:320px; overflow-y:auto; margin-top:12px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎫 Exit Ticket — สำหรับครู</h1>
+
+  <div class="card" id="setupSection">
+    <label>เลือกห้องเรียน</label>
+    <select id="classSelect"></select>
+    <p style="margin-top:12px; color:#64748b;">กดเริ่มเพื่อเปิดรับ Exit Ticket จากนักเรียนท้ายคาบ</p>
+    <button class="btn btn-primary" id="startBtn">🚀 เริ่มรับ Exit Ticket</button>
+  </div>
+
+  <div class="card" id="liveSection">
+    <div class="class-badge" id="classBadge"></div>
+    <div class="qr-box">
+      <img id="qrImg" src="" alt="QR Code" width="200" height="200">
+      <div class="link-box" id="linkText"></div>
+    </div>
+    <div class="stats">
+      <div><div class="stat-num" id="countNum">0</div><div class="stat-label">คนส่งแล้ว</div></div>
+      <div><div class="stat-num" id="avgRating">-</div><div class="stat-label">คะแนนเฉลี่ย (เต็ม5)</div></div>
+    </div>
+    <div id="ticketList"></div>
+    <div style="text-align:center;">
+      <button class="btn btn-danger" id="closeBtn">⏹️ ปิดรับ & บันทึกลง Sheet</button>
+      <button class="btn btn-secondary" id="newSessionBtn">🔄 เริ่มคาบใหม่</button>
+    </div>
+    <div id="statusMsg"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import { getFirestore, doc, setDoc, updateDoc, collection, query, where, onSnapshot, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import { firebaseConfig, APPS_SCRIPT_URL, CLASS_LIST } from "./firebase-config.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ===== สร้างดรอปดาวน์เลือกห้องเรียน =====
+const classSelect = document.getElementById("classSelect");
+CLASS_LIST.forEach(c => {
+  const opt = document.createElement("option");
+  opt.value = c;
+  opt.textContent = "ม." + c.replace("-", "/");
+  classSelect.appendChild(opt);
+});
+
+let CLASS_ID = classSelect.value;
+function getSessionRef() { return doc(db, "exitTickets", CLASS_ID); }
+
+let unsub = null;
+let currentSessionId = null;
+let latestTickets = [];
+
+document.getElementById("startBtn").addEventListener("click", startSession);
+document.getElementById("closeBtn").addEventListener("click", closeSession);
+document.getElementById("newSessionBtn").addEventListener("click", resetToSetup);
+
+async function startSession() {
+  CLASS_ID = classSelect.value; // ล็อกห้องที่เลือกไว้ตอนกดเริ่ม
+  currentSessionId = Date.now().toString();
+  await setDoc(getSessionRef(), { active: true, sessionId: currentSessionId, date: new Date().toLocaleDateString("th-TH"), createdAt: serverTimestamp() });
+
+  document.getElementById("setupSection").style.display = "none";
+  document.getElementById("liveSection").style.display = "block";
+  document.getElementById("statusMsg").textContent = "";
+  document.getElementById("classBadge").textContent = "ห้อง ม." + CLASS_ID.replace("-", "/");
+
+  const studentUrl = `${location.origin}${location.pathname.replace('exit-ticket-teacher.html','exit-ticket-student.html')}?class=${encodeURIComponent(CLASS_ID)}`;
+  document.getElementById("qrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(studentUrl)}`;
+  document.getElementById("linkText").textContent = studentUrl;
+
+  listenSubmissions();
+}
+
+function listenSubmissions() {
+  if (unsub) unsub();
+  const subsRef = collection(db, "exitTickets", CLASS_ID, "submissions");
+  const q = query(subsRef, where("sessionId", "==", currentSessionId));
+  unsub = onSnapshot(q, (snap) => {
+    latestTickets = [];
+    snap.forEach(d => latestTickets.push(d.data()));
+    renderTickets();
+  });
+}
+
+function renderTickets() {
+  document.getElementById("countNum").textContent = latestTickets.length;
+  const ratings = latestTickets.map(t => Number(t.rating) || 0).filter(r => r > 0);
+  const avg = ratings.length ? (ratings.reduce((a,b)=>a+b,0) / ratings.length).toFixed(1) : "-";
+  document.getElementById("avgRating").textContent = avg;
+
+  const list = document.getElementById("ticketList");
+  list.innerHTML = "";
+  latestTickets.slice().reverse().forEach(t => {
+    const div = document.createElement("div");
+    div.className = "ticket-item";
+    div.innerHTML = `<div class="ticket-name">${t.name || "ไม่ระบุชื่อ"} <span class="ticket-rating">${"⭐".repeat(Number(t.rating)||0)}</span></div>
+      <div class="ticket-text"><b>สิ่งที่เรียนรู้:</b> ${t.learned || "-"}</div>
+      ${t.question ? `<div class="ticket-text"><b>คำถามที่สงสัย:</b> ${t.question}</div>` : ""}`;
+    list.appendChild(div);
+  });
+}
+
+async function closeSession() {
+  if (!confirm("ปิดรับ Exit Ticket และบันทึกลง Sheet ใช่หรือไม่?")) return;
+  await updateDoc(getSessionRef(), { active: false });
+
+  const statusEl = document.getElementById("statusMsg");
+  statusEl.textContent = "กำลังบันทึก...";
+  statusEl.className = "status-msg";
+
+  const tickets = latestTickets.map(t => ({ name: t.name || "", learned: t.learned || "", rating: t.rating || "", question: t.question || "" }));
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({ action: "saveExitTickets", payload: { classId: "ม." + CLASS_ID.replace("-", "/"), date: new Date().toLocaleDateString("th-TH"), tickets } })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    statusEl.textContent = `✅ บันทึกลง Sheet สำเร็จ (${tickets.length} รายการ)`;
+    statusEl.className = "status-msg status-ok";
+  } catch (err) {
+    statusEl.textContent = "❌ บันทึกไม่สำเร็จ: " + err.message;
+    statusEl.className = "status-msg status-err";
+  }
+}
+
+function resetToSetup() {
+  if (unsub) unsub();
+  document.getElementById("liveSection").style.display = "none";
+  document.getElementById("setupSection").style.display = "block";
+  latestTickets = [];
+}
+</script>
+</body>
+</html>
