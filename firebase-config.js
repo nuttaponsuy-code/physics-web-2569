@@ -7,5 +7,5 @@ export const firebaseConfig = {
     appId: "1:942217956980:web:81356e9e6f7cd0738d821"
 };
 
-export const APPS_SCRIPT_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AUKAhnTE_10HU1BnL3pDu8RVxJHcvi-VJ7..."; 
+export const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwSiibW8oJxLZf9fdirgwsFWDA7pZoF-Favz2eeYCPCrsyRxDaHWly3L8Gvk1aR9MY5Vw/exec"; 
 export const CLASS_LIST = ["5-1", "5-2", "5-3", "6-1", "6-2", "6-3"];
