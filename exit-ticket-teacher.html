@@ -83,7 +83,7 @@ CLASS_LIST.forEach(c => {
   classSelect.appendChild(opt);
 });
 
-let CLASS_ID = classSelect.value;
+let CLASS_LIST = classSelect.value;
 function getSessionRef() { return doc(db, "exitTickets", CLASS_ID); }
 
 let unsub = null;
