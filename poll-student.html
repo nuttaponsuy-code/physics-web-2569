@@ -3,25 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ร่วมโหวต - โพลสด</title>
+<title>ร่วมโหวต — โพลสด</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:'Sarabun','Segoe UI',sans-serif; background:linear-gradient(135deg,#4f46e5,#818cf8); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
-  .card { background:#fff; border-radius:20px; padding:28px; max-width:420px; width:100%; box-shadow:0 8px 30px rgba(0,0,0,0.2); text-align:center; }
-  h2 { color:#312e81; margin-bottom:20px; }
-  .question { font-size:19px; font-weight:700; margin-bottom:20px; color:#1e293b; }
-  .opt-btn { display:block; width:100%; padding:14px; margin-bottom:10px; border:2px solid #6366f1; background:#eef2ff; color:#4338ca; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; transition:.2s; }
-  .opt-btn:hover { background:#6366f1; color:#fff; }
-  .opt-btn.selected { background:#16a34a; border-color:#16a34a; color:#fff; }
-  .msg { color:#64748b; font-size:15px; margin-top:16px; }
-  .thankyou, .waiting { font-size:40px; margin-bottom:10px; }
-  .waiting { animation:pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+  :root{
+    --bg:#16241C;
+    --bg-panel:#1F3327;
+    --bg-panel-2:#233A2C;
+    --ink:#F3F1E7;
+    --ink-dim:#B9C4B7;
+    --rule:rgba(243,241,231,.14);
+    --yellow:#F2C744;
+    --sky:#74B9E7;
+    --mint:#7ED9A8;
+    --coral:#F2789F;
+    --orange:#F2914F;
+    --lilac:#C9A6E8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Sarabun',sans-serif;
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(242,199,68,.08), transparent 55%),
+      radial-gradient(ellipse at 100% 110%, rgba(116,185,231,.08), transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    min-height:100dvh;
+    display:flex;align-items:center;justify-content:center;
+    padding:22px;
+  }
+  .card{
+    background:var(--bg-panel);border:1px solid var(--rule);border-radius:18px;
+    padding:30px 26px;max-width:420px;width:100%;text-align:center;
+  }
+  .kicker{font-family:'Kanit',sans-serif;font-weight:700;font-size:14.5px;color:var(--yellow);
+    letter-spacing:.2px;margin-bottom:14px;}
+  .question-wrap{margin-bottom:24px;}
+  .question{font-family:'Kanit',sans-serif;font-size:21px;font-weight:700;line-height:1.4;color:var(--ink);}
+  .chalk-underline{display:block;width:60%;height:10px;margin:9px auto 0;}
+  .chalk-underline path{stroke:var(--yellow);stroke-width:3.2;fill:none;stroke-linecap:round;opacity:.9;}
+
+  .opt-btn{
+    display:block;width:100%;padding:15px 16px;margin-bottom:10px;border:none;
+    background:var(--bg-panel-2);color:var(--ink);border-radius:12px;font-size:16px;font-weight:600;
+    font-family:'Sarabun',sans-serif;cursor:pointer;text-align:left;border-left:5px solid transparent;
+    transition:.15s;
+  }
+  .opt-btn:active{transform:scale(.98);}
+  .opt-btn.selected{background:rgba(126,217,168,.14);color:var(--mint);}
+
+  textarea.answer-input{
+    width:100%;padding:14px 16px;border-radius:12px;border:1.5px solid var(--rule);
+    background:var(--bg-panel-2);color:var(--ink);font-size:16px;font-family:'Sarabun',sans-serif;
+    resize:none;
+  }
+  textarea.answer-input:focus{outline:2px solid var(--yellow);outline-offset:1px;}
+  .char-count{font-size:12px;color:var(--ink-dim);text-align:right;margin-top:6px;}
+  .submit-btn{
+    width:100%;padding:14px;margin-top:14px;border:none;border-radius:12px;
+    background:var(--yellow);color:#1B2B1F;font-weight:700;font-size:16px;font-family:'Sarabun',sans-serif;
+    cursor:pointer;
+  }
+  .submit-btn:disabled{opacity:.45;cursor:not-allowed;}
+
+  .msg{color:var(--ink-dim);font-size:15px;margin-top:16px;}
+  .thankyou, .waiting{font-size:42px;margin-bottom:10px;}
+  .waiting{animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+  .your-answer{
+    background:rgba(126,217,168,.1);border:1px solid rgba(126,217,168,.3);color:var(--mint);
+    border-radius:10px;padding:12px 14px;font-weight:600;margin-top:6px;font-size:15px;
+  }
 </style>
 </head>
 <body>
 <div class="card" id="mainCard">
-  <h2>🗳️ ร่วมโหวต</h2>
+  <div class="kicker">🖍️ โพลสด</div>
   <div id="content">
     <div class="waiting">⏳</div>
     <div class="msg">กำลังรอครูเริ่มโพล...</div>
@@ -37,8 +97,10 @@ import { firebaseConfig, CLASS_LIST } from "./firebase-config.js";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const params = new URLSearchParams(location.search);
-const classId = params.get("class") || CLASS_LIST;
+const classId = params.get("class") || CLASS_LIST[0];
 const pollRef = doc(db, "polls", classId);
+
+const CHALK = ['#F2C744','#74B9E7','#7ED9A8','#F2789F','#F2914F','#C9A6E8'];
 
 function getStudentId() {
   let id = localStorage.getItem("studentDeviceId");
@@ -53,7 +115,7 @@ onSnapshot(pollRef, (snap) => {
   const data = snap.data();
   const votedInfo = getVotedInfo(classId);
   if (!data.active) return renderClosed();
-  if (votedInfo && votedInfo.pollId === data.pollId) return renderVoted(data, votedInfo.optionIndex);
+  if (votedInfo && votedInfo.pollId === data.pollId) return renderVoted(data, votedInfo);
   renderQuestion(data);
 });
 
@@ -61,27 +123,55 @@ function getVotedInfo(classId) {
   const raw = localStorage.getItem(`voted_${classId}`);
   return raw ? JSON.parse(raw) : null;
 }
-function renderWaiting() { contentEl.innerHTML = `<div class="waiting">⏳</div><div class="msg">กำลังรอครูเริ่มโพล...</div>`; }
-function renderClosed() { contentEl.innerHTML = `<div class="thankyou">✅</div><div class="msg">โพลนี้ปิดแล้ว ขอบคุณที่ร่วมโหวตครับ/ค่ะ</div>`; }
+function renderWaiting() {
+  contentEl.innerHTML = `<div class="waiting">⏳</div><div class="msg">กำลังรอครูเริ่มโพล...</div>`;
+}
+function renderClosed() {
+  contentEl.innerHTML = `<div class="thankyou">✅</div><div class="msg">โพลนี้ปิดแล้ว ขอบคุณที่ร่วมโหวตครับ/ค่ะ</div>`;
+}
+function underlineSvg() {
+  return `<svg class="chalk-underline" viewBox="0 0 300 14" preserveAspectRatio="none">
+    <path d="M2,9 Q40,2 78,9 T154,9 T230,9 T298,9"/></svg>`;
+}
 
 function renderQuestion(data) {
-  let html = `<div class="question">${data.question}</div>`;
-  data.options.forEach((opt, i) => html += `<button class="opt-btn" data-idx="${i}">${opt}</button>`);
-  contentEl.innerHTML = html;
-  contentEl.querySelectorAll(".opt-btn").forEach(btn => btn.addEventListener("click", () => vote(parseInt(btn.dataset.idx), data)));
+  let html = `<div class="question-wrap"><div class="question">${escapeHtml(data.question)}</div>${underlineSvg()}</div>`;
+  if (data.type === "text") {
+    html += `<textarea id="answerInput" class="answer-input" rows="3" maxlength="80" placeholder="พิมพ์คำตอบของคุณ..."></textarea>
+      <div class="char-count"><span id="charCount">0</span>/80</div>
+      <button class="submit-btn" id="submitBtn" disabled>ส่งคำตอบ</button>`;
+    contentEl.innerHTML = html;
+    const input = document.getElementById("answerInput");
+    const btn = document.getElementById("submitBtn");
+    input.addEventListener("input", () => {
+      document.getElementById("charCount").textContent = input.value.length;
+      btn.disabled = input.value.trim().length === 0;
+    });
+    btn.addEventListener("click", () => submitText(input.value.trim(), data));
+  } else {
+    data.options.forEach((opt, i) => html += `<button class="opt-btn" style="border-left-color:${CHALK[i%CHALK.length]}" data-idx="${i}">${escapeHtml(opt)}</button>`);
+    contentEl.innerHTML = html;
+    contentEl.querySelectorAll(".opt-btn").forEach(btn => btn.addEventListener("click", () => voteChoice(parseInt(btn.dataset.idx), data)));
+  }
 }
 
-function renderVoted(data, chosenIdx) {
-  let html = `<div class="question">${data.question}</div>`;
-  data.options.forEach((opt, i) => {
-    const isChosen = i === chosenIdx;
-    html += `<div class="opt-btn ${isChosen ? 'selected' : ''}" style="cursor:default;">${opt} ${isChosen ? '✓' : ''}</div>`;
-  });
-  html += `<div class="msg">คุณโหวตแล้ว ขอบคุณครับ/ค่ะ 🙏</div>`;
+function renderVoted(data, votedInfo) {
+  let html = `<div class="question-wrap"><div class="question">${escapeHtml(data.question)}</div>${underlineSvg()}</div>`;
+  if (data.type === "text") {
+    html += `<div class="your-answer">“${escapeHtml(votedInfo.text || "")}”</div>`;
+  } else {
+    data.options.forEach((opt, i) => {
+      const isChosen = i === votedInfo.optionIndex;
+      html += `<div class="opt-btn ${isChosen ? 'selected' : ''}" style="cursor:default;border-left-color:${CHALK[i%CHALK.length]}">${escapeHtml(opt)} ${isChosen ? '✓' : ''}</div>`;
+    });
+  }
+  html += `<div class="msg">คุณตอบแล้ว ขอบคุณครับ/ค่ะ 🙏</div>`;
   contentEl.innerHTML = html;
 }
 
-async function vote(optionIndex, data) {
+function escapeHtml(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+
+async function voteChoice(optionIndex, data) {
   const responseRef = doc(db, "polls", classId, "responses", studentId);
   try {
     await runTransaction(db, async (tx) => {
@@ -90,14 +180,34 @@ async function vote(optionIndex, data) {
       const pollData = pollSnap.data();
       if (!pollData.active) throw new Error("โพลปิดไปแล้ว");
       const respSnap = await tx.get(responseRef);
-      if (respSnap.exists() && respSnap.data().pollId === pollData.pollId) throw new Error("คุณโหวตไปแล้ว");
+      if (respSnap.exists() && respSnap.data().pollId === pollData.pollId) throw new Error("คุณตอบไปแล้ว");
       const counts = [...pollData.counts];
       counts[optionIndex] = (counts[optionIndex] || 0) + 1;
       tx.update(pollRef, { counts });
       tx.set(responseRef, { pollId: pollData.pollId, optionIndex, votedAt: serverTimestamp() });
     });
-    localStorage.setItem(`voted_${classId}`, JSON.stringify({ pollId: data.pollId, optionIndex }));
-    renderVoted(data, optionIndex);
+    const votedInfo = { pollId: data.pollId, optionIndex };
+    localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
+    renderVoted(data, votedInfo);
+  } catch (err) { alert(err.message); }
+}
+
+async function submitText(text, data) {
+  if (!text) return;
+  const responseRef = doc(db, "polls", classId, "responses", studentId);
+  try {
+    await runTransaction(db, async (tx) => {
+      const pollSnap = await tx.get(pollRef);
+      if (!pollSnap.exists()) throw new Error("ไม่พบโพล");
+      const pollData = pollSnap.data();
+      if (!pollData.active) throw new Error("โพลปิดไปแล้ว");
+      const respSnap = await tx.get(responseRef);
+      if (respSnap.exists() && respSnap.data().pollId === pollData.pollId) throw new Error("คุณตอบไปแล้ว");
+      tx.set(responseRef, { pollId: pollData.pollId, text, votedAt: serverTimestamp() });
+    });
+    const votedInfo = { pollId: data.pollId, text };
+    localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
+    renderVoted(data, votedInfo);
   } catch (err) { alert(err.message); }
 }
 </script>
