@@ -37,7 +37,7 @@ import { firebaseConfig, CLASS_LIST } from "./firebase-config.js";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const params = new URLSearchParams(location.search);
-const classId = params.get("class") || CLASS_ID;
+const classId = params.get("class") || CLASS_LIST;
 const pollRef = doc(db, "polls", classId);
 
 function getStudentId() {
