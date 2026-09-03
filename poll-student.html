@@ -21,6 +21,7 @@
     --coral:#F2789F;
     --orange:#F2914F;
     --lilac:#C9A6E8;
+    --danger:#E4675C;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{height:100%;}
@@ -41,6 +42,7 @@
   }
   .kicker{font-family:'Kanit',sans-serif;font-weight:700;font-size:14.5px;color:var(--yellow);
     letter-spacing:.2px;margin-bottom:14px;}
+  .question-image{max-width:100%;border-radius:12px;margin-bottom:16px;border:1.5px solid var(--rule);display:block;}
   .question-wrap{margin-bottom:24px;}
   .question{font-family:'Kanit',sans-serif;font-size:21px;font-weight:700;line-height:1.4;color:var(--ink);}
   .chalk-underline{display:block;width:60%;height:10px;margin:9px auto 0;}
@@ -77,6 +79,13 @@
     background:rgba(126,217,168,.1);border:1px solid rgba(126,217,168,.3);color:var(--mint);
     border-radius:10px;padding:12px 14px;font-weight:600;margin-top:6px;font-size:15px;
   }
+
+  #toastContainer{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:999;width:min(92vw,380px);}
+  .toast{background:var(--bg-panel-2);border:1px solid var(--rule);border-left:4px solid var(--sky);color:var(--ink);
+    padding:12px 16px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.35);
+    animation:toastIn .25s ease;}
+  .toast.error{border-left-color:var(--danger);}
+  @keyframes toastIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
@@ -87,6 +96,7 @@
     <div class="msg">กำลังรอครูเริ่มโพล...</div>
   </div>
 </div>
+<div id="toastContainer"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
@@ -101,6 +111,18 @@ const classId = params.get("class") || CLASS_LIST[0];
 const pollRef = doc(db, "polls", classId);
 
 const CHALK = ['#F2C744','#74B9E7','#7ED9A8','#F2789F','#F2914F','#C9A6E8'];
+
+function showToast(msg, type = "info") {
+  const c = document.getElementById("toastContainer");
+  const t = document.createElement("div");
+  t.className = "toast" + (type ? " " + type : "");
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = "0"; t.style.transition = "opacity .3s";
+    setTimeout(() => t.remove(), 300);
+  }, 3500);
+}
 
 function getStudentId() {
   let id = localStorage.getItem("studentDeviceId");
@@ -117,6 +139,8 @@ onSnapshot(pollRef, (snap) => {
   if (!data.active) return renderClosed();
   if (votedInfo && votedInfo.pollId === data.pollId) return renderVoted(data, votedInfo);
   renderQuestion(data);
+}, (err) => {
+  contentEl.innerHTML = `<div class="waiting">⚠️</div><div class="msg">เชื่อมต่อไม่สำเร็จ: ${escapeHtml(err.message)}</div>`;
 });
 
 function getVotedInfo(classId) {
@@ -133,9 +157,13 @@ function underlineSvg() {
   return `<svg class="chalk-underline" viewBox="0 0 300 14" preserveAspectRatio="none">
     <path d="M2,9 Q40,2 78,9 T154,9 T230,9 T298,9"/></svg>`;
 }
+function imageHtml(data) {
+  return data.image ? `<img class="question-image" src="${data.image}">` : "";
+}
 
 function renderQuestion(data) {
-  let html = `<div class="question-wrap"><div class="question">${escapeHtml(data.question)}</div>${underlineSvg()}</div>`;
+  let html = imageHtml(data);
+  html += `<div class="question-wrap"><div class="question">${escapeHtml(data.question)}</div>${underlineSvg()}</div>`;
   if (data.type === "text") {
     html += `<textarea id="answerInput" class="answer-input" rows="3" maxlength="80" placeholder="พิมพ์คำตอบของคุณ..."></textarea>
       <div class="char-count"><span id="charCount">0</span>/80</div>
@@ -156,7 +184,8 @@ function renderQuestion(data) {
 }
 
 function renderVoted(data, votedInfo) {
-  let html = `<div class="question-wrap"><div class="question">${escapeHtml(data.question)}</div>${underlineSvg()}</div>`;
+  let html = imageHtml(data);
+  html += `<div class="question-wrap"><div class="question">${escapeHtml(data.question)}</div>${underlineSvg()}</div>`;
   if (data.type === "text") {
     html += `<div class="your-answer">“${escapeHtml(votedInfo.text || "")}”</div>`;
   } else {
@@ -169,7 +198,7 @@ function renderVoted(data, votedInfo) {
   contentEl.innerHTML = html;
 }
 
-function escapeHtml(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+function escapeHtml(s){const d=document.createElement("div");d.textContent=s||"";return d.innerHTML;}
 
 async function voteChoice(optionIndex, data) {
   const responseRef = doc(db, "polls", classId, "responses", studentId);
@@ -189,7 +218,7 @@ async function voteChoice(optionIndex, data) {
     const votedInfo = { pollId: data.pollId, optionIndex };
     localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
     renderVoted(data, votedInfo);
-  } catch (err) { alert(err.message); }
+  } catch (err) { showToast(err.message, "error"); }
 }
 
 async function submitText(text, data) {
@@ -208,7 +237,7 @@ async function submitText(text, data) {
     const votedInfo = { pollId: data.pollId, text };
     localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
     renderVoted(data, votedInfo);
-  } catch (err) { alert(err.message); }
+  } catch (err) { showToast(err.message, "error"); }
 }
 </script>
 </body>
