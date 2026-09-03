@@ -41,7 +41,7 @@
   .wrap{max-width:960px;margin:0 auto;}
 
   /* ---------- header ---------- */
-  .top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px;flex-wrap:wrap;}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
   .brand{display:flex;align-items:center;gap:12px;}
   .brand-mark{width:38px;height:38px;border-radius:10px;background:var(--yellow);display:flex;align-items:center;justify-content:center;font-size:19px;transform:rotate(-4deg);flex:none;}
   .brand h1{font-size:21px;font-weight:700;letter-spacing:.2px;}
@@ -53,6 +53,21 @@
     border-radius:10px;padding:9px 14px;font-family:'Sarabun',sans-serif;font-size:15px;font-weight:600;
     cursor:pointer;
   }
+
+  /* ---------- session meta (topic / headcount) ---------- */
+  .meta-panel{
+    background:var(--bg-panel);border:1px solid var(--rule);border-radius:var(--radius);
+    padding:16px 20px;margin-bottom:18px;
+  }
+  .meta-row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;}
+  .meta-field{flex:1;min-width:220px;}
+  .meta-field-narrow{flex:0 0 160px;min-width:140px;}
+  .meta-field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-dim);margin-bottom:6px;}
+  .meta-field input{
+    width:100%;padding:9px 12px;border-radius:9px;border:1.5px solid var(--rule);
+    background:var(--bg-panel-2);color:var(--ink);font-size:14.5px;font-family:'Sarabun',sans-serif;
+  }
+  .meta-field input:focus{outline:2px solid var(--yellow);outline-offset:1px;}
 
   /* ---------- tabs ---------- */
   .tabs{display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid var(--rule);}
@@ -100,6 +115,15 @@
   }
   .add-option:hover{border-color:var(--sky);color:var(--ink);}
 
+  /* ---------- image attach ---------- */
+  .image-preview-wrap{position:relative;display:inline-block;margin-top:10px;}
+  .image-preview{max-width:240px;max-height:160px;border-radius:10px;border:1.5px solid var(--rule);display:block;}
+  .image-preview-wrap .img-remove{
+    position:absolute;top:-9px;right:-9px;width:26px;height:26px;border-radius:50%;
+    background:var(--danger);color:#2A1210;border:none;cursor:pointer;font-size:13px;font-weight:700;
+  }
+  .image-hint{font-size:12px;color:var(--ink-dim);margin-top:6px;}
+
   .btn{
     display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border:none;border-radius:11px;
     font-size:15px;font-weight:700;font-family:'Sarabun',sans-serif;cursor:pointer;
@@ -118,7 +142,9 @@
     border:1px solid var(--rule);border-radius:12px;padding:16px 18px;margin-bottom:12px;
     display:flex;justify-content:space-between;gap:16px;align-items:flex-start;background:var(--bg-panel-2);
   }
-  .bank-card-main{min-width:0;}
+  .bank-card-main{min-width:0;display:flex;gap:12px;}
+  .bank-thumb{width:56px;height:56px;object-fit:cover;border-radius:8px;flex:none;border:1px solid var(--rule);}
+  .bank-card-text{min-width:0;}
   .badge{
     display:inline-block;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;
     margin-bottom:8px;font-family:'Sarabun',sans-serif;
@@ -136,7 +162,7 @@
     background:var(--bg-panel);border:1px solid var(--rule);border-radius:var(--radius);
     padding:26px 26px 30px;
   }
-  .live-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap;}
+  .live-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:2px;flex-wrap:wrap;}
   .class-badge{
     display:inline-block;background:rgba(242,199,68,.14);color:var(--yellow);font-weight:700;
     font-size:13px;padding:6px 14px;border-radius:999px;
@@ -148,11 +174,15 @@
   }
   .icon-btn:hover{border-color:var(--ink-dim);}
 
+  .topic-line{text-align:center;font-size:13.5px;color:var(--ink-dim);margin-top:10px;}
+  .topic-line b{color:var(--ink);font-weight:600;}
+
   .qr-row{display:flex;align-items:center;gap:16px;justify-content:center;margin:18px 0 8px;}
   .qr-row img{border-radius:10px;border:6px solid var(--bg-panel-2);}
   .link-box{font-size:13px;color:var(--ink-dim);word-break:break-all;max-width:260px;}
 
   .stage{padding:18px 4px 6px;text-align:center;}
+  .stage-image{max-width:100%;max-height:280px;border-radius:14px;border:2px solid var(--rule);margin:0 auto 22px;display:block;}
   .question-wrap{position:relative;display:inline-block;max-width:100%;margin-bottom:34px;}
   .question-display{
     font-family:'Kanit',sans-serif;font-weight:700;line-height:1.32;color:var(--ink);
@@ -184,21 +214,38 @@
   .status-ok{background:rgba(126,217,168,.14);color:var(--mint);}
   .status-err{background:rgba(228,103,92,.14);color:var(--danger);}
 
+  /* ---------- toast + modal ---------- */
+  #toastContainer{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:999;width:min(92vw,420px);}
+  .toast{background:var(--bg-panel-2);border:1px solid var(--rule);border-left:4px solid var(--sky);color:var(--ink);
+    padding:12px 16px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.35);
+    animation:toastIn .25s ease;}
+  .toast.success{border-left-color:var(--mint);}
+  .toast.error{border-left-color:var(--danger);}
+  @keyframes toastIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  #modalOverlay{position:fixed;inset:0;background:rgba(10,16,12,.6);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
+  #modalOverlay.show{display:flex;}
+  .modal-box{background:var(--bg-panel);border:1px solid var(--rule);border-radius:14px;padding:24px;max-width:360px;width:100%;text-align:center;}
+  .modal-box p{font-size:15.5px;margin-bottom:20px;line-height:1.6;}
+  .modal-actions{display:flex;gap:10px;justify-content:center;}
+
   /* ---------- fullscreen presentation mode ---------- */
   body.present-mode{padding:0;}
   body.present-mode .wrap{max-width:none;}
   body.present-mode .top,
+  body.present-mode .meta-panel,
   body.present-mode .tabs,
   body.present-mode #setupView{display:none !important;}
   body.present-mode .live-shell{
     border:none;border-radius:0;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:40px 6vw;
   }
   body.present-mode .question-display{font-size:clamp(30px,5.4vw,58px);}
+  body.present-mode .topic-line{font-size:17px;}
   body.present-mode .qr-row img{width:150px;height:150px;}
   body.present-mode .bars,body.present-mode .cloud{max-width:900px;}
   body.present-mode .bar-track{height:46px;}
   body.present-mode .bar-label{font-size:19px;}
-  body.present-mode .tag{font-size:inherit;}
+  body.present-mode .stage-image{max-height:38vh;}
 
   @media(max-width:640px){
     .bank-card{flex-direction:column;}
@@ -226,6 +273,20 @@
   </div>
 
   <div id="setupView">
+
+    <div class="meta-panel">
+      <div class="meta-row">
+        <div class="meta-field">
+          <label for="topicInput">หัวข้อ/จุดประสงค์การเรียนรู้วันนี้ (ไม่บังคับ)</label>
+          <input type="text" id="topicInput" placeholder="เช่น กฎการเคลื่อนที่ข้อที่ 2 ของนิวตัน">
+        </div>
+        <div class="meta-field meta-field-narrow">
+          <label for="expectedCountInput">จำนวนนักเรียนทั้งหมด</label>
+          <input type="text" inputmode="numeric" id="expectedCountInput" placeholder="เช่น 40">
+        </div>
+      </div>
+    </div>
+
     <div class="tabs">
       <button class="tab-btn active" data-tab="create">สร้างคำถามใหม่</button>
       <button class="tab-btn" data-tab="bank">คลังคำถาม <span id="bankCount"></span></button>
@@ -246,6 +307,15 @@
       <label class="field-label" for="questionInput">คำถาม</label>
       <textarea id="questionInput" rows="2" placeholder="เช่น แรงลัพธ์ที่กระทำต่อวัตถุนี้มีทิศทางใด?"></textarea>
 
+      <label class="field-label">แนบรูปภาพประกอบคำถาม (ไม่บังคับ)</label>
+      <input type="file" id="imageInput" accept="image/*" hidden>
+      <button class="btn btn-secondary" id="pickImageBtn" type="button">🖼️ เลือกรูปภาพ</button>
+      <div class="image-preview-wrap" id="imagePreviewWrap" style="display:none;">
+        <img id="imagePreview" class="image-preview">
+        <button class="img-remove" id="removeImageBtn" type="button">✕</button>
+      </div>
+      <div class="image-hint">รูปจะถูกย่อขนาดอัตโนมัติก่อนบันทึก แนะนำใช้ภาพแผนภาพ/กราฟ ไม่ควรใช้ภาพถ่ายความละเอียดสูงมาก</div>
+
       <div id="choiceFields">
         <label class="field-label">ตัวเลือกคำตอบ</label>
         <div id="optionsContainer"></div>
@@ -259,6 +329,9 @@
     </div>
 
     <div class="panel" id="bankTab" style="display:none;">
+      <p style="color:var(--ink-dim);font-size:13.5px;margin-bottom:16px;">
+        คลังนี้ใช้ร่วมกันได้ทุกห้อง — สร้างคำถามเก็บไว้ครั้งเดียว แล้วเลือกห้องเรียนที่มุมขวาบนก่อนกด "เริ่มโพลนี้" เพื่อใช้กับห้องไหนก็ได้
+      </p>
       <div id="bankList"></div>
     </div>
   </div>
@@ -272,6 +345,7 @@
           <button class="icon-btn" id="fullscreenBtn">⛶ เต็มจอ</button>
         </div>
       </div>
+      <div class="topic-line" id="topicLine" style="display:none;"></div>
 
       <div class="qr-row" id="qrRow">
         <img id="qrImg" src="" alt="QR Code" width="150" height="150">
@@ -279,6 +353,7 @@
       </div>
 
       <div class="stage">
+        <img class="stage-image" id="liveImage" style="display:none;">
         <div class="question-wrap">
           <div class="question-display" id="liveQuestion"></div>
           <svg class="chalk-underline" viewBox="0 0 300 14" preserveAspectRatio="none">
@@ -302,11 +377,22 @@
 
 </div>
 
+<div id="toastContainer"></div>
+<div id="modalOverlay">
+  <div class="modal-box">
+    <p id="modalMsg"></p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="modalCancelBtn">ยกเลิก</button>
+      <button class="btn btn-danger" id="modalConfirmBtn">ยืนยัน</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
   getFirestore, doc, setDoc, updateDoc, onSnapshot, serverTimestamp,
-  collection, addDoc, deleteDoc, getDocs, query, where, runTransaction, orderBy
+  collection, addDoc, deleteDoc, getDocs, query, where, orderBy
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 import { firebaseConfig, APPS_SCRIPT_URL, CLASS_LIST } from "./firebase-config.js";
 
@@ -315,6 +401,38 @@ const db = getFirestore(app);
 
 const CHALK = ['#F2C744','#74B9E7','#7ED9A8','#F2789F','#F2914F','#C9A6E8'];
 const chalkColor = i => CHALK[i % CHALK.length];
+
+/* ================= toast + modal ================= */
+function showToast(msg, type = "info") {
+  const c = document.getElementById("toastContainer");
+  const t = document.createElement("div");
+  t.className = "toast" + (type ? " " + type : "");
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = "0"; t.style.transition = "opacity .3s";
+    setTimeout(() => t.remove(), 300);
+  }, 3500);
+}
+function confirmDialog(msg) {
+  return new Promise((resolve) => {
+    document.getElementById("modalMsg").textContent = msg;
+    const overlay = document.getElementById("modalOverlay");
+    overlay.classList.add("show");
+    const cancelBtn = document.getElementById("modalCancelBtn");
+    const okBtn = document.getElementById("modalConfirmBtn");
+    function cleanup(result) {
+      overlay.classList.remove("show");
+      cancelBtn.removeEventListener("click", onCancel);
+      okBtn.removeEventListener("click", onOk);
+      resolve(result);
+    }
+    function onCancel() { cleanup(false); }
+    function onOk() { cleanup(true); }
+    cancelBtn.addEventListener("click", onCancel);
+    okBtn.addEventListener("click", onOk);
+  });
+}
 
 /* ================= class selector ================= */
 const classSelect = document.getElementById("classSelect");
@@ -325,11 +443,62 @@ CLASS_LIST.forEach(c => {
   classSelect.appendChild(opt);
 });
 let CLASS_ID = classSelect.value;
-classSelect.addEventListener("change", () => { CLASS_ID = classSelect.value; watchClass(); loadBank(); });
+classSelect.addEventListener("change", () => { CLASS_ID = classSelect.value; watchClass(); watchMeta(); });
 
 function pollRef() { return doc(db, "polls", CLASS_ID); }
-function bankCol() { return collection(db, "polls", CLASS_ID, "bank"); }
+function bankCol() { return collection(db, "questionBank"); } // ใช้ร่วมกันทุกห้อง ไม่ผูกกับ CLASS_ID
 function responsesCol() { return collection(db, "polls", CLASS_ID, "responses"); }
+function classMetaRef() { return doc(db, "classMeta", CLASS_ID); }
+
+/* ================= session meta: topic + expected headcount ================= */
+const topicInput = document.getElementById("topicInput");
+const expectedCountInput = document.getElementById("expectedCountInput");
+let currentMeta = { topic: "", expectedCount: 0 };
+let unsubMeta = null;
+let lastResponseCount = 0;
+
+function watchMeta() {
+  if (unsubMeta) unsubMeta();
+  unsubMeta = onSnapshot(classMetaRef(), (snap) => {
+    currentMeta = snap.exists() ? snap.data() : { topic: "", expectedCount: 0 };
+    if (document.activeElement !== topicInput) topicInput.value = currentMeta.topic || "";
+    if (document.activeElement !== expectedCountInput) expectedCountInput.value = currentMeta.expectedCount || "";
+    updateTopicLine();
+    renderTotalLine(lastResponseCount);
+  }, (err) => console.error(err));
+}
+async function saveMeta() {
+  const topic = topicInput.value.trim();
+  const expectedCount = parseInt(expectedCountInput.value) || 0;
+  try {
+    await setDoc(classMetaRef(), { topic, expectedCount }, { merge: true });
+  } catch (err) {
+    showToast("บันทึกข้อมูลห้องไม่สำเร็จ: " + err.message, "error");
+  }
+}
+topicInput.addEventListener("blur", saveMeta);
+expectedCountInput.addEventListener("blur", saveMeta);
+
+function updateTopicLine() {
+  const el = document.getElementById("topicLine");
+  if (currentMeta.topic) {
+    el.innerHTML = `หัวข้อ: <b>${escapeHtml(currentMeta.topic)}</b>`;
+    el.style.display = "block";
+  } else {
+    el.style.display = "none";
+  }
+}
+function renderTotalLine(count) {
+  lastResponseCount = count;
+  const el = document.getElementById("totalVotes");
+  if (!el) return;
+  if (currentMeta.expectedCount > 0) {
+    const pct = Math.round((count / currentMeta.expectedCount) * 100);
+    el.textContent = `ตอบแล้ว ${count} จาก ${currentMeta.expectedCount} คน (${pct}%)`;
+  } else {
+    el.textContent = `รวมทั้งหมด ${count} คน`;
+  }
+}
 
 /* ================= tabs ================= */
 document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -342,6 +511,63 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
     if (tab === "bank") loadBank();
   });
 });
+
+/* ================= image attach ================= */
+let currentImageData = null;
+
+document.getElementById("pickImageBtn").addEventListener("click", () => document.getElementById("imageInput").click());
+document.getElementById("imageInput").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    currentImageData = await compressImage(file);
+    document.getElementById("imagePreview").src = currentImageData;
+    document.getElementById("imagePreviewWrap").style.display = "block";
+    document.getElementById("pickImageBtn").style.display = "none";
+  } catch (err) {
+    showToast("แนบรูปไม่สำเร็จ: " + err.message, "error");
+    e.target.value = "";
+  }
+});
+document.getElementById("removeImageBtn").addEventListener("click", () => {
+  currentImageData = null;
+  document.getElementById("imageInput").value = "";
+  document.getElementById("imagePreviewWrap").style.display = "none";
+  document.getElementById("pickImageBtn").style.display = "inline-flex";
+});
+
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith("image/")) { reject(new Error("ไฟล์นี้ไม่ใช่รูปภาพ")); return; }
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("อ่านไฟล์ไม่สำเร็จ"));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("เปิดไฟล์รูปไม่สำเร็จ"));
+      img.onload = () => {
+        let { width, height } = img;
+        const maxDim = 1100;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+          else { width = Math.round(width * maxDim / height); height = maxDim; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width; canvas.height = height;
+        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+        let quality = 0.75;
+        let dataUrl = canvas.toDataURL("image/jpeg", quality);
+        while (dataUrl.length > 700000 && quality > 0.35) {
+          quality -= 0.1;
+          dataUrl = canvas.toDataURL("image/jpeg", quality);
+        }
+        if (dataUrl.length > 950000) { reject(new Error("ไฟล์รูปใหญ่เกินไป ลองเลือกรูปอื่น")); return; }
+        resolve(dataUrl);
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 /* ================= create-question form ================= */
 let currentType = "choice";
@@ -364,7 +590,7 @@ function addOptionRow(value = "") {
     <button class="btn-remove" type="button">✕</button>`;
   row.querySelector(".btn-remove").addEventListener("click", () => {
     if (optionsContainer.children.length > 2) { row.remove(); restripeSwatches(); }
-    else alert("ต้องมีอย่างน้อย 2 ตัวเลือก");
+    else showToast("ต้องมีอย่างน้อย 2 ตัวเลือก", "error");
   });
   optionsContainer.appendChild(row);
 }
@@ -378,45 +604,68 @@ document.getElementById("addOptionBtn").addEventListener("click", () => addOptio
 
 function readForm() {
   const question = document.getElementById("questionInput").value.trim();
-  if (!question) { alert("กรุณากรอกคำถาม"); return null; }
+  if (!question) { showToast("กรุณากรอกคำถาม", "error"); return null; }
+  const base = { question, image: currentImageData || null };
   if (currentType === "choice") {
     const options = [...document.querySelectorAll(".opt-input")].map(i => i.value.trim()).filter(v => v);
-    if (options.length < 2) { alert("ต้องมีอย่างน้อย 2 ตัวเลือก"); return null; }
-    return { type: "choice", question, options };
+    if (options.length < 2) { showToast("ต้องมีอย่างน้อย 2 ตัวเลือก", "error"); return null; }
+    return { ...base, type: "choice", options };
   }
-  return { type: "text", question };
+  return { ...base, type: "text" };
 }
 function clearForm() {
   document.getElementById("questionInput").value = "";
   optionsContainer.innerHTML = "";
   addOptionRow(); addOptionRow();
+  currentImageData = null;
+  document.getElementById("imageInput").value = "";
+  document.getElementById("imagePreviewWrap").style.display = "none";
+  document.getElementById("pickImageBtn").style.display = "inline-flex";
 }
 
 document.getElementById("saveToBankBtn").addEventListener("click", async () => {
   const data = readForm();
   if (!data) return;
-  await addDoc(bankCol(), { ...data, createdAt: serverTimestamp() });
-  clearForm();
-  document.querySelector('.tab-btn[data-tab="bank"]').click();
+  try {
+    await addDoc(bankCol(), { ...data, createdAt: serverTimestamp() });
+    showToast("บันทึกลงคลังแล้ว", "success");
+    clearForm();
+    document.querySelector('.tab-btn[data-tab="bank"]').click();
+  } catch (err) {
+    showToast("บันทึกลงคลังไม่สำเร็จ: " + err.message, "error");
+    console.error(err);
+  }
 });
 
 document.getElementById("startNowBtn").addEventListener("click", async () => {
   const data = readForm();
   if (!data) return;
-  await addDoc(bankCol(), { ...data, createdAt: serverTimestamp() });
-  await launchPoll(data);
-  clearForm();
+  try {
+    await addDoc(bankCol(), { ...data, createdAt: serverTimestamp() });
+    await launchPoll(data);
+    clearForm();
+  } catch (err) {
+    showToast("เริ่มโพลไม่สำเร็จ: " + err.message, "error");
+    console.error(err);
+  }
 });
 
-/* ================= question bank ================= */
+/* ================= question bank (global, ใช้ร่วมทุกห้อง) ================= */
 async function loadBank() {
   const list = document.getElementById("bankList");
   const countEl = document.getElementById("bankCount");
   list.innerHTML = `<div class="bank-empty">กำลังโหลด...</div>`;
-  const snap = await getDocs(query(bankCol(), orderBy("createdAt", "desc")));
+  let snap;
+  try {
+    snap = await getDocs(query(bankCol(), orderBy("createdAt", "desc")));
+  } catch (err) {
+    list.innerHTML = `<div class="bank-empty">โหลดคลังคำถามไม่สำเร็จ: ${escapeHtml(err.message)}</div>`;
+    console.error(err);
+    return;
+  }
   countEl.textContent = snap.empty ? "" : `(${snap.size})`;
   if (snap.empty) {
-    list.innerHTML = `<div class="bank-empty">ยังไม่มีคำถามในคลัง — สร้างคำถามแล้วกด “บันทึกลงคลัง” เพื่อเก็บไว้เปิดทีหลัง</div>`;
+    list.innerHTML = `<div class="bank-empty">ยังไม่มีคำถามในคลัง — สร้างคำถามแล้วกด “บันทึกลงคลัง” เพื่อเก็บไว้เปิดกับห้องไหนก็ได้ทีหลัง</div>`;
     return;
   }
   list.innerHTML = "";
@@ -425,13 +674,17 @@ async function loadBank() {
     const card = document.createElement("div");
     card.className = "bank-card";
     const optsHtml = q.type === "choice"
-      ? `<div class="bank-opts">${q.options.map((o,i)=>`● ${o}`).join(" &nbsp; ")}</div>`
+      ? `<div class="bank-opts">${q.options.map(o => `● ${escapeHtml(o)}`).join(" &nbsp; ")}</div>`
       : `<div class="bank-opts">พิมพ์ตอบอิสระ</div>`;
+    const thumbHtml = q.image ? `<img class="bank-thumb" src="${q.image}">` : "";
     card.innerHTML = `
       <div class="bank-card-main">
-        <span class="badge ${q.type==='choice'?'badge-choice':'badge-text'}">${q.type==='choice'?'เลือกตอบ':'พิมพ์ตอบ'}</span>
-        <div class="bank-q">${escapeHtml(q.question)}</div>
-        ${optsHtml}
+        ${thumbHtml}
+        <div class="bank-card-text">
+          <span class="badge ${q.type==='choice'?'badge-choice':'badge-text'}">${q.type==='choice'?'เลือกตอบ':'พิมพ์ตอบ'}</span>
+          <div class="bank-q">${escapeHtml(q.question)}</div>
+          ${optsHtml}
+        </div>
       </div>
       <div class="bank-actions">
         <button class="btn btn-primary" data-act="start">🚀 เริ่มโพลนี้</button>
@@ -439,22 +692,34 @@ async function loadBank() {
       </div>`;
     card.querySelector('[data-act="start"]').addEventListener("click", () => launchPoll(q));
     card.querySelector('[data-act="del"]').addEventListener("click", async () => {
-      if (confirm("ลบคำถามนี้ออกจากคลังใช่หรือไม่?")) { await deleteDoc(d.ref); loadBank(); }
+      const ok = await confirmDialog("ลบคำถามนี้ออกจากคลังใช่หรือไม่? (ใช้ร่วมกันทุกห้อง)");
+      if (!ok) return;
+      try { await deleteDoc(d.ref); showToast("ลบคำถามแล้ว", "success"); loadBank(); }
+      catch (err) { showToast("ลบไม่สำเร็จ: " + err.message, "error"); console.error(err); }
     });
     list.appendChild(card);
   });
 }
-function escapeHtml(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+function escapeHtml(s){const d=document.createElement("div");d.textContent=s||"";return d.innerHTML;}
 
 /* ================= launch / live poll ================= */
 async function launchPoll(data) {
   const pollId = Date.now().toString();
-  const payload = { active: true, pollId, question: data.question, type: data.type, createdAt: serverTimestamp() };
+  const payload = {
+    active: true, pollId, question: data.question, type: data.type,
+    image: data.image || null, createdAt: serverTimestamp()
+  };
   if (data.type === "choice") {
     payload.options = data.options;
     payload.counts = data.options.map(() => 0);
   }
-  await setDoc(pollRef(), payload);
+  try {
+    await setDoc(pollRef(), payload);
+  } catch (err) {
+    showToast("เริ่มโพลไม่สำเร็จ: " + err.message, "error");
+    console.error(err);
+    return;
+  }
 
   document.getElementById("classBadge").textContent = "ห้อง ม." + CLASS_ID.replace("-", "/");
   const studentUrl = `${location.origin}${location.pathname.replace('poll-teacher.html','poll-student.html')}?class=${encodeURIComponent(CLASS_ID)}`;
@@ -494,9 +759,10 @@ function watchClass() {
     showLive();
     renderQuestion(data);
     watchResponses(data.pollId, data.type);
-  });
+  }, (err) => console.error(err));
 }
 watchClass();
+watchMeta();
 loadBank();
 
 function watchResponses(pollId, type) {
@@ -506,12 +772,17 @@ function watchResponses(pollId, type) {
       const answers = [];
       snap.forEach(d => answers.push(d.data().text));
       renderCloud(answers);
+    } else {
+      renderTotalLine(snap.size);
     }
-  });
+  }, (err) => console.error(err));
 }
 
 function renderQuestion(data) {
   document.getElementById("liveQuestion").textContent = data.question;
+  const imgEl = document.getElementById("liveImage");
+  if (data.image) { imgEl.src = data.image; imgEl.style.display = "block"; }
+  else { imgEl.style.display = "none"; }
   document.getElementById("barsView").style.display = data.type === "choice" ? "block" : "none";
   document.getElementById("cloudView").style.display = data.type === "text" ? "flex" : "none";
   if (data.type === "choice") renderBars(data);
@@ -530,27 +801,27 @@ function renderBars(data) {
       <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${chalkColor(i)}"></div></div>`;
     el.appendChild(row);
   });
-  document.getElementById("totalVotes").textContent = `รวมทั้งหมด ${total} คน`;
+  renderTotalLine(total);
 }
 
 function renderCloud(answers) {
   const el = document.getElementById("cloudView");
   if (!answers.length) {
     el.innerHTML = `<div class="cloud-empty">กำลังรอคำตอบจากนักเรียน...</div>`;
-    document.getElementById("totalVotes").textContent = "";
+    renderTotalLine(0);
     return;
   }
   const freq = {};
   answers.forEach(a => {
-    const key = a.trim();
+    const key = (a || "").trim();
     if (!key) return;
     freq[key] = (freq[key] || 0) + 1;
   });
   const entries = Object.entries(freq).sort((a, b) => b[1] - a[1]);
-  const maxCount = entries[0][1];
+  const maxCount = entries.length ? entries[0][1] : 1;
   el.innerHTML = "";
   entries.forEach(([text, count], i) => {
-    const scale = 0.7 + (count / maxCount) * 1.3; // 0.7em .. 2em
+    const scale = 0.7 + (count / maxCount) * 1.3;
     const tag = document.createElement("div");
     tag.className = "tag";
     tag.style.fontSize = scale + "em";
@@ -558,7 +829,7 @@ function renderCloud(answers) {
     tag.textContent = count > 1 ? `${text} ×${count}` : text;
     el.appendChild(tag);
   });
-  document.getElementById("totalVotes").textContent = `รวมทั้งหมด ${answers.length} คำตอบ`;
+  renderTotalLine(answers.length);
 }
 
 /* ================= live view actions ================= */
@@ -585,15 +856,23 @@ document.getElementById("newPollBtn").addEventListener("click", async () => {
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   document.body.classList.remove("present-mode");
   if (latestPollData && latestPollData.active) {
-    await updateDoc(pollRef(), { active: false });
+    try { await updateDoc(pollRef(), { active: false }); }
+    catch (err) { showToast("ปิดโพลไม่สำเร็จ: " + err.message, "error"); }
   }
   showSetup();
 });
 
 document.getElementById("closePollBtn").addEventListener("click", async () => {
   if (!latestPollData) return;
-  if (!confirm("ปิดโพลและบันทึกผลลง Google Sheet ใช่หรือไม่?")) return;
-  await updateDoc(pollRef(), { active: false });
+  const ok = await confirmDialog("ปิดโพลและบันทึกผลลง Google Sheet ใช่หรือไม่?");
+  if (!ok) return;
+
+  try {
+    await updateDoc(pollRef(), { active: false });
+  } catch (err) {
+    showToast("ปิดโพลไม่สำเร็จ: " + err.message, "error");
+    return;
+  }
 
   const statusEl = document.getElementById("statusMsg");
   statusEl.textContent = "กำลังบันทึก...";
@@ -619,6 +898,7 @@ document.getElementById("closePollBtn").addEventListener("click", async () => {
           classId: "ม." + CLASS_ID.replace("-", "/"),
           question: latestPollData.question,
           type: latestPollData.type,
+          topic: currentMeta.topic || "",
           results
         }
       })
