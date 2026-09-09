@@ -1,12 +1,26 @@
-<!DOCTYPE html>
+                    <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <style>
+                body {
+                  background-color: white; /* Ensure the iframe has a white background */
+                }
+
+                
+              </style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Poll — Teacher Control</title>
+<title>โพลสด — ห้องควบคุมครู</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -14,7 +28,7 @@
   :root{
     --glass-bg:rgba(255,255,255,.72);
     --glass-bg-strong:rgba(255,255,255,.88);
-    --glass-border:rgba(255,255,255,.5);
+    --glass-border:rgba(255,255,255,.55);
     --glass-shadow:0 8px 32px rgba(31,38,135,.08);
     --ink:#1d1d1f;
     --ink-secondary:#6e6e73;
@@ -24,13 +38,14 @@
     --accent-3:#ff375f;
     --success:#34c759;
     --warning:#ff9500;
+    --yellow:#ffcc00;
     --radius:22px;
     --radius-sm:14px;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{
-    font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
+    font-family:'Sarabun',-apple-system,BlinkMacSystemFont,sans-serif;
     color:var(--ink);
     min-height:100vh;
     overflow-x:hidden;
@@ -65,15 +80,21 @@
     box-shadow:0 12px 40px rgba(31,38,135,.12);
   }
 
-  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;margin-bottom:16px;}
+  /* Header */
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;margin-bottom:16px;flex-wrap:wrap;}
   .brand{display:flex;align-items:center;gap:12px;}
-  .brand-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg, var(--accent), var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:700;box-shadow:0 4px 14px rgba(0,113,227,.35);}
-  .brand h1{font-size:19px;font-weight:700;letter-spacing:-.3px;}
+  .brand-mark{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg, var(--accent), var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:700;box-shadow:0 4px 14px rgba(0,113,227,.35);position:relative;overflow:hidden;}
+  .brand-mark::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg, transparent 40%, rgba(255,255,255,.3) 50%, transparent 60%);animation:shimmer 3s infinite;}
+  @keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+  .brand h1{font-family:'Kanit',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.3px;}
+  .brand h1 span{background:linear-gradient(135deg, var(--accent-2), var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;}
   .brand .sub{font-size:12px;color:var(--ink-secondary);margin-top:1px;}
-  .brand .dev{display:inline-block;margin-top:3px;font-size:10px;font-weight:600;color:var(--accent);background:rgba(0,113,227,.1);padding:2px 8px;border-radius:999px;}
+  .brand .dev{display:inline-flex;align-items:center;gap:4px;margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--accent);background:rgba(0,113,227,.1);padding:2px 8px;border-radius:999px;}
+  .brand .dev::before{content:'';}
   .class-picker select{background:rgba(118,118,128,.12);color:var(--ink);border:none;border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;}
   .class-picker select:focus{outline:2px solid var(--accent);}
 
+  /* Meta */
   .meta-panel{padding:16px 18px;margin-bottom:14px;}
   .meta-row{display:flex;gap:10px;flex-wrap:wrap;}
   .meta-field{flex:1;min-width:200px;}
@@ -82,6 +103,7 @@
   .meta-field input{width:100%;padding:11px 14px;border-radius:12px;border:none;background:rgba(118,118,128,.12);color:var(--ink);font-size:15px;font-family:inherit;font-weight:500;transition:.2s;}
   .meta-field input:focus{outline:none;background:rgba(0,113,227,.12);box-shadow:0 0 0 3px rgba(0,113,227,.15);}
 
+  /* Tabs */
   .tabs{display:flex;gap:4px;margin-bottom:14px;padding:4px;}
   .tab-btn{flex:1;background:none;border:none;color:var(--ink-secondary);font-family:inherit;font-weight:600;font-size:14px;padding:10px 14px;cursor:pointer;border-radius:12px;transition:.2s;}
   .tab-btn:hover{color:var(--ink);}
@@ -90,14 +112,16 @@
 
   .panel{padding:20px;margin-bottom:14px;}
 
+  /* Type Switch */
   .type-switch{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;}
   .type-opt{padding:14px 10px;border-radius:14px;border:1.5px solid rgba(118,118,128,.2);background:rgba(255,255,255,.5);cursor:pointer;text-align:center;transition:.2s;}
-  .type-opt:hover{border-color:var(--accent);background:rgba(0,113,227,.05);}
+  .type-opt:hover{border-color:var(--accent);background:rgba(0,113,227,.05);transform:translateY(-2px);}
   .type-opt.active{border-color:var(--accent);background:rgba(0,113,227,.1);box-shadow:0 0 0 3px rgba(0,113,227,.15);}
   .type-opt .icon{font-size:22px;margin-bottom:4px;display:block;}
-  .type-opt strong{display:block;font-size:13px;color:var(--ink);font-weight:700;margin-bottom:1px;}
+  .type-opt strong{display:block;font-family:'Kanit',sans-serif;font-size:13px;color:var(--ink);font-weight:700;margin-bottom:1px;}
   .type-opt small{font-size:10px;color:var(--ink-secondary);}
 
+  /* Form */
   label.field-label{display:block;font-size:11px;font-weight:600;color:var(--ink-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
   input[type=text], textarea{width:100%;padding:12px 14px;border-radius:12px;border:none;background:rgba(118,118,128,.12);color:var(--ink);font-size:15px;font-family:inherit;font-weight:500;transition:.2s;}
   input[type=text]:focus, textarea:focus{outline:none;background:rgba(0,113,227,.12);box-shadow:0 0 0 3px rgba(0,113,227,.15);}
@@ -113,13 +137,14 @@
   .image-preview-wrap .img-remove{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;background:var(--accent-3);color:#fff;border:none;cursor:pointer;font-size:13px;font-weight:700;box-shadow:0 2px 8px rgba(255,55,95,.4);}
 
   .option-row{display:flex;gap:8px;margin-bottom:8px;align-items:center;}
-  .option-row .idx{width:30px;height:30px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;}
+  .option-row .idx{width:30px;height:30px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:#fff;}
   .option-row input{flex:1;}
   .btn-remove{background:rgba(118,118,128,.12);border:none;color:var(--ink-secondary);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:14px;transition:.2s;}
   .btn-remove:hover{background:rgba(255,55,95,.15);color:var(--accent-3);}
   .add-option{background:none;border:1.5px dashed rgba(118,118,128,.3);color:var(--accent);border-radius:12px;padding:11px;width:100%;cursor:pointer;font-weight:600;font-size:14px;margin-top:4px;transition:.2s;font-family:inherit;}
   .add-option:hover{background:rgba(0,113,227,.05);border-color:var(--accent);}
 
+  /* Buttons */
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 20px;border:none;border-radius:14px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;transition:.2s;}
   .btn-primary{background:linear-gradient(135deg, var(--accent), var(--accent-2));color:#fff;box-shadow:0 4px 14px rgba(0,113,227,.35);}
   .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,113,227,.45);}
@@ -132,6 +157,7 @@
   .btn-success{background:linear-gradient(135deg, var(--success), #30d158);color:#fff;box-shadow:0 4px 14px rgba(52,199,89,.35);}
   .form-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
 
+  /* Bank */
   .bank-empty{color:var(--ink-secondary);font-size:14px;text-align:center;padding:40px 10px;}
   .bank-card{border:1px solid rgba(0,0,0,.06);border-radius:16px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start;background:rgba(255,255,255,.6);transition:.2s;}
   .bank-card:hover{background:rgba(255,255,255,.85);transform:translateX(3px);}
@@ -146,6 +172,7 @@
   .bank-opts{font-size:11px;color:var(--ink-secondary);line-height:1.5;}
   .bank-actions{display:flex;flex-direction:column;gap:6px;flex:none;}
 
+  /* Live View */
   #liveView{display:none;}
   .live-shell{padding:20px;}
   .live-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
@@ -153,10 +180,10 @@
   .live-tools{display:flex;gap:6px;flex-wrap:wrap;}
   .icon-btn{background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.5);color:var(--ink);border-radius:12px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
   .icon-btn:hover{background:rgba(255,255,255,.95);transform:translateY(-1px);}
-  .icon-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
 
+  /* Timer */
   .timer-wrap{display:flex;align-items:center;gap:14px;margin:16px 0;padding:14px 16px;}
-  .timer-display{font-size:42px;font-weight:700;letter-spacing:-1px;background:linear-gradient(135deg, var(--accent), var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;min-width:90px;text-align:center;font-variant-numeric:tabular-nums;}
+  .timer-display{font-size:42px;font-weight:700;letter-spacing:-1px;background:linear-gradient(135deg, var(--accent), var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;min-width:90px;text-align:center;font-variant-numeric:tabular-nums;font-family:'JetBrains Mono',monospace;}
   .timer-display.urgent{background:linear-gradient(135deg, var(--accent-3), #ff2d55);-webkit-background-clip:text;background-clip:text;color:transparent;animation:pulse 1s infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
   .timer-ring{width:70px;height:70px;position:relative;}
@@ -171,15 +198,16 @@
 
   .qr-row{display:flex;align-items:center;gap:16px;justify-content:center;margin:18px 0;flex-wrap:wrap;}
   .qr-box{background:#fff;padding:10px;border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,.08);}
-  .link-box{font-size:11px;color:var(--ink-secondary);word-break:break-all;max-width:260px;padding:10px 12px;background:rgba(118,118,128,.1);border-radius:10px;}
+  .link-box{font-size:11px;color:var(--ink-secondary);word-break:break-all;max-width:260px;padding:10px 12px;background:rgba(118,118,128,.1);border-radius:10px;font-family:'JetBrains Mono',monospace;}
 
   .stage{padding:16px 4px;text-align:center;}
   .stage-image{max-width:100%;max-height:280px;border-radius:16px;border:1px solid rgba(0,0,0,.08);margin:0 auto 20px;display:block;box-shadow:0 8px 24px rgba(0,0,0,.08);}
   .question-wrap{position:relative;display:inline-block;max-width:100%;margin-bottom:32px;}
-  .question-display{font-weight:700;line-height:1.3;color:var(--ink);font-size:clamp(22px,3.4vw,34px);letter-spacing:-.5px;}
+  .question-display{font-family:'Kanit',sans-serif;font-weight:700;line-height:1.3;color:var(--ink);font-size:clamp(22px,3.4vw,34px);letter-spacing:-.5px;}
   .chalk-underline{display:block;width:70%;height:10px;margin:10px auto 0;}
   .chalk-underline path{stroke:var(--accent);stroke-width:3;fill:none;stroke-linecap:round;opacity:.6;}
 
+  /* Bars - CLICKABLE */
   .bars{max-width:700px;margin:0 auto;text-align:left;}
   .bar-row{margin-bottom:14px;cursor:pointer;transition:.2s;}
   .bar-row:hover{transform:translateX(4px);}
@@ -190,19 +218,21 @@
   .bar-track{background:rgba(118,118,128,.12);border-radius:12px;height:40px;overflow:hidden;}
   .bar-fill{height:100%;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;color:#fff;font-weight:700;font-size:13px;transition:width .5s cubic-bezier(.2,.9,.3,1);white-space:nowrap;min-width:2%;border-radius:12px;}
 
+  /* Cloud - CLICKABLE */
   .cloud{display:flex;flex-wrap:wrap;gap:10px 12px;justify-content:center;align-items:center;max-width:800px;margin:0 auto;min-height:100px;padding:10px 0;}
-  .tag{font-weight:700;padding:8px 14px;border-radius:999px;cursor:pointer;animation:pop .4s cubic-bezier(.2,.9,.3,1);line-height:1.2;background:rgba(255,255,255,.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.6);box-shadow:0 2px 8px rgba(0,0,0,.06);transition:.2s;}
+  .tag{font-family:'Kanit',sans-serif;font-weight:700;padding:8px 14px;border-radius:999px;cursor:pointer;animation:pop .4s cubic-bezier(.2,.9,.3,1);line-height:1.2;background:rgba(255,255,255,.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.6);box-shadow:0 2px 8px rgba(0,0,0,.06);transition:.2s;}
   .tag:hover{transform:scale(1.08);box-shadow:0 4px 14px rgba(0,0,0,.12);}
   .tag:active{transform:scale(.95);}
   @keyframes pop{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
   .cloud-empty{color:var(--ink-secondary);font-size:14px;padding:30px 0;}
 
+  /* Respondents Modal */
   #respondentsModal{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center;padding:20px;}
   #respondentsModal.show{display:flex;}
   .respondents-sheet{background:rgba(255,255,255,.95);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border-radius:24px 24px 0 0;padding:20px;max-width:500px;width:100%;max-height:70vh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.15);animation:sheetUp .3s cubic-bezier(.2,.9,.3,1);}
   @keyframes sheetUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
   .respondents-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(0,0,0,.08);}
-  .respondents-header h3{font-size:17px;font-weight:700;}
+  .respondents-header h3{font-family:'Kanit',sans-serif;font-size:17px;font-weight:700;}
   .respondents-header .close-btn{width:30px;height:30px;border-radius:50%;background:rgba(118,118,128,.15);border:none;cursor:pointer;font-size:16px;color:var(--ink-secondary);display:flex;align-items:center;justify-content:center;}
   .respondent-item{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(118,118,128,.08);border-radius:12px;margin-bottom:8px;}
   .respondent-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg, var(--accent), var(--accent-2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:none;}
@@ -216,18 +246,21 @@
   .status-ok{background:rgba(52,199,89,.12);color:var(--success);}
   .status-err{background:rgba(255,55,95,.12);color:var(--accent-3);}
 
+  /* Toast */
   #toastContainer{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:9999;width:min(92vw,380px);}
   .toast{background:rgba(255,255,255,.95);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid rgba(255,255,255,.6);color:var(--ink);padding:13px 16px;border-radius:14px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.1);animation:toastIn .3s cubic-bezier(.2,.9,.3,1);}
   .toast.success{border-left:4px solid var(--success);}
   .toast.error{border-left:4px solid var(--accent-3);}
   @keyframes toastIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 
+  /* Modal */
   #modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.3);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px;}
   #modalOverlay.show{display:flex;}
   .modal-box{background:rgba(255,255,255,.95);backdrop-filter:blur(40px) saturate(180%);border-radius:20px;padding:24px;max-width:360px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.15);}
   .modal-box p{font-size:15px;margin-bottom:20px;line-height:1.5;}
   .modal-actions{display:flex;gap:10px;justify-content:center;}
 
+  /* Fullscreen */
   body.present-mode{padding:0;}
   body.present-mode .wrap{max-width:none;padding:0;}
   body.present-mode .top,body.present-mode .meta-panel,body.present-mode .tabs,body.present-mode #setupView{display:none !important;}
@@ -252,12 +285,13 @@
 </head>
 <body>
 <div class="wrap">
+
   <div class="top glass">
     <div class="brand">
       <div class="brand-mark">⚡</div>
       <div>
-        <h1>Live Poll</h1>
-        <div class="sub">Teacher Control Room</div>
+        <h1>โพล<span>สด</span></h1>
+        <div class="sub">ห้องควบคุมสำหรับครู</div>
         <div class="dev">@Skunkworks</div>
       </div>
     </div>
@@ -270,19 +304,19 @@
     <div class="meta-panel glass">
       <div class="meta-row">
         <div class="meta-field">
-          <label for="topicInput">หัวข้อ / จุดประสงค์การเรียนรู้</label>
-          <input type="text" id="topicInput" placeholder="เช่น กฎการเคลื่อนที่ของนิวตัน">
+          <label for="topicInput">หัวข้อ/จุดประสงค์การเรียนรู้วันนี้ (ไม่บังคับ)</label>
+          <input type="text" id="topicInput" placeholder="เช่น กฎการเคลื่อนที่ข้อที่ 2 ของนิวตัน">
         </div>
         <div class="meta-field meta-field-narrow">
-          <label for="expectedCountInput">จำนวนนักเรียน</label>
+          <label for="expectedCountInput">จำนวนนักเรียนทั้งหมด</label>
           <input type="text" inputmode="numeric" id="expectedCountInput" placeholder="เช่น 40">
         </div>
       </div>
     </div>
 
     <div class="tabs glass">
-      <button class="tab-btn active" data-tab="create">✨ สร้างคำถาม</button>
-      <button class="tab-btn" data-tab="bank">📦 คลัง <span id="bankCount" class="badge">0</span></button>
+      <button class="tab-btn active" data-tab="create">สร้างคำถามใหม่</button>
+      <button class="tab-btn" data-tab="bank">คลังคำถาม <span id="bankCount" class="badge">0</span></button>
     </div>
 
     <div class="panel glass" id="createTab">
@@ -290,12 +324,12 @@
         <div class="type-opt active" data-type="choice">
           <span class="icon">🎯</span>
           <strong>เลือกตอบ</strong>
-          <small>แตะตัวเลือก</small>
+          <small>ให้นักเรียนแตะตัวเลือก</small>
         </div>
         <div class="type-opt" data-type="text">
           <span class="icon">💬</span>
           <strong>พิมพ์ตอบ</strong>
-          <small>คำตอบอิสระ</small>
+          <small>ให้นักเรียนพิมพ์คำตอบสั้นๆ</small>
         </div>
         <div class="type-opt" data-type="rating">
           <span class="icon">⭐</span>
@@ -310,15 +344,15 @@
       </div>
 
       <label class="field-label" for="questionInput">คำถาม</label>
-      <textarea id="questionInput" rows="2" placeholder="เช่น แรงลัพธ์มีทิศทางใด?"></textarea>
+      <textarea id="questionInput" rows="2" placeholder="เช่น แรงลัพธ์ที่กระทำต่อวัตถุนี้มีทิศทางใด?"></textarea>
 
-      <label class="field-label" style="margin-top:14px;">รูปภาพประกอบ (ไม่บังคับ)</label>
+      <label class="field-label" style="margin-top:14px;">แนบรูปภาพประกอบคำถาม (ไม่บังคับ)</label>
       <input type="file" id="imageInput" accept="image/*" hidden>
       <div class="image-upload" id="pickImageBtn">
-        <span class="icon">📤</span>
+        <span class="icon">🖼️</span>
         <div class="text">
           <strong>แตะเพื่อเลือกรูปภาพ</strong>
-          จะถูกย่อขนาดอัตโนมัติ
+          รูปจะถูกย่อขนาดอัตโนมัติ แนะนำใช้ภาพแผนภาพ/กราฟ
         </div>
       </div>
       <div class="image-preview-wrap" id="imagePreviewWrap" style="display:none;">
@@ -333,14 +367,14 @@
       </div>
 
       <div class="form-actions">
-        <button class="btn btn-secondary" id="saveToBankBtn"> บันทึกลงคลัง</button>
-        <button class="btn btn-primary" id="startNowBtn">🚀 เริ่มโพลทันที</button>
+        <button class="btn btn-secondary" id="saveToBankBtn">📥 บันทึกลงคลัง</button>
+        <button class="btn btn-primary" id="startNowBtn"> เริ่มโพลทันที</button>
       </div>
     </div>
 
     <div class="panel glass" id="bankTab" style="display:none;">
-      <p style="color:var(--ink-secondary);font-size:13px;margin-bottom:14px;line-height:1.5;">
-        💡 คลังใช้ร่วมกันทุกห้อง — สร้างครั้งเดียว ใช้กับห้องไหนก็ได้
+      <p style="color:var(--ink-secondary);font-size:13px;margin-bottom:16px;">
+        คลังนี้ใช้ร่วมกันได้ทุกห้อง — สร้างคำถามเก็บไว้ครั้งเดียว แล้วเลือกห้องเรียนที่มุมขวาบนก่อนกด "เริ่มโพลนี้"
       </p>
       <div id="bankList"></div>
     </div>
@@ -349,9 +383,9 @@
   <div id="liveView">
     <div class="live-shell glass-strong">
       <div class="live-top">
-        <span class="class-badge" id="classBadge">ห้องเรียน</span>
+        <span class="class-badge" id="classBadge"></span>
         <div class="live-tools">
-          <button class="icon-btn" id="toggleQrBtn">📱 QR</button>
+          <button class="icon-btn" id="toggleQrBtn">🔳 QR</button>
           <button class="icon-btn" id="toggleTimerBtn">️ เวลา</button>
           <button class="icon-btn" id="revealBtn" style="display:none;">👁️ เฉลย</button>
           <button class="icon-btn" id="fullscreenBtn">⛶ เต็มจอ</button>
@@ -361,12 +395,7 @@
       <div class="timer-wrap glass" id="timerWrap" style="display:none;">
         <div class="timer-ring">
           <svg width="70" height="70" viewBox="0 0 70 70">
-            <defs>
-              <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="var(--accent)"/>
-                <stop offset="100%" stop-color="var(--accent-2)"/>
-              </linearGradient>
-            </defs>
+            <defs><linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="var(--accent-2)"/></linearGradient></defs>
             <circle class="bg" cx="35" cy="35" r="30"/>
             <circle class="fg" id="timerCircle" cx="35" cy="35" r="30" stroke-dasharray="188.5" stroke-dashoffset="0"/>
           </svg>
@@ -374,14 +403,14 @@
         <div class="timer-display" id="timerDisplay">00:30</div>
         <div class="timer-controls">
           <button class="icon-btn" id="timerStartBtn">▶ เริ่ม</button>
-          <button class="icon-btn" id="timerPauseBtn">⏸</button>
-          <button class="icon-btn" id="timerResetBtn">↺</button>
+          <button class="icon-btn" id="timerPauseBtn">⏸ หยุด</button>
+          <button class="icon-btn" id="timerResetBtn">↺ รีเซ็ต</button>
         </div>
       </div>
 
       <div class="topic-line" id="topicLine" style="display:none;"></div>
 
-      <div class="qr-row" id="qrRow" style="display:none;">
+      <div class="qr-row" id="qrRow">
         <div class="qr-box" id="qrBox"></div>
         <div class="link-box" id="linkText"></div>
       </div>
@@ -399,16 +428,17 @@
         <div class="cloud" id="cloudView" style="display:none;"></div>
 
         <div class="total-line" id="totalVotes"></div>
-        <div style="font-size:11px;color:var(--ink-tertiary);margin-top:6px;">💡 แตะที่คำตอบเพื่อดูรายชื่อผู้ตอบ</div>
+        <div style="font-size:11px;color:var(--ink-tertiary);margin-top:8px;">💡 แตะที่คำตอบเพื่อดูรายชื่อผู้ตอบ</div>
       </div>
 
       <div class="live-actions">
-        <button class="btn btn-danger" id="closePollBtn">⏹️ ปิดโพล & บันทึก</button>
-        <button class="btn btn-secondary" id="newPollBtn">🔄 คำถามใหม่</button>
+        <button class="btn btn-danger" id="closePollBtn">⏹️ ปิดโพล & บันทึกลง Sheet</button>
+        <button class="btn btn-secondary" id="newPollBtn"> กลับไปตั้งคำถาม</button>
       </div>
       <div id="statusMsg"></div>
     </div>
   </div>
+
 </div>
 
 <div id="toastContainer"></div>
@@ -449,7 +479,7 @@ function showToast(msg, type = "info") {
   t.className = "toast " + type;
   t.textContent = msg;
   c.appendChild(t);
-  setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity .3s"; setTimeout(() => t.remove(), 300); }, 3000);
+  setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity .3s"; setTimeout(() => t.remove(), 300); }, 3500);
 }
 function confirmDialog(msg) {
   return new Promise((resolve) => {
@@ -497,14 +527,14 @@ async function saveMeta() {
   const topic = topicInput.value.trim();
   const expectedCount = parseInt(expectedCountInput.value) || 0;
   try { await setDoc(classMetaRef(), { topic, expectedCount }, { merge: true }); }
-  catch (err) { showToast("บันทึกไม่สำเร็จ: " + err.message, "error"); }
+  catch (err) { showToast("บันทึกข้อมูลห้องไม่สำเร็จ: " + err.message, "error"); }
 }
 topicInput.addEventListener("blur", saveMeta);
 expectedCountInput.addEventListener("blur", saveMeta);
 
 function updateTopicLine() {
   const el = document.getElementById("topicLine");
-  if (currentMeta.topic) { el.innerHTML = `📚 <b>${escapeHtml(currentMeta.topic)}</b>`; el.style.display = "block"; }
+  if (currentMeta.topic) { el.innerHTML = `หัวข้อ: <b>${escapeHtml(currentMeta.topic)}</b>`; el.style.display = "block"; }
   else { el.style.display = "none"; }
 }
 function renderTotalLine(count) {
@@ -513,8 +543,8 @@ function renderTotalLine(count) {
   if (!el) return;
   if (currentMeta.expectedCount > 0) {
     const pct = Math.round((count / currentMeta.expectedCount) * 100);
-    el.textContent = `ตอบแล้ว ${count} / ${currentMeta.expectedCount} คน (${pct}%)`;
-  } else { el.textContent = `รวม ${count} คน`; }
+    el.textContent = `ตอบแล้ว ${count} จาก ${currentMeta.expectedCount} คน (${pct}%)`;
+  } else { el.textContent = `รวมทั้งหมด ${count} คน`; }
 }
 
 document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -538,7 +568,7 @@ document.getElementById("imageInput").addEventListener("change", async (e) => {
     document.getElementById("imagePreview").src = currentImageData;
     document.getElementById("imagePreviewWrap").style.display = "block";
     document.getElementById("pickImageBtn").style.display = "none";
-    showToast("อัปโหลดสำเร็จ", "success");
+    showToast("อัปโหลดรูปภาพสำเร็จ", "success");
   } catch (err) { showToast("แนบรูปไม่สำเร็จ: " + err.message, "error"); e.target.value = ""; }
 });
 document.getElementById("removeImageBtn").addEventListener("click", () => {
@@ -550,12 +580,12 @@ document.getElementById("removeImageBtn").addEventListener("click", () => {
 
 function compressImage(file) {
   return new Promise((resolve, reject) => {
-    if (!file.type.startsWith("image/")) { reject(new Error("ไม่ใช่รูปภาพ")); return; }
+    if (!file.type.startsWith("image/")) { reject(new Error("ไฟล์นี้ไม่ใช่รูปภาพ")); return; }
     const reader = new FileReader();
     reader.onerror = () => reject(new Error("อ่านไฟล์ไม่สำเร็จ"));
     reader.onload = () => {
       const img = new Image();
-      img.onerror = () => reject(new Error("เปิดรูปไม่สำเร็จ"));
+      img.onerror = () => reject(new Error("เปิดไฟล์รูปไม่สำเร็จ"));
       img.onload = () => {
         let { width, height } = img;
         const maxDim = 1100;
@@ -569,7 +599,7 @@ function compressImage(file) {
         let quality = 0.75;
         let dataUrl = canvas.toDataURL("image/jpeg", quality);
         while (dataUrl.length > 700000 && quality > 0.35) { quality -= 0.1; dataUrl = canvas.toDataURL("image/jpeg", quality); }
-        if (dataUrl.length > 950000) { reject(new Error("รูปใหญ่เกินไป")); return; }
+        if (dataUrl.length > 950000) { reject(new Error("ไฟล์รูปใหญ่เกินไป")); return; }
         resolve(dataUrl);
       };
       img.src = reader.result;
@@ -594,12 +624,9 @@ function addOptionRow(value = "", correct = false) {
   const row = document.createElement("div");
   row.className = "option-row";
   const isQuiz = currentType === "quiz";
-  row.innerHTML = `
-    <span class="idx" style="background:${colorAt(idx)}">${String.fromCharCode(65 + idx)}</span>
+  row.innerHTML = `<span class="idx" style="background:${colorAt(idx)}">${String.fromCharCode(65 + idx)}</span>
     <input type="text" class="opt-input" value="${value}" placeholder="ตัวเลือก">
-    ${isQuiz ? `<label style="font-size:12px;color:var(--ink-secondary);display:flex;align-items:center;gap:5px;cursor:pointer;">
-      <input type="checkbox" class="correct-check" ${correct ? 'checked' : ''}> ถูก
-    </label>` : ''}
+    ${isQuiz ? `<label style="font-size:12px;color:var(--ink-secondary);display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="checkbox" class="correct-check" ${correct ? 'checked' : ''}> ถูก</label>` : ''}
     <button class="btn-remove" type="button">✕</button>`;
   row.querySelector(".btn-remove").addEventListener("click", () => {
     if (optionsContainer.children.length > 2) { row.remove(); restripeSwatches(); }
@@ -654,7 +681,7 @@ document.getElementById("saveToBankBtn").addEventListener("click", async () => {
     showToast("บันทึกลงคลังแล้ว", "success");
     clearForm();
     document.querySelector('.tab-btn[data-tab="bank"]').click();
-  } catch (err) { showToast("บันทึกไม่สำเร็จ: " + err.message, "error"); }
+  } catch (err) { showToast("บันทึกลงคลังไม่สำเร็จ: " + err.message, "error"); }
 });
 
 document.getElementById("startNowBtn").addEventListener("click", async () => {
@@ -670,12 +697,12 @@ document.getElementById("startNowBtn").addEventListener("click", async () => {
 async function loadBank() {
   const list = document.getElementById("bankList");
   const countEl = document.getElementById("bankCount");
-  list.innerHTML = `<div class="bank-empty">⏳ กำลังโหลด...</div>`;
+  list.innerHTML = `<div class="bank-empty">กำลังโหลด...</div>`;
   let snap;
   try { snap = await getDocs(query(bankCol(), orderBy("createdAt", "desc"))); }
-  catch (err) { list.innerHTML = `<div class="bank-empty">โหลดไม่สำเร็จ</div>`; return; }
-  countEl.textContent = snap.size;
-  if (snap.empty) { list.innerHTML = `<div class="bank-empty"> ยังไม่มีคำถามในคลัง</div>`; return; }
+  catch (err) { list.innerHTML = `<div class="bank-empty">โหลดคลังคำถามไม่สำเร็จ: ${escapeHtml(err.message)}</div>`; return; }
+  countEl.textContent = snap.empty ? "" : `(${snap.size})`;
+  if (snap.empty) { list.innerHTML = `<div class="bank-empty">ยังไม่มีคำถามในคลัง — สร้างคำถามแล้วกด "บันทึกลงคลัง"</div>`; return; }
   list.innerHTML = "";
   snap.forEach(d => {
     const q = d.data();
@@ -686,7 +713,7 @@ async function loadBank() {
     const optsHtml = q.type === "choice" || q.type === "quiz"
       ? `<div class="bank-opts">${q.options.map((o, i) => `${q.type === 'quiz' && i === q.correctIndex ? '✅' : '●'} ${escapeHtml(o)}`).join(" · ")}</div>`
       : q.type === "rating" ? `<div class="bank-opts">สเกล 1-5</div>`
-      : `<div class="bank-opts">💬 พิมพ์ตอบอิสระ</div>`;
+      : `<div class="bank-opts">พิมพ์ตอบอิสระ</div>`;
     const thumbHtml = q.image ? `<img class="bank-thumb" src="${q.image}">` : "";
     card.innerHTML = `
       <div class="bank-card-main">
@@ -698,15 +725,15 @@ async function loadBank() {
         </div>
       </div>
       <div class="bank-actions">
-        <button class="btn btn-primary" data-act="start"> เริ่ม</button>
-        <button class="btn btn-ghost" data-act="del"></button>
+        <button class="btn btn-primary" data-act="start">🚀 เริ่มโพลนี้</button>
+        <button class="btn btn-ghost" data-act="del">🗑 ลบ</button>
       </div>`;
     card.querySelector('[data-act="start"]').addEventListener("click", () => launchPoll(q));
     card.querySelector('[data-act="del"]').addEventListener("click", async () => {
-      const ok = await confirmDialog("ลบคำถามนี้?");
+      const ok = await confirmDialog("ลบคำถามนี้ออกจากคลังใช่หรือไม่?");
       if (!ok) return;
-      try { await deleteDoc(d.ref); showToast("ลบแล้ว", "success"); loadBank(); }
-      catch (err) { showToast("ลบไม่สำเร็จ", "error"); }
+      try { await deleteDoc(d.ref); showToast("ลบคำถามแล้ว", "success"); loadBank(); }
+      catch (err) { showToast("ลบไม่สำเร็จ: " + err.message, "error"); }
     });
     list.appendChild(card);
   });
@@ -725,11 +752,11 @@ async function launchPoll(data) {
   try { await setDoc(pollRef(), payload); }
   catch (err) { showToast("เริ่มโพลไม่สำเร็จ: " + err.message, "error"); return; }
 
-  document.getElementById("classBadge").textContent = "🎓 ม." + CLASS_ID.replace("-", "/");
+  document.getElementById("classBadge").textContent = "ห้อง ม." + CLASS_ID.replace("-", "/");
   const studentUrl = `${location.origin}${location.pathname.replace('poll-teacher.html','poll-student.html')}?class=${encodeURIComponent(CLASS_ID)}`;
   const qrBox = document.getElementById("qrBox");
   qrBox.innerHTML = "";
-  new QRCode(qrBox, { text: studentUrl, width: 160, height: 160, colorDark: "#1d1d1f", colorLight: "#ffffff" });
+  new QRCode(qrBox, { text: studentUrl, width: 180, height: 180, colorDark: "#1d1d1f", colorLight: "#ffffff" });
   document.getElementById("linkText").textContent = studentUrl;
   document.getElementById("statusMsg").textContent = "";
   document.getElementById("statusMsg").className = "";
@@ -759,11 +786,11 @@ function watchClass() {
     if (!snap.exists() || !snap.data().active) return;
     const data = snap.data();
     latestPollData = data;
-    document.getElementById("classBadge").textContent = "🎓 ม." + CLASS_ID.replace("-", "/");
+    document.getElementById("classBadge").textContent = "ห้อง ม." + CLASS_ID.replace("-", "/");
     const studentUrl = `${location.origin}${location.pathname.replace('poll-teacher.html','poll-student.html')}?class=${encodeURIComponent(CLASS_ID)}`;
     const qrBox = document.getElementById("qrBox");
     qrBox.innerHTML = "";
-    new QRCode(qrBox, { text: studentUrl, width: 160, height: 160, colorDark: "#1d1d1f", colorLight: "#ffffff" });
+    new QRCode(qrBox, { text: studentUrl, width: 180, height: 180, colorDark: "#1d1d1f", colorLight: "#ffffff" });
     document.getElementById("linkText").textContent = studentUrl;
     showLive();
     renderQuestion(data);
@@ -827,7 +854,6 @@ function renderBars(data) {
     const respondents = allResponses.filter(r => r.optionIndex === i);
     const row = document.createElement("div");
     row.className = "bar-row";
-    row.dataset.optionIndex = i;
     row.innerHTML = `
       <div class="bar-label">
         <span class="opt-name">${isCorrect ? '✅ ' : ''}<span style="color:${colorAt(i)}">●</span> ${escapeHtml(opt)}</span>
@@ -846,7 +872,7 @@ function renderRatingBars(counts) {
   const total = counts.reduce((a, b) => a + b, 0) || 0;
   const el = document.getElementById("barsView");
   el.innerHTML = "";
-  const labels = ['😕','','🙂','😄','🤩'];
+  const labels = ['😕','😐','🙂','😄',''];
   const colors = ['#ff9500','#ffcc00','#34c759','#5ac8fa','#5856d6'];
   counts.forEach((count, i) => {
     const pct = total > 0 ? Math.round((count / total) * 100) : 0;
@@ -870,7 +896,7 @@ function renderRatingBars(counts) {
 function renderCloud(answers) {
   const el = document.getElementById("cloudView");
   if (!answers.length) {
-    el.innerHTML = `<div class="cloud-empty">⏳ กำลังรอคำตอบ...</div>`;
+    el.innerHTML = `<div class="cloud-empty">กำลังรอคำตอบจากนักเรียน...</div>`;
     renderTotalLine(0);
     return;
   }
@@ -993,13 +1019,13 @@ document.getElementById("newPollBtn").addEventListener("click", async () => {
 
 document.getElementById("closePollBtn").addEventListener("click", async () => {
   if (!latestPollData) return;
-  const ok = await confirmDialog("ปิดโพลและบันทึกผลลง Google Sheet?");
+  const ok = await confirmDialog("ปิดโพลและบันทึกผลลง Google Sheet ใช่หรือไม่?");
   if (!ok) return;
   try { await updateDoc(pollRef(), { active: false }); }
-  catch (err) { showToast("ปิดโพลไม่สำเร็จ", "error"); return; }
+  catch (err) { showToast("ปิดโพลไม่สำเร็จ: " + err.message, "error"); return; }
 
   const statusEl = document.getElementById("statusMsg");
-  statusEl.textContent = "⏳ กำลังบันทึก...";
+  statusEl.textContent = "กำลังบันทึก...";
   statusEl.className = "status-msg";
 
   let results;
@@ -1021,8 +1047,8 @@ document.getElementById("closePollBtn").addEventListener("click", async () => {
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
-    statusEl.textContent = "✅ บันทึกลง Sheet สำเร็จ";
+    statusEl.textContent = "✅ บันทึกลง Sheet สำเร็จแล้ว";
     statusEl.className = "status-msg status-ok";
     confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#34c759','#0071e3','#5856d6'] });
-  } catch (err) { statusEl.textContent = " บันทึกไม่สำเร็จ: " + err.message; statusEl.className = "status-msg status-err"; }
+  } catch (err) { statusEl.textContent = "❌ บันทึกไม่สำเร็จ: " + err.message; statusEl.className = "status-msg status-err"; }
 });
