@@ -1,258 +1,139 @@
-
-                        <!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <style>
-                body {
-                  background-color: white; /* Ensure the iframe has a white background */
-                }
-
-                
-              </style>
-                        </head>
-                        <body>
-                            <!DOCTYPE html>
+</script>
+</body>
+</html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ร่วมโหวต — โพลสด | @Skunkworks</title>
+<title>ร่วมโหวต — Live Poll</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <style>
   :root{
-    --bg-0:#05060a;
-    --bg-1:#0a0d16;
-    --bg-2:#111524;
-    --bg-3:#1a1f33;
-    --border:rgba(255,255,255,.08);
-    --border-hi:rgba(255,255,255,.18);
-    --ink:#f0f2ff;
-    --ink-dim:#8b92a8;
-    --ink-faint:#5a6178;
-    --accent:#7c5cff;
-    --accent-2:#00e0ff;
-    --accent-3:#ff4d8d;
-    --success:#00e676;
-    --warning:#ffab00;
-    --danger:#ff3d5a;
-    --yellow:#ffd166;
-    --radius:18px;
-    --radius-sm:12px;
-    --shadow:0 20px 60px rgba(0,0,0,.5);
+    --glass-bg:rgba(255,255,255,.7);
+    --glass-bg-strong:rgba(255,255,255,.9);
+    --glass-border:rgba(255,255,255,.6);
+    --glass-shadow:0 8px 32px rgba(31,38,135,.08);
+    --ink:#1d1d1f;
+    --ink-secondary:#6e6e73;
+    --ink-tertiary:#aeaeb2;
+    --accent:#0071e3;
+    --accent-2:#5856d6;
+    --accent-3:#ff375f;
+    --success:#34c759;
+    --warning:#ff9500;
+    --radius:22px;
+    --radius-sm:14px;
   }
-  *{box-sizing:border-box;margin:0;padding:0;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{
-    font-family:'Sarabun',sans-serif;
-    background:var(--bg-0);
+    font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
     color:var(--ink);
     min-height:100dvh;
     display:flex;align-items:center;justify-content:center;
-    padding:20px;
+    padding:16px;
+    background:#f2f2f7;
     position:relative;
     overflow-x:hidden;
   }
   body::before{
     content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     background:
-      radial-gradient(ellipse 600px 400px at 10% 20%, rgba(124,92,255,.15), transparent 60%),
-      radial-gradient(ellipse 500px 500px at 90% 80%, rgba(0,224,255,.1), transparent 60%),
-      radial-gradient(ellipse 400px 300px at 50% 50%, rgba(255,77,141,.08), transparent 60%);
-    animation:bgShift 20s ease-in-out infinite alternate;
+      radial-gradient(ellipse 600px 400px at 10% 20%, rgba(88,86,214,.15), transparent 60%),
+      radial-gradient(ellipse 500px 500px at 90% 80%, rgba(0,113,227,.12), transparent 60%),
+      radial-gradient(ellipse 400px 300px at 50% 50%, rgba(255,55,95,.06), transparent 60%);
+    animation:bgFloat 20s ease-in-out infinite alternate;
   }
-  @keyframes bgShift{0%{filter:hue-rotate(0deg);}100%{filter:hue-rotate(30deg);}}
-  body::after{
-    content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4;
-    background-image:
-      linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
-    background-size:60px 60px;
-    mask-image:radial-gradient(ellipse at center, black 30%, transparent 80%);
-  }
+  @keyframes bgFloat{0%{transform:translate(0,0);}100%{transform:translate(-20px,20px);}}
 
   .card{
     position:relative;z-index:1;
-    background:rgba(17,21,36,.7);backdrop-filter:blur(24px);
-    border:1px solid var(--border);border-radius:var(--radius);
-    padding:32px 28px;max-width:480px;width:100%;text-align:center;
-    box-shadow:var(--shadow);
+    background:var(--glass-bg-strong);
+    backdrop-filter:blur(40px) saturate(180%);
+    -webkit-backdrop-filter:blur(40px) saturate(180%);
+    border:1px solid var(--glass-border);
+    border-radius:var(--radius);
+    padding:28px 24px;
+    max-width:440px;width:100%;
+    box-shadow:0 12px 40px rgba(31,38,135,.12);
     animation:cardIn .5s cubic-bezier(.2,.9,.3,1);
   }
   @keyframes cardIn{from{opacity:0;transform:translateY(20px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
 
-  .brand{
-    display:flex;align-items:center;justify-content:center;gap:12px;
-    margin-bottom:24px;padding-bottom:18px;
-    border-bottom:1px solid var(--border);
-  }
-  .brand-mark{
-    width:42px;height:42px;border-radius:12px;
-    background:linear-gradient(135deg, var(--accent), var(--accent-2));
-    display:flex;align-items:center;justify-content:center;
-    font-size:20px;font-weight:800;color:#fff;
-    box-shadow:0 8px 24px rgba(124,92,255,.4);
-    position:relative;overflow:hidden;
-  }
-  .brand-mark::after{
-    content:'';position:absolute;inset:0;
-    background:linear-gradient(135deg, transparent 40%, rgba(255,255,255,.3) 50%, transparent 60%);
-    animation:shimmer 3s infinite;
-  }
-  @keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
-  .brand-text h1{font-family:'Kanit',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.3px;}
-  .brand-text h1 span{
-    background:linear-gradient(135deg, var(--accent-2), var(--accent));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .brand-text .dev{
-    display:inline-flex;align-items:center;gap:6px;
-    font-family:'JetBrains Mono',monospace;font-size:11px;
-    color:var(--accent-2);background:rgba(0,224,255,.08);
-    padding:3px 10px;border-radius:999px;margin-top:4px;
-    border:1px solid rgba(0,224,255,.2);
-  }
-  .brand-text .dev::before{content:'⚡';}
+  .brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,.06);}
+  .brand-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg, var(--accent), var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:700;box-shadow:0 4px 14px rgba(0,113,227,.35);}
+  .brand-text h1{font-size:19px;font-weight:700;letter-spacing:-.3px;}
+  .brand-text .dev{display:inline-block;margin-top:3px;font-size:10px;font-weight:600;color:var(--accent);background:rgba(0,113,227,.1);padding:2px 8px;border-radius:999px;}
 
-  .question-image{
-    max-width:100%;border-radius:var(--radius-sm);margin-bottom:18px;
-    border:1px solid var(--border);display:block;
-    box-shadow:0 12px 32px rgba(0,0,0,.3);
-  }
-  .question-wrap{margin-bottom:26px;}
-  .question{
-    font-family:'Kanit',sans-serif;font-size:22px;font-weight:700;line-height:1.4;
-    color:var(--ink);text-shadow:0 0 30px rgba(124,92,255,.2);
-  }
-  .chalk-underline{display:block;width:60%;height:10px;margin:10px auto 0;}
-  .chalk-underline path{stroke:var(--accent);stroke-width:3;fill:none;stroke-linecap:round;opacity:.8;}
+  .name-screen{text-align:center;}
+  .name-screen .emoji{font-size:48px;margin-bottom:12px;}
+  .name-screen h2{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;}
+  .name-screen p{font-size:14px;color:var(--ink-secondary);margin-bottom:20px;line-height:1.5;}
+  .name-input{width:100%;padding:14px 16px;border-radius:14px;border:none;background:rgba(118,118,128,.12);color:var(--ink);font-size:16px;font-family:inherit;font-weight:500;text-align:center;transition:.2s;margin-bottom:14px;}
+  .name-input:focus{outline:none;background:rgba(0,113,227,.12);box-shadow:0 0 0 3px rgba(0,113,227,.15);}
+  .name-input::placeholder{color:var(--ink-tertiary);}
+  .name-hint{font-size:12px;color:var(--ink-tertiary);margin-bottom:18px;}
+  .join-btn{width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg, var(--accent), var(--accent-2));color:#fff;font-weight:700;font-size:16px;font-family:inherit;cursor:pointer;box-shadow:0 4px 14px rgba(0,113,227,.35);transition:.2s;}
+  .join-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,113,227,.45);}
+  .join-btn:active{transform:translateY(0);}
+  .join-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 
-  /* Option buttons */
-  .opt-btn{
-    display:flex;align-items:center;gap:12px;
-    width:100%;padding:16px;margin-bottom:10px;border:none;
-    background:var(--bg-2);color:var(--ink);border-radius:var(--radius-sm);
-    font-size:16px;font-weight:600;font-family:'Sarabun',sans-serif;
-    cursor:pointer;text-align:left;
-    border-left:5px solid transparent;
-    transition:.2s;position:relative;overflow:hidden;
-  }
-  .opt-btn::before{
-    content:'';position:absolute;inset:0;
-    background:linear-gradient(135deg, transparent 40%, rgba(255,255,255,.08) 50%, transparent 60%);
-    transform:translateX(-100%);transition:.4s;
-  }
-  .opt-btn:hover::before{transform:translateX(100%);}
-  .opt-btn:hover{transform:translateX(4px);border-left-color:var(--accent);}
+  .question-image{max-width:100%;border-radius:14px;margin-bottom:16px;border:1px solid rgba(0,0,0,.08);display:block;box-shadow:0 8px 24px rgba(0,0,0,.08);}
+  .question-wrap{margin-bottom:22px;}
+  .question{font-size:20px;font-weight:700;line-height:1.4;color:var(--ink);letter-spacing:-.3px;}
+  .chalk-underline{display:block;width:60%;height:8px;margin:8px auto 0;}
+  .chalk-underline path{stroke:var(--accent);stroke-width:3;fill:none;stroke-linecap:round;opacity:.5;}
+
+  .opt-btn{display:flex;align-items:center;gap:10px;width:100%;padding:14px;margin-bottom:8px;border:none;background:rgba(255,255,255,.7);color:var(--ink);border-radius:14px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left;border:1.5px solid rgba(0,0,0,.06);transition:.2s;}
+  .opt-btn:hover{background:rgba(255,255,255,.95);transform:translateX(3px);}
   .opt-btn:active{transform:scale(.98);}
-  .opt-btn .letter{
-    width:32px;height:32px;border-radius:8px;flex:none;
-    display:flex;align-items:center;justify-content:center;
-    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;color:#fff;
-  }
-  .opt-btn.selected{
-    background:rgba(0,230,118,.12);color:var(--success);
-    border-left-color:var(--success);
-  }
-  .opt-btn.correct{
-    background:rgba(0,230,118,.15);color:var(--success);
-    border-left-color:var(--success);
-    box-shadow:0 0 0 2px rgba(0,230,118,.3);
-  }
-  .opt-btn.wrong{
-    background:rgba(255,61,90,.1);color:var(--danger);
-    border-left-color:var(--danger);opacity:.7;
-  }
-  .opt-btn .result-icon{margin-left:auto;font-size:18px;}
+  .opt-btn .letter{width:30px;height:30px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;}
+  .opt-btn.selected{background:rgba(52,199,89,.12);color:var(--success);border-color:var(--success);}
+  .opt-btn.correct{background:rgba(52,199,89,.15);color:var(--success);border-color:var(--success);box-shadow:0 0 0 2px rgba(52,199,89,.3);}
+  .opt-btn.wrong{background:rgba(255,55,95,.1);color:var(--accent-3);border-color:var(--accent-3);opacity:.7;}
+  .opt-btn .result-icon{margin-left:auto;font-size:16px;}
 
-  /* Rating stars */
-  .rating-container{margin:20px 0;}
-  .rating-stars{display:flex;gap:10px;justify-content:center;margin-bottom:12px;}
-  .rating-star{
-    font-size:42px;cursor:pointer;transition:.15s;
-    filter:grayscale(.6) opacity(.35);
-    user-select:none;
-  }
+  .rating-container{margin:18px 0;}
+  .rating-stars{display:flex;gap:8px;justify-content:center;margin-bottom:10px;}
+  .rating-star{font-size:38px;cursor:pointer;transition:.15s;filter:grayscale(.6) opacity(.35);user-select:none;}
   .rating-star:hover{transform:scale(1.15);filter:none;}
   .rating-star.active{filter:none;transform:scale(1.1);}
-  .rating-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-dim);padding:0 8px;}
-  .rating-value{
-    font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;
-    background:linear-gradient(135deg, var(--yellow), var(--accent-3));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-    margin-top:12px;min-height:36px;
-  }
+  .rating-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-secondary);padding:0 6px;}
+  .rating-value{font-size:24px;font-weight:700;text-align:center;margin-top:10px;background:linear-gradient(135deg, var(--accent), var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;min-height:32px;}
 
-  /* Text input */
-  textarea.answer-input{
-    width:100%;padding:16px;border-radius:var(--radius-sm);border:1px solid var(--border);
-    background:var(--bg-2);color:var(--ink);font-size:16px;font-family:'Sarabun',sans-serif;
-    resize:none;transition:.2s;
-  }
-  textarea.answer-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,255,.15);}
-  .char-count{font-size:12px;color:var(--ink-dim);text-align:right;margin-top:8px;font-family:'JetBrains Mono',monospace;}
+  textarea.answer-input{width:100%;padding:14px 16px;border-radius:14px;border:none;background:rgba(118,118,128,.12);color:var(--ink);font-size:15px;font-family:inherit;font-weight:500;resize:none;transition:.2s;}
+  textarea.answer-input:focus{outline:none;background:rgba(0,113,227,.12);box-shadow:0 0 0 3px rgba(0,113,227,.15);}
+  .char-count{font-size:11px;color:var(--ink-tertiary);text-align:right;margin-top:6px;}
 
-  /* Submit button */
-  .submit-btn{
-    width:100%;padding:16px;margin-top:16px;border:none;border-radius:var(--radius-sm);
-    background:linear-gradient(135deg, var(--accent), var(--accent-2));color:#fff;
-    font-weight:700;font-size:16px;font-family:'Sarabun',sans-serif;
-    cursor:pointer;transition:.2s;position:relative;overflow:hidden;
-    box-shadow:0 8px 24px rgba(124,92,255,.4);
-  }
-  .submit-btn::before{
-    content:'';position:absolute;inset:0;
-    background:linear-gradient(135deg, transparent 40%, rgba(255,255,255,.25) 50%, transparent 60%);
-    transform:translateX(-100%);transition:.4s;
-  }
-  .submit-btn:hover::before{transform:translateX(100%);}
-  .submit-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(124,92,255,.5);}
+  .submit-btn{width:100%;padding:15px;margin-top:14px;border:none;border-radius:14px;background:linear-gradient(135deg, var(--accent), var(--accent-2));color:#fff;font-weight:700;font-size:16px;font-family:inherit;cursor:pointer;box-shadow:0 4px 14px rgba(0,113,227,.35);transition:.2s;}
+  .submit-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,113,227,.45);}
   .submit-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 
-  /* States */
-  .msg{color:var(--ink-dim);font-size:15px;margin-top:16px;line-height:1.6;}
-  .thankyou, .waiting{font-size:48px;margin-bottom:12px;}
+  .msg{color:var(--ink-secondary);font-size:14px;margin-top:14px;line-height:1.5;text-align:center;}
+  .thankyou, .waiting{font-size:44px;margin-bottom:10px;text-align:center;}
   .waiting{animation:pulse 1.6s infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
-  .your-answer{
-    background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);color:var(--success);
-    border-radius:var(--radius-sm);padding:14px 16px;font-weight:600;margin-top:12px;font-size:15px;
-  }
-  .moderation-notice{
-    background:rgba(255,171,0,.08);border:1px solid rgba(255,171,0,.25);color:var(--warning);
-    border-radius:var(--radius-sm);padding:14px 16px;font-weight:600;margin-top:12px;font-size:14px;
-  }
-  .quiz-result{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;margin-top:14px;
-  }
-  .quiz-result.correct{background:rgba(0,230,118,.15);color:var(--success);border:1px solid rgba(0,230,118,.3);}
-  .quiz-result.wrong{background:rgba(255,61,90,.1);color:var(--danger);border:1px solid rgba(255,61,90,.25);}
+  .your-answer{background:rgba(52,199,89,.1);border:1px solid rgba(52,199,89,.25);color:var(--success);border-radius:12px;padding:12px 14px;font-weight:600;margin-top:10px;font-size:14px;text-align:center;}
+  .quiz-result{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;font-weight:700;font-size:13px;margin-top:12px;}
+  .quiz-result.correct{background:rgba(52,199,89,.15);color:var(--success);border:1px solid rgba(52,199,89,.3);}
+  .quiz-result.wrong{background:rgba(255,55,95,.1);color:var(--accent-3);border:1px solid rgba(255,55,95,.25);}
 
-  /* Toast */
-  #toastContainer{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:10px;z-index:9999;width:min(92vw,380px);}
-  .toast{
-    background:rgba(17,21,36,.95);backdrop-filter:blur(20px);
-    border:1px solid var(--border);border-left:4px solid var(--accent-2);
-    color:var(--ink);padding:14px 18px;border-radius:var(--radius-sm);
-    font-size:14px;font-weight:600;box-shadow:var(--shadow);
-    animation:toastIn .3s cubic-bezier(.2,.9,.3,1);
-  }
-  .toast.success{border-left-color:var(--success);}
-  .toast.error{border-left-color:var(--danger);}
-  .toast.warning{border-left-color:var(--warning);}
-  @keyframes toastIn{from{opacity:0;transform:translateY(20px) scale(.95);}to{opacity:1;transform:translateY(0) scale(1);}}
+  #toastContainer{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:9999;width:min(92vw,360px);}
+  .toast{background:rgba(255,255,255,.95);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid rgba(255,255,255,.6);color:var(--ink);padding:13px 16px;border-radius:14px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.1);animation:toastIn .3s cubic-bezier(.2,.9,.3,1);}
+  .toast.success{border-left:4px solid var(--success);}
+  .toast.error{border-left:4px solid var(--accent-3);}
+  @keyframes toastIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 
   @media(max-width:480px){
-    .card{padding:24px 20px;}
-    .question{font-size:19px;}
-    .rating-star{font-size:36px;}
-    .opt-btn{padding:14px;font-size:15px;}
+    .card{padding:22px 18px;}
+    .question{font-size:18px;}
+    .rating-star{font-size:34px;}
+    .opt-btn{padding:12px;font-size:14px;}
   }
 </style>
 </head>
@@ -261,21 +142,26 @@
   <div class="brand">
     <div class="brand-mark">⚡</div>
     <div class="brand-text">
-      <h1>โพล<span>สด</span></h1>
+      <h1>Live Poll</h1>
       <div class="dev">@Skunkworks</div>
     </div>
   </div>
   <div id="content">
-    <div class="waiting">⏳</div>
-    <div class="msg">กำลังรอครูเริ่มโพล...</div>
+    <div class="name-screen">
+      <div class="emoji">👋</div>
+      <h2>ยินดีต้อนรับ!</h2>
+      <p>กรุณากรอกชื่อหรือชื่อเล่นก่อนเริ่มโพล</p>
+      <input type="text" class="name-input" id="nameInput" placeholder="เช่น สมชาย, น้องมายด์" maxlength="20" autocomplete="off">
+      <div class="name-hint">ชื่อจะแสดงให้ครูเห็นเมื่อตอบโพล</div>
+      <button class="join-btn" id="joinBtn" disabled>เข้าร่วมโพล</button>
+    </div>
   </div>
 </div>
 <div id="toastContainer"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp, setDoc }
-  from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import { getFirestore, doc, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 import { firebaseConfig, CLASS_LIST } from "./firebase-config.js";
 
 const app = initializeApp(firebaseConfig);
@@ -283,9 +169,8 @@ const db = getFirestore(app);
 const params = new URLSearchParams(location.search);
 const classId = params.get("class") || CLASS_LIST[0];
 const pollRef = doc(db, "polls", classId);
-const modColRef = doc(db, "polls", classId, "moderation", "_placeholder");
 
-const CHALK = ['#7c5cff','#00e0ff','#ff4d8d','#00e676','#ffd166','#ff6b35'];
+const COLORS = ['#0071e3','#5856d6','#af52de','#ff2d55','#ff9500','#ffcc00','#34c759','#5ac8fa'];
 
 function showToast(msg, type = "info") {
   const c = document.getElementById("toastContainer");
@@ -293,10 +178,7 @@ function showToast(msg, type = "info") {
   t.className = "toast " + type;
   t.textContent = msg;
   c.appendChild(t);
-  setTimeout(() => {
-    t.style.opacity = "0"; t.style.transition = "opacity .3s";
-    setTimeout(() => t.remove(), 300);
-  }, 3500);
+  setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity .3s"; setTimeout(() => t.remove(), 300); }, 3000);
 }
 
 function getStudentId() {
@@ -306,39 +188,59 @@ function getStudentId() {
 }
 const studentId = getStudentId();
 const contentEl = document.getElementById("content");
+let studentName = localStorage.getItem(`studentName_${classId}`) || '';
 
-onSnapshot(pollRef, (snap) => {
-  if (!snap.exists()) return renderWaiting();
-  const data = snap.data();
-  const votedInfo = getVotedInfo(classId);
-  if (!data.active) return renderClosed();
-  if (votedInfo && votedInfo.pollId === data.pollId) return renderVoted(data, votedInfo);
-  renderQuestion(data);
-}, (err) => {
-  contentEl.innerHTML = `<div class="waiting">⚠️</div><div class="msg">เชื่อมต่อไม่สำเร็จ: ${escapeHtml(err.message)}</div>`;
+const nameInput = document.getElementById("nameInput");
+const joinBtn = document.getElementById("joinBtn");
+
+if (studentName) {
+  nameInput.value = studentName;
+  joinBtn.disabled = false;
+}
+
+nameInput.addEventListener("input", () => {
+  joinBtn.disabled = nameInput.value.trim().length === 0;
 });
+
+joinBtn.addEventListener("click", () => {
+  const name = nameInput.value.trim();
+  if (!name) return;
+  studentName = name;
+  localStorage.setItem(`studentName_${classId}`, name);
+  startPollListener();
+});
+
+nameInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter" && nameInput.value.trim().length > 0) joinBtn.click();
+});
+
+function startPollListener() {
+  contentEl.innerHTML = `<div class="waiting">⏳</div><div class="msg">กำลังรอครูเริ่มโพล...</div><div style="margin-top:14px;font-size:12px;color:var(--ink-tertiary);text-align:center;">สวัสดี <b>${escapeHtml(studentName)}</b> 👋</div>`;
+  
+  onSnapshot(pollRef, (snap) => {
+    if (!snap.exists()) return renderWaiting();
+    const data = snap.data();
+    const votedInfo = getVotedInfo(classId);
+    if (!data.active) return renderClosed();
+    if (votedInfo && votedInfo.pollId === data.pollId) return renderVoted(data, votedInfo);
+    renderQuestion(data);
+  }, (err) => {
+    contentEl.innerHTML = `<div class="waiting">⚠️</div><div class="msg">เชื่อมต่อไม่สำเร็จ</div>`;
+  });
+}
 
 function getVotedInfo(classId) {
   const raw = localStorage.getItem(`voted_${classId}`);
   return raw ? JSON.parse(raw) : null;
 }
 function renderWaiting() {
-  contentEl.innerHTML = `
-    <div class="waiting">⏳</div>
-    <div class="msg">กำลังรอครูเริ่มโพล...</div>
-    <div style="margin-top:20px;font-size:13px;color:var(--ink-faint);">
-      💡 สแกน QR Code ที่หน้าจอครู หรือรอครูเปิดโพล
-    </div>`;
+  contentEl.innerHTML = `<div class="waiting">⏳</div><div class="msg">กำลังรอครูเริ่มโพล...</div><div style="margin-top:14px;font-size:12px;color:var(--ink-tertiary);text-align:center;">สวัสดี <b>${escapeHtml(studentName)}</b> 👋</div>`;
 }
 function renderClosed() {
-  contentEl.innerHTML = `
-    <div class="thankyou">✅</div>
-    <div class="msg" style="font-size:17px;font-weight:600;">โพลนี้ปิดแล้ว</div>
-    <div class="msg">ขอบคุณที่ร่วมโหวตครับ/ค่ะ 🙏</div>`;
+  contentEl.innerHTML = `<div class="thankyou">✅</div><div class="msg" style="font-size:16px;font-weight:600;">โพลนี้ปิดแล้ว</div><div class="msg">ขอบคุณที่ร่วมโหวต <b>${escapeHtml(studentName)}</b> 🙏</div>`;
 }
 function underlineSvg() {
-  return `<svg class="chalk-underline" viewBox="0 0 300 14" preserveAspectRatio="none">
-    <path d="M2,9 Q40,2 78,9 T154,9 T230,9 T298,9"/></svg>`;
+  return `<svg class="chalk-underline" viewBox="0 0 300 14" preserveAspectRatio="none"><path d="M2,9 Q40,2 78,9 T154,9 T230,9 T298,9"/></svg>`;
 }
 function imageHtml(data) {
   return data.image ? `<img class="question-image" src="${data.image}">` : "";
@@ -366,9 +268,7 @@ function renderQuestion(data) {
       <div class="rating-stars" id="ratingStars">
         ${[1,2,3,4,5].map(i => `<span class="rating-star" data-value="${i}">⭐</span>`).join('')}
       </div>
-      <div class="rating-labels">
-        <span>น้อยมาก</span><span>ปานกลาง</span><span>มากที่สุด</span>
-      </div>
+      <div class="rating-labels"><span>น้อยมาก</span><span>ปานกลาง</span><span>มากที่สุด</span></div>
       <div class="rating-value" id="ratingValue">เลือกระดับ 1-5</div>
     </div>
     <button class="submit-btn" id="submitBtn" disabled>ส่งคะแนน</button>`;
@@ -377,38 +277,22 @@ function renderQuestion(data) {
     const stars = contentEl.querySelectorAll(".rating-star");
     const valueEl = document.getElementById("ratingValue");
     const btn = document.getElementById("submitBtn");
-    const emojiLabels = ['', '😕 ต้องปรับปรุง', '😐 พอใช้', '🙂 ดี', '😄 ดีมาก', '🤩 ยอดเยี่ยม!'];
+    const emojiLabels = ['', ' ต้องปรับปรุง', '😐 พอใช้', '🙂 ดี', '😄 ดีมาก', '🤩 ยอดเยี่ยม!'];
     stars.forEach(star => {
       star.addEventListener("click", () => {
         selectedRating = parseInt(star.dataset.value);
-        stars.forEach((s, i) => {
-          s.classList.toggle("active", i < selectedRating);
-        });
-        valueEl.textContent = `${selectedRating} / 5 — ${emojiLabels[selectedRating]}`;
+        stars.forEach((s, i) => s.classList.toggle("active", i < selectedRating));
+        valueEl.textContent = `${selectedRating}/5 — ${emojiLabels[selectedRating]}`;
         btn.disabled = false;
-        // Haptic feedback
         if (navigator.vibrate) navigator.vibrate(10);
       });
     });
     btn.addEventListener("click", () => submitRating(selectedRating, data));
   }
-  else if (data.type === "quiz") {
+  else if (data.type === "quiz" || data.type === "choice") {
     data.options.forEach((opt, i) => {
       html += `<button class="opt-btn" data-idx="${i}">
-        <span class="letter" style="background:${CHALK[i%CHALK.length]}">${String.fromCharCode(65+i)}</span>
-        <span>${escapeHtml(opt)}</span>
-      </button>`;
-    });
-    contentEl.innerHTML = html;
-    contentEl.querySelectorAll(".opt-btn").forEach(btn => {
-      btn.addEventListener("click", () => voteChoice(parseInt(btn.dataset.idx), data));
-    });
-  }
-  else {
-    // choice
-    data.options.forEach((opt, i) => {
-      html += `<button class="opt-btn" data-idx="${i}">
-        <span class="letter" style="background:${CHALK[i%CHALK.length]}">${String.fromCharCode(65+i)}</span>
+        <span class="letter" style="background:${COLORS[i%COLORS.length]}">${String.fromCharCode(65+i)}</span>
         <span>${escapeHtml(opt)}</span>
       </button>`;
     });
@@ -424,11 +308,7 @@ function renderVoted(data, votedInfo) {
   html += `<div class="question-wrap"><div class="question">${escapeHtml(data.question)}</div>${underlineSvg()}</div>`;
   
   if (data.type === "text") {
-    if (votedInfo.status === "pending") {
-      html += `<div class="moderation-notice"> คำตอบของคุณกำลังรอครูอนุมัติ...</div>`;
-    } else {
-      html += `<div class="your-answer">💬 "${escapeHtml(votedInfo.text || "")}"</div>`;
-    }
+    html += `<div class="your-answer">💬 "${escapeHtml(votedInfo.text || "")}"</div>`;
   } 
   else if (data.type === "rating") {
     const emojiLabels = ['', '😕', '😐', '🙂', '😄', '🤩'];
@@ -438,41 +318,35 @@ function renderVoted(data, votedInfo) {
     data.options.forEach((opt, i) => {
       const isChosen = i === votedInfo.optionIndex;
       const isCorrect = i === data.correctIndex;
-      let cls = "";
-      let icon = "";
+      let cls = "", icon = "";
       if (isCorrect) { cls = "correct"; icon = "✓"; }
       else if (isChosen) { cls = "wrong"; icon = "✕"; }
       html += `<div class="opt-btn ${cls}" style="cursor:default;">
-        <span class="letter" style="background:${CHALK[i%CHALK.length]}">${String.fromCharCode(65+i)}</span>
+        <span class="letter" style="background:${COLORS[i%COLORS.length]}">${String.fromCharCode(65+i)}</span>
         <span>${escapeHtml(opt)}</span>
         ${icon ? `<span class="result-icon">${icon}</span>` : ''}
       </div>`;
     });
     const wasCorrect = votedInfo.optionIndex === data.correctIndex;
-    html += `<div class="quiz-result ${wasCorrect ? 'correct' : 'wrong'}">
-      ${wasCorrect ? '🎉 ถูกต้อง!' : '❌ ยังไม่ถูก — ข้อที่ถูกคือ ' + String.fromCharCode(65 + data.correctIndex)}
-    </div>`;
-    if (wasCorrect) {
-      setTimeout(() => confetti({ particleCount: 60, spread: 50, origin: { y: 0.7 } }), 300);
-    }
+    html += `<div style="text-align:center;"><div class="quiz-result ${wasCorrect ? 'correct' : 'wrong'}">
+      ${wasCorrect ? '🎉 ถูกต้อง!' : ' ยังไม่ถูก — ข้อที่ถูกคือ ' + String.fromCharCode(65 + data.correctIndex)}
+    </div></div>`;
+    if (wasCorrect) setTimeout(() => confetti({ particleCount: 60, spread: 50, origin: { y: 0.7 } }), 300);
   }
   else {
-    // choice
     data.options.forEach((opt, i) => {
       const isChosen = i === votedInfo.optionIndex;
       html += `<div class="opt-btn ${isChosen ? 'selected' : ''}" style="cursor:default;">
-        <span class="letter" style="background:${CHALK[i%CHALK.length]}">${String.fromCharCode(65+i)}</span>
+        <span class="letter" style="background:${COLORS[i%COLORS.length]}">${String.fromCharCode(65+i)}</span>
         <span>${escapeHtml(opt)}</span>
         ${isChosen ? '<span class="result-icon">✓</span>' : ''}
       </div>`;
     });
   }
   
-  html += `<div class="msg" style="margin-top:20px;">คุณตอบแล้ว ขอบคุณครับ/ค่ะ 🙏</div>`;
+  html += `<div class="msg" style="margin-top:18px;">คุณตอบแล้ว ขอบคุณครับ <b>${escapeHtml(studentName)}</b> 🙏</div>`;
   contentEl.innerHTML = html;
-  gsap.from(".opt-btn, .your-answer, .quiz-result", { 
-    opacity: 0, y: 10, stagger: 0.05, duration: 0.4, ease: "power2.out" 
-  });
+  gsap.from(".opt-btn, .your-answer, .quiz-result", { opacity: 0, y: 10, stagger: 0.05, duration: 0.4, ease: "power2.out" });
 }
 
 function escapeHtml(s){const d=document.createElement("div");d.textContent=s||"";return d.innerHTML;}
@@ -490,7 +364,7 @@ async function voteChoice(optionIndex, data) {
       const counts = [...pollData.counts];
       counts[optionIndex] = (counts[optionIndex] || 0) + 1;
       tx.update(pollRef, { counts });
-      tx.set(responseRef, { pollId: pollData.pollId, optionIndex, votedAt: serverTimestamp() });
+      tx.set(responseRef, { pollId: pollData.pollId, optionIndex, studentName, votedAt: serverTimestamp() });
     });
     const votedInfo = { pollId: data.pollId, optionIndex };
     localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
@@ -502,7 +376,6 @@ async function voteChoice(optionIndex, data) {
 async function submitText(text, data) {
   if (!text) return;
   const responseRef = doc(db, "polls", classId, "responses", studentId);
-  const modRef = doc(collection(db, "polls", classId, "moderation"));
   try {
     await runTransaction(db, async (tx) => {
       const pollSnap = await tx.get(pollRef);
@@ -511,27 +384,12 @@ async function submitText(text, data) {
       if (!pollData.active) throw new Error("โพลปิดไปแล้ว");
       const respSnap = await tx.get(responseRef);
       if (respSnap.exists() && respSnap.data().pollId === pollData.pollId) throw new Error("คุณตอบไปแล้ว");
-      // Save to moderation queue
-      tx.set(modRef, { 
-        pollId: pollData.pollId, 
-        text, 
-        studentId, 
-        status: "pending",
-        createdAt: serverTimestamp() 
-      });
-      // Mark as voted (but pending approval)
-      tx.set(responseRef, { 
-        pollId: pollData.pollId, 
-        text, 
-        votedAt: serverTimestamp(),
-        modId: modRef.id,
-        status: "pending"
-      });
+      tx.set(responseRef, { pollId: pollData.pollId, text, studentName, votedAt: serverTimestamp() });
     });
-    const votedInfo = { pollId: data.pollId, text, status: "pending" };
+    const votedInfo = { pollId: data.pollId, text };
     localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
     renderVoted(data, votedInfo);
-    showToast("ส่งคำตอบแล้ว รอครูอนุมัติ", "success");
+    showToast("ส่งคำตอบแล้ว!", "success");
   } catch (err) { showToast(err.message, "error"); }
 }
 
@@ -549,7 +407,7 @@ async function submitRating(value, data) {
       const counts = [...(pollData.counts || Array(5).fill(0))];
       counts[value - 1] = (counts[value - 1] || 0) + 1;
       tx.update(pollRef, { counts });
-      tx.set(responseRef, { pollId: pollData.pollId, value, votedAt: serverTimestamp() });
+      tx.set(responseRef, { pollId: pollData.pollId, value, studentName, votedAt: serverTimestamp() });
     });
     const votedInfo = { pollId: data.pollId, value };
     localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
@@ -558,38 +416,6 @@ async function submitRating(value, data) {
     confetti({ particleCount: 40, spread: 40, origin: { y: 0.7 } });
   } catch (err) { showToast(err.message, "error"); }
 }
-
-// Helper to access collection
-import { collection } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 </script>
 </body>
 </html>
-
-
-              <script>
-                              rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /polls/{classId}/responses/{responseId} {
-      allow read, write: if true;
-    }
-    match /polls/{classId}/moderation/{modId} {
-      allow read, write: if true;
-    }
-    match /polls/{pollId} {
-      allow read, write: if true;
-    }
-    match /questionBank/{docId} {
-      allow read, write: if true;
-    }
-    match /classMeta/{classId} {
-      allow read, write: if true;
-    }
-  }
-}
-
-
-              </script>
-                        </body>
-                        </html>
-                    
