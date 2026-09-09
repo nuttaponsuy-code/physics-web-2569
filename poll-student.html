@@ -6,10 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ร่วมโหวต — Live Poll</title>
+<title>ร่วมโหวต — โพลสด</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <style>
@@ -32,7 +32,7 @@
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{
-    font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
+    font-family:'Sarabun',-apple-system,BlinkMacSystemFont,sans-serif;
     color:var(--ink);
     min-height:100dvh;
     display:flex;align-items:center;justify-content:center;
@@ -66,13 +66,18 @@
   @keyframes cardIn{from{opacity:0;transform:translateY(20px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
 
   .brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,.06);}
-  .brand-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg, var(--accent), var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:700;box-shadow:0 4px 14px rgba(0,113,227,.35);}
-  .brand-text h1{font-size:19px;font-weight:700;letter-spacing:-.3px;}
-  .brand-text .dev{display:inline-block;margin-top:3px;font-size:10px;font-weight:600;color:var(--accent);background:rgba(0,113,227,.1);padding:2px 8px;border-radius:999px;}
+  .brand-mark{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg, var(--accent), var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:700;box-shadow:0 4px 14px rgba(0,113,227,.35);position:relative;overflow:hidden;}
+  .brand-mark::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg, transparent 40%, rgba(255,255,255,.3) 50%, transparent 60%);animation:shimmer 3s infinite;}
+  @keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+  .brand-text h1{font-family:'Kanit',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.3px;}
+  .brand-text h1 span{background:linear-gradient(135deg, var(--accent-2), var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .brand-text .dev{display:inline-flex;align-items:center;gap:4px;margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:var(--accent);background:rgba(0,113,227,.1);padding:2px 8px;border-radius:999px;}
+  .brand-text .dev::before{content:'⚡';}
 
+  /* Name Screen */
   .name-screen{text-align:center;}
-  .name-screen .emoji{font-size:48px;margin-bottom:12px;}
-  .name-screen h2{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;}
+  .name-screen .emoji{font-size:52px;margin-bottom:12px;}
+  .name-screen h2{font-family:'Kanit',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;}
   .name-screen p{font-size:14px;color:var(--ink-secondary);margin-bottom:20px;line-height:1.5;}
   .name-input{width:100%;padding:14px 16px;border-radius:14px;border:none;background:rgba(118,118,128,.12);color:var(--ink);font-size:16px;font-family:inherit;font-weight:500;text-align:center;transition:.2s;margin-bottom:14px;}
   .name-input:focus{outline:none;background:rgba(0,113,227,.12);box-shadow:0 0 0 3px rgba(0,113,227,.15);}
@@ -83,16 +88,17 @@
   .join-btn:active{transform:translateY(0);}
   .join-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 
+  /* Question */
   .question-image{max-width:100%;border-radius:14px;margin-bottom:16px;border:1px solid rgba(0,0,0,.08);display:block;box-shadow:0 8px 24px rgba(0,0,0,.08);}
   .question-wrap{margin-bottom:22px;}
-  .question{font-size:20px;font-weight:700;line-height:1.4;color:var(--ink);letter-spacing:-.3px;}
-  .chalk-underline{display:block;width:60%;height:8px;margin:8px auto 0;}
-  .chalk-underline path{stroke:var(--accent);stroke-width:3;fill:none;stroke-linecap:round;opacity:.5;}
+  .question{font-family:'Kanit',sans-serif;font-size:21px;font-weight:700;line-height:1.4;color:var(--ink);letter-spacing:-.3px;}
+  .chalk-underline{display:block;width:60%;height:10px;margin:9px auto 0;}
+  .chalk-underline path{stroke:var(--accent);stroke-width:3;fill:none;stroke-linecap:round;opacity:.6;}
 
   .opt-btn{display:flex;align-items:center;gap:10px;width:100%;padding:14px;margin-bottom:8px;border:none;background:rgba(255,255,255,.7);color:var(--ink);border-radius:14px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left;border:1.5px solid rgba(0,0,0,.06);transition:.2s;}
   .opt-btn:hover{background:rgba(255,255,255,.95);transform:translateX(3px);}
   .opt-btn:active{transform:scale(.98);}
-  .opt-btn .letter{width:30px;height:30px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;}
+  .opt-btn .letter{width:30px;height:30px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;color:#fff;}
   .opt-btn.selected{background:rgba(52,199,89,.12);color:var(--success);border-color:var(--success);}
   .opt-btn.correct{background:rgba(52,199,89,.15);color:var(--success);border-color:var(--success);box-shadow:0 0 0 2px rgba(52,199,89,.3);}
   .opt-btn.wrong{background:rgba(255,55,95,.1);color:var(--accent-3);border-color:var(--accent-3);opacity:.7;}
@@ -100,22 +106,22 @@
 
   .rating-container{margin:18px 0;}
   .rating-stars{display:flex;gap:8px;justify-content:center;margin-bottom:10px;}
-  .rating-star{font-size:38px;cursor:pointer;transition:.15s;filter:grayscale(.6) opacity(.35);user-select:none;}
+  .rating-star{font-size:40px;cursor:pointer;transition:.15s;filter:grayscale(.6) opacity(.35);user-select:none;}
   .rating-star:hover{transform:scale(1.15);filter:none;}
   .rating-star.active{filter:none;transform:scale(1.1);}
   .rating-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-secondary);padding:0 6px;}
-  .rating-value{font-size:24px;font-weight:700;text-align:center;margin-top:10px;background:linear-gradient(135deg, var(--accent), var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;min-height:32px;}
+  .rating-value{font-family:'Kanit',sans-serif;font-size:24px;font-weight:700;text-align:center;margin-top:10px;background:linear-gradient(135deg, var(--accent), var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;min-height:32px;}
 
   textarea.answer-input{width:100%;padding:14px 16px;border-radius:14px;border:none;background:rgba(118,118,128,.12);color:var(--ink);font-size:15px;font-family:inherit;font-weight:500;resize:none;transition:.2s;}
   textarea.answer-input:focus{outline:none;background:rgba(0,113,227,.12);box-shadow:0 0 0 3px rgba(0,113,227,.15);}
-  .char-count{font-size:11px;color:var(--ink-tertiary);text-align:right;margin-top:6px;}
+  .char-count{font-size:11px;color:var(--ink-tertiary);text-align:right;margin-top:6px;font-family:'JetBrains Mono',monospace;}
 
   .submit-btn{width:100%;padding:15px;margin-top:14px;border:none;border-radius:14px;background:linear-gradient(135deg, var(--accent), var(--accent-2));color:#fff;font-weight:700;font-size:16px;font-family:inherit;cursor:pointer;box-shadow:0 4px 14px rgba(0,113,227,.35);transition:.2s;}
   .submit-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,113,227,.45);}
   .submit-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 
   .msg{color:var(--ink-secondary);font-size:14px;margin-top:14px;line-height:1.5;text-align:center;}
-  .thankyou, .waiting{font-size:44px;margin-bottom:10px;text-align:center;}
+  .thankyou, .waiting{font-size:46px;margin-bottom:10px;text-align:center;}
   .waiting{animation:pulse 1.6s infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
   .your-answer{background:rgba(52,199,89,.1);border:1px solid rgba(52,199,89,.25);color:var(--success);border-radius:12px;padding:12px 14px;font-weight:600;margin-top:10px;font-size:14px;text-align:center;}
@@ -142,7 +148,7 @@
   <div class="brand">
     <div class="brand-mark">⚡</div>
     <div class="brand-text">
-      <h1>Live Poll</h1>
+      <h1>โพล<span>สด</span></h1>
       <div class="dev">@Skunkworks</div>
     </div>
   </div>
@@ -178,7 +184,7 @@ function showToast(msg, type = "info") {
   t.className = "toast " + type;
   t.textContent = msg;
   c.appendChild(t);
-  setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity .3s"; setTimeout(() => t.remove(), 300); }, 3000);
+  setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity .3s"; setTimeout(() => t.remove(), 300); }, 3500);
 }
 
 function getStudentId() {
@@ -225,7 +231,7 @@ function startPollListener() {
     if (votedInfo && votedInfo.pollId === data.pollId) return renderVoted(data, votedInfo);
     renderQuestion(data);
   }, (err) => {
-    contentEl.innerHTML = `<div class="waiting">⚠️</div><div class="msg">เชื่อมต่อไม่สำเร็จ</div>`;
+    contentEl.innerHTML = `<div class="waiting">⚠️</div><div class="msg">เชื่อมต่อไม่สำเร็จ: ${escapeHtml(err.message)}</div>`;
   });
 }
 
@@ -237,7 +243,7 @@ function renderWaiting() {
   contentEl.innerHTML = `<div class="waiting">⏳</div><div class="msg">กำลังรอครูเริ่มโพล...</div><div style="margin-top:14px;font-size:12px;color:var(--ink-tertiary);text-align:center;">สวัสดี <b>${escapeHtml(studentName)}</b> 👋</div>`;
 }
 function renderClosed() {
-  contentEl.innerHTML = `<div class="thankyou">✅</div><div class="msg" style="font-size:16px;font-weight:600;">โพลนี้ปิดแล้ว</div><div class="msg">ขอบคุณที่ร่วมโหวต <b>${escapeHtml(studentName)}</b> 🙏</div>`;
+  contentEl.innerHTML = `<div class="thankyou">✅</div><div class="msg" style="font-size:16px;font-weight:600;">โพลนี้ปิดแล้ว</div><div class="msg">ขอบคุณที่ร่วมโหวต <b>${escapeHtml(studentName)}</b> </div>`;
 }
 function underlineSvg() {
   return `<svg class="chalk-underline" viewBox="0 0 300 14" preserveAspectRatio="none"><path d="M2,9 Q40,2 78,9 T154,9 T230,9 T298,9"/></svg>`;
@@ -277,7 +283,7 @@ function renderQuestion(data) {
     const stars = contentEl.querySelectorAll(".rating-star");
     const valueEl = document.getElementById("ratingValue");
     const btn = document.getElementById("submitBtn");
-    const emojiLabels = ['', ' ต้องปรับปรุง', '😐 พอใช้', '🙂 ดี', '😄 ดีมาก', '🤩 ยอดเยี่ยม!'];
+    const emojiLabels = ['', '😕 ต้องปรับปรุง', '😐 พอใช้', '🙂 ดี', '😄 ดีมาก', '🤩 ยอดเยี่ยม!'];
     stars.forEach(star => {
       star.addEventListener("click", () => {
         selectedRating = parseInt(star.dataset.value);
@@ -329,7 +335,7 @@ function renderVoted(data, votedInfo) {
     });
     const wasCorrect = votedInfo.optionIndex === data.correctIndex;
     html += `<div style="text-align:center;"><div class="quiz-result ${wasCorrect ? 'correct' : 'wrong'}">
-      ${wasCorrect ? '🎉 ถูกต้อง!' : ' ยังไม่ถูก — ข้อที่ถูกคือ ' + String.fromCharCode(65 + data.correctIndex)}
+      ${wasCorrect ? '🎉 ถูกต้อง!' : '❌ ยังไม่ถูก — ข้อที่ถูกคือ ' + String.fromCharCode(65 + data.correctIndex)}
     </div></div>`;
     if (wasCorrect) setTimeout(() => confetti({ particleCount: 60, spread: 50, origin: { y: 0.7 } }), 300);
   }
@@ -419,3 +425,12 @@ async function submitRating(value, data) {
 </script>
 </body>
 </html>
+
+
+              <script>
+                              { pollId, optionIndex/text/value, studentName: "น้องมายด์", votedAt }
+
+
+              </script>
+                        </body>
+                        </html>
