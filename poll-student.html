@@ -1,19 +1,4 @@
-
-                        <!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <style>
-                body {
-                  background-color: white; /* Ensure the iframe has a white background */
-                }
-
-                
-              </style>
-                        </head>
-                        <body>
-                            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -26,15 +11,15 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <style>
   :root{
-    --bg-0:#05060a;
-    --bg-1:#0a0d16;
-    --bg-2:#111524;
-    --bg-3:#1a1f33;
-    --border:rgba(255,255,255,.08);
-    --border-hi:rgba(255,255,255,.18);
-    --ink:#f0f2ff;
-    --ink-dim:#8b92a8;
-    --ink-faint:#5a6178;
+    --bg-0:#f3f4f9;
+    --bg-1:#ffffff;
+    --bg-2:#eef0f7;
+    --bg-3:#e3e6f0;
+    --border:rgba(15,23,42,.10);
+    --border-hi:rgba(15,23,42,.22);
+    --ink:#1a1f2e;
+    --ink-dim:#5b6178;
+    --ink-faint:#8a90a8;
     --accent:#7c5cff;
     --accent-2:#00e0ff;
     --accent-3:#ff4d8d;
@@ -44,7 +29,7 @@
     --yellow:#ffd166;
     --radius:18px;
     --radius-sm:12px;
-    --shadow:0 20px 60px rgba(0,0,0,.5);
+    --shadow:0 12px 36px rgba(15,23,42,.10);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{height:100%;}
@@ -70,15 +55,15 @@
   body::after{
     content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4;
     background-image:
-      linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+      linear-gradient(rgba(15,23,42,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15,23,42,.035) 1px, transparent 1px);
     background-size:60px 60px;
     mask-image:radial-gradient(ellipse at center, black 30%, transparent 80%);
   }
 
   .card{
     position:relative;z-index:1;
-    background:rgba(17,21,36,.7);backdrop-filter:blur(24px);
+    background:rgba(255,255,255,.85);backdrop-filter:blur(24px);
     border:1px solid var(--border);border-radius:var(--radius);
     padding:32px 28px;max-width:480px;width:100%;text-align:center;
     box-shadow:var(--shadow);
@@ -127,7 +112,7 @@
   .question-wrap{margin-bottom:26px;}
   .question{
     font-family:'Kanit',sans-serif;font-size:22px;font-weight:700;line-height:1.4;
-    color:var(--ink);text-shadow:0 0 30px rgba(124,92,255,.2);
+    color:var(--ink);text-shadow:0 0 20px rgba(124,92,255,.10);
   }
   .chalk-underline{display:block;width:60%;height:10px;margin:10px auto 0;}
   .chalk-underline path{stroke:var(--accent);stroke-width:3;fill:none;stroke-linecap:round;opacity:.8;}
@@ -144,7 +129,7 @@
   }
   .opt-btn::before{
     content:'';position:absolute;inset:0;
-    background:linear-gradient(135deg, transparent 40%, rgba(255,255,255,.08) 50%, transparent 60%);
+    background:linear-gradient(135deg, transparent 40%, rgba(15,23,42,.05) 50%, transparent 60%);
     transform:translateX(-100%);transition:.4s;
   }
   .opt-btn:hover::before{transform:translateX(100%);}
@@ -223,10 +208,6 @@
     background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);color:var(--success);
     border-radius:var(--radius-sm);padding:14px 16px;font-weight:600;margin-top:12px;font-size:15px;
   }
-  .moderation-notice{
-    background:rgba(255,171,0,.08);border:1px solid rgba(255,171,0,.25);color:var(--warning);
-    border-radius:var(--radius-sm);padding:14px 16px;font-weight:600;margin-top:12px;font-size:14px;
-  }
   .quiz-result{
     display:inline-flex;align-items:center;gap:8px;
     padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;margin-top:14px;
@@ -237,7 +218,7 @@
   /* Toast */
   #toastContainer{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:10px;z-index:9999;width:min(92vw,380px);}
   .toast{
-    background:rgba(17,21,36,.95);backdrop-filter:blur(20px);
+    background:rgba(255,255,255,.97);backdrop-filter:blur(20px);
     border:1px solid var(--border);border-left:4px solid var(--accent-2);
     color:var(--ink);padding:14px 18px;border-radius:var(--radius-sm);
     font-size:14px;font-weight:600;box-shadow:var(--shadow);
@@ -283,7 +264,6 @@ const db = getFirestore(app);
 const params = new URLSearchParams(location.search);
 const classId = params.get("class") || CLASS_LIST[0];
 const pollRef = doc(db, "polls", classId);
-const modColRef = doc(db, "polls", classId, "moderation", "_placeholder");
 
 const CHALK = ['#7c5cff','#00e0ff','#ff4d8d','#00e676','#ffd166','#ff6b35'];
 
@@ -347,7 +327,7 @@ function imageHtml(data) {
 function renderQuestion(data) {
   let html = imageHtml(data);
   html += `<div class="question-wrap"><div class="question">${escapeHtml(data.question)}</div>${underlineSvg()}</div>`;
-  
+
   if (data.type === "text") {
     html += `<textarea id="answerInput" class="answer-input" rows="3" maxlength="120" placeholder="พิมพ์คำตอบของคุณ..."></textarea>
       <div class="char-count"><span id="charCount">0</span>/120</div>
@@ -360,7 +340,7 @@ function renderQuestion(data) {
       btn.disabled = input.value.trim().length === 0;
     });
     btn.addEventListener("click", () => submitText(input.value.trim(), data));
-  } 
+  }
   else if (data.type === "rating") {
     html += `<div class="rating-container">
       <div class="rating-stars" id="ratingStars">
@@ -386,7 +366,6 @@ function renderQuestion(data) {
         });
         valueEl.textContent = `${selectedRating} / 5 — ${emojiLabels[selectedRating]}`;
         btn.disabled = false;
-        // Haptic feedback
         if (navigator.vibrate) navigator.vibrate(10);
       });
     });
@@ -405,7 +384,6 @@ function renderQuestion(data) {
     });
   }
   else {
-    // choice
     data.options.forEach((opt, i) => {
       html += `<button class="opt-btn" data-idx="${i}">
         <span class="letter" style="background:${CHALK[i%CHALK.length]}">${String.fromCharCode(65+i)}</span>
@@ -422,14 +400,10 @@ function renderQuestion(data) {
 function renderVoted(data, votedInfo) {
   let html = imageHtml(data);
   html += `<div class="question-wrap"><div class="question">${escapeHtml(data.question)}</div>${underlineSvg()}</div>`;
-  
+
   if (data.type === "text") {
-    if (votedInfo.status === "pending") {
-      html += `<div class="moderation-notice"> คำตอบของคุณกำลังรอครูอนุมัติ...</div>`;
-    } else {
-      html += `<div class="your-answer">💬 "${escapeHtml(votedInfo.text || "")}"</div>`;
-    }
-  } 
+    html += `<div class="your-answer">💬 "${escapeHtml(votedInfo.text || "")}"</div>`;
+  }
   else if (data.type === "rating") {
     const emojiLabels = ['', '😕', '😐', '🙂', '😄', '🤩'];
     html += `<div class="your-answer">${emojiLabels[votedInfo.value] || '⭐'} คุณให้คะแนน: <strong>${votedInfo.value}/5</strong></div>`;
@@ -457,7 +431,6 @@ function renderVoted(data, votedInfo) {
     }
   }
   else {
-    // choice
     data.options.forEach((opt, i) => {
       const isChosen = i === votedInfo.optionIndex;
       html += `<div class="opt-btn ${isChosen ? 'selected' : ''}" style="cursor:default;">
@@ -467,11 +440,11 @@ function renderVoted(data, votedInfo) {
       </div>`;
     });
   }
-  
+
   html += `<div class="msg" style="margin-top:20px;">คุณตอบแล้ว ขอบคุณครับ/ค่ะ 🙏</div>`;
   contentEl.innerHTML = html;
-  gsap.from(".opt-btn, .your-answer, .quiz-result", { 
-    opacity: 0, y: 10, stagger: 0.05, duration: 0.4, ease: "power2.out" 
+  gsap.from(".opt-btn, .your-answer, .quiz-result", {
+    opacity: 0, y: 10, stagger: 0.05, duration: 0.4, ease: "power2.out"
   });
 }
 
@@ -502,7 +475,6 @@ async function voteChoice(optionIndex, data) {
 async function submitText(text, data) {
   if (!text) return;
   const responseRef = doc(db, "polls", classId, "responses", studentId);
-  const modRef = doc(collection(db, "polls", classId, "moderation"));
   try {
     await runTransaction(db, async (tx) => {
       const pollSnap = await tx.get(pollRef);
@@ -511,27 +483,13 @@ async function submitText(text, data) {
       if (!pollData.active) throw new Error("โพลปิดไปแล้ว");
       const respSnap = await tx.get(responseRef);
       if (respSnap.exists() && respSnap.data().pollId === pollData.pollId) throw new Error("คุณตอบไปแล้ว");
-      // Save to moderation queue
-      tx.set(modRef, { 
-        pollId: pollData.pollId, 
-        text, 
-        studentId, 
-        status: "pending",
-        createdAt: serverTimestamp() 
-      });
-      // Mark as voted (but pending approval)
-      tx.set(responseRef, { 
-        pollId: pollData.pollId, 
-        text, 
-        votedAt: serverTimestamp(),
-        modId: modRef.id,
-        status: "pending"
-      });
+      // Answer is saved directly and shows up on the teacher screen immediately — no approval step.
+      tx.set(responseRef, { pollId: pollData.pollId, text, votedAt: serverTimestamp() });
     });
-    const votedInfo = { pollId: data.pollId, text, status: "pending" };
+    const votedInfo = { pollId: data.pollId, text };
     localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
     renderVoted(data, votedInfo);
-    showToast("ส่งคำตอบแล้ว รอครูอนุมัติ", "success");
+    showToast("ส่งคำตอบแล้ว!", "success");
   } catch (err) { showToast(err.message, "error"); }
 }
 
@@ -558,38 +516,6 @@ async function submitRating(value, data) {
     confetti({ particleCount: 40, spread: 40, origin: { y: 0.7 } });
   } catch (err) { showToast(err.message, "error"); }
 }
-
-// Helper to access collection
-import { collection } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 </script>
 </body>
 </html>
-
-
-              <script>
-                              rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /polls/{classId}/responses/{responseId} {
-      allow read, write: if true;
-    }
-    match /polls/{classId}/moderation/{modId} {
-      allow read, write: if true;
-    }
-    match /polls/{pollId} {
-      allow read, write: if true;
-    }
-    match /questionBank/{docId} {
-      allow read, write: if true;
-    }
-    match /classMeta/{classId} {
-      allow read, write: if true;
-    }
-  }
-}
-
-
-              </script>
-                        </body>
-                        </html>
-                    
