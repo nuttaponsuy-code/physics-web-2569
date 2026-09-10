@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <style>
   :root{
@@ -962,7 +961,6 @@ async function launchPoll(data) {
   document.getElementById("statusMsg").className = "";
 
   showLive();
-  confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 }, colors: ['#7c5cff', '#00e0ff', '#ff4d8d'] });
 }
 
 function showLive() {
@@ -1125,7 +1123,6 @@ document.getElementById("timerStartBtn").addEventListener("click", () => {
       clearInterval(timerInterval);
       timerRunning = false;
       showToast("⏰ หมดเวลา!", "warning");
-      confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
     }
   }, 1000);
 });
@@ -1224,7 +1221,6 @@ document.getElementById("closePollBtn").addEventListener("click", async () => {
     if (data.error) throw new Error(data.error);
     statusEl.textContent = "✅ บันทึกลง Sheet สำเร็จแล้ว";
     statusEl.className = "status-msg status-ok";
-    confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#00e676', '#7c5cff', '#00e0ff'] });
   } catch (err) {
     statusEl.textContent = "❌ บันทึกไม่สำเร็จ: " + err.message;
     statusEl.className = "status-msg status-err";
