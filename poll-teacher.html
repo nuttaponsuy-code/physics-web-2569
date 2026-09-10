@@ -12,15 +12,15 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <style>
   :root{
-    --bg-0:#05060a;
-    --bg-1:#0a0d16;
-    --bg-2:#111524;
-    --bg-3:#1a1f33;
-    --border:rgba(255,255,255,.08);
-    --border-hi:rgba(255,255,255,.18);
-    --ink:#f0f2ff;
-    --ink-dim:#8b92a8;
-    --ink-faint:#5a6178;
+    --bg-0:#f3f4f9;
+    --bg-1:#ffffff;
+    --bg-2:#eef0f7;
+    --bg-3:#e3e6f0;
+    --border:rgba(15,23,42,.10);
+    --border-hi:rgba(15,23,42,.22);
+    --ink:#1a1f2e;
+    --ink-dim:#5b6178;
+    --ink-faint:#8a90a8;
     --accent:#7c5cff;
     --accent-2:#00e0ff;
     --accent-3:#ff4d8d;
@@ -30,7 +30,7 @@
     --yellow:#ffd166;
     --radius:16px;
     --radius-sm:10px;
-    --shadow:0 20px 60px rgba(0,0,0,.5);
+    --shadow:0 12px 36px rgba(15,23,42,.10);
     --glow:0 0 40px rgba(124,92,255,.3);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -43,7 +43,6 @@
     overflow-x:hidden;
     position:relative;
   }
-  /* Animated background */
   body::before{
     content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     background:
@@ -56,22 +55,20 @@
     0%{filter:hue-rotate(0deg);}
     100%{filter:hue-rotate(30deg);}
   }
-  /* Grid overlay */
   body::after{
     content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4;
     background-image:
-      linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+      linear-gradient(rgba(15,23,42,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15,23,42,.035) 1px, transparent 1px);
     background-size:60px 60px;
     mask-image:radial-gradient(ellipse at center, black 30%, transparent 80%);
   }
   .wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:32px 24px 80px;}
 
-  /* ========== HEADER ========== */
   .top{
     display:flex;align-items:center;justify-content:space-between;gap:20px;
     padding:18px 24px;margin-bottom:28px;
-    background:rgba(17,21,36,.6);backdrop-filter:blur(20px);
+    background:rgba(255,255,255,.75);backdrop-filter:blur(20px);
     border:1px solid var(--border);border-radius:var(--radius);
     box-shadow:var(--shadow);
   }
@@ -114,9 +111,8 @@
   select:hover{border-color:var(--border-hi);}
   select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,255,.2);}
 
-  /* ========== META PANEL ========== */
   .meta-panel{
-    background:rgba(17,21,36,.6);backdrop-filter:blur(20px);
+    background:rgba(255,255,255,.75);backdrop-filter:blur(20px);
     border:1px solid var(--border);border-radius:var(--radius);
     padding:20px 24px;margin-bottom:20px;
   }
@@ -131,10 +127,9 @@
   }
   .meta-field input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,255,.15);}
 
-  /* ========== TABS ========== */
   .tabs{
     display:flex;gap:4px;margin-bottom:20px;
-    background:rgba(17,21,36,.6);backdrop-filter:blur(20px);
+    background:rgba(255,255,255,.75);backdrop-filter:blur(20px);
     border:1px solid var(--border);border-radius:var(--radius);padding:4px;
   }
   .tab-btn{
@@ -153,15 +148,13 @@
     padding:1px 7px;border-radius:999px;font-size:11px;margin-left:6px;
   }
 
-  /* ========== PANEL ========== */
   .panel{
-    background:rgba(17,21,36,.6);backdrop-filter:blur(20px);
+    background:rgba(255,255,255,.75);backdrop-filter:blur(20px);
     border:1px solid var(--border);border-radius:var(--radius);
     padding:28px;margin-bottom:20px;
     box-shadow:var(--shadow);
   }
 
-  /* ========== TYPE SWITCH ========== */
   .type-switch{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;}
   .type-opt{
     padding:16px 12px;border-radius:var(--radius-sm);
@@ -177,7 +170,6 @@
   .type-opt strong{display:block;font-family:'Kanit',sans-serif;font-size:14px;color:var(--ink);font-weight:600;margin-bottom:2px;}
   .type-opt small{font-size:11px;color:var(--ink-dim);}
 
-  /* ========== FORM ========== */
   label.field-label{display:block;font-size:12px;font-weight:600;color:var(--ink-dim);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;}
   label.field-label:first-of-type{margin-top:0;}
   input[type=text], textarea{
@@ -188,7 +180,6 @@
   input[type=text]:focus, textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,255,.15);}
   input::placeholder, textarea::placeholder{color:var(--ink-faint);}
 
-  /* Image upload */
   .image-upload{
     display:flex;align-items:center;gap:12px;padding:14px 16px;
     border:2px dashed var(--border);border-radius:var(--radius-sm);
@@ -206,7 +197,6 @@
     box-shadow:0 4px 12px rgba(255,61,90,.4);
   }
 
-  /* Options */
   .option-row{display:flex;gap:10px;margin-bottom:10px;align-items:center;}
   .option-row .idx{
     width:32px;height:32px;border-radius:8px;flex:none;
@@ -226,13 +216,11 @@
   }
   .add-option:hover{border-color:var(--accent);color:var(--accent);background:rgba(124,92,255,.05);}
 
-  /* Rating UI */
   .rating-preview{display:flex;gap:8px;margin-top:10px;justify-content:center;}
   .rating-star{font-size:32px;cursor:pointer;transition:.15s;filter:grayscale(.5) opacity(.4);}
   .rating-star.active{filter:none;transform:scale(1.1);}
   .rating-star:hover{transform:scale(1.2);}
 
-  /* ========== BUTTONS ========== */
   .btn{
     display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border:none;border-radius:var(--radius-sm);
     font-size:14px;font-weight:700;font-family:'Sarabun',sans-serif;cursor:pointer;transition:.2s;
@@ -257,7 +245,6 @@
   .btn-success{background:linear-gradient(135deg, var(--success), #00c853);color:#052e16;box-shadow:0 8px 24px rgba(0,230,118,.3);}
   .form-actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap;}
 
-  /* ========== BANK LIST ========== */
   .bank-empty{color:var(--ink-dim);font-size:14px;text-align:center;padding:40px 10px;}
   .bank-card{
     border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:12px;
@@ -279,10 +266,9 @@
   .bank-opts{font-size:12px;color:var(--ink-dim);line-height:1.6;}
   .bank-actions{display:flex;flex-direction:column;gap:8px;flex:none;}
 
-  /* ========== LIVE VIEW ========== */
   #liveView{display:none;}
   .live-shell{
-    background:rgba(17,21,36,.6);backdrop-filter:blur(20px);
+    background:rgba(255,255,255,.75);backdrop-filter:blur(20px);
     border:1px solid var(--border);border-radius:var(--radius);
     padding:32px;box-shadow:var(--shadow);
   }
@@ -301,7 +287,6 @@
   }
   .icon-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px);}
 
-  /* Timer */
   .timer-wrap{display:flex;align-items:center;gap:12px;margin:20px 0;}
   .timer-display{
     font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:600;
@@ -322,11 +307,9 @@
   .timer-ring .fg{stroke:url(#timerGrad);stroke-linecap:round;transition:stroke-dashoffset .3s;}
   .timer-controls{display:flex;gap:6px;margin-left:auto;}
 
-  /* Topic line */
   .topic-line{text-align:center;font-size:13px;color:var(--ink-dim);margin:16px 0;}
   .topic-line b{color:var(--ink);font-weight:600;}
 
-  /* QR */
   .qr-row{display:flex;align-items:center;gap:20px;justify-content:center;margin:24px 0;flex-wrap:wrap;}
   .qr-box{
     background:#fff;padding:12px;border-radius:var(--radius-sm);
@@ -338,19 +321,17 @@
     background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm);
   }
 
-  /* Stage */
   .stage{padding:20px 4px;text-align:center;}
   .stage-image{max-width:100%;max-height:300px;border-radius:var(--radius);border:1px solid var(--border);margin:0 auto 24px;display:block;box-shadow:var(--shadow);}
   .question-wrap{position:relative;display:inline-block;max-width:100%;margin-bottom:40px;}
   .question-display{
     font-family:'Kanit',sans-serif;font-weight:700;line-height:1.3;color:var(--ink);
     font-size:clamp(24px,3.6vw,38px);
-    text-shadow:0 0 40px rgba(124,92,255,.3);
+    text-shadow:0 0 20px rgba(124,92,255,.12);
   }
   .chalk-underline{display:block;width:70%;height:12px;margin:12px auto 0;}
   .chalk-underline path{stroke:var(--accent);stroke-width:3;fill:none;stroke-linecap:round;opacity:.8;}
 
-  /* Bars */
   .bars{max-width:700px;margin:0 auto;text-align:left;}
   .bar-row{margin-bottom:18px;}
   .bar-label{display:flex;justify-content:space-between;font-weight:600;font-size:14px;margin-bottom:8px;}
@@ -366,32 +347,15 @@
     animation:shimmer 2s infinite;
   }
 
-  /* Cloud */
   .cloud{display:flex;flex-wrap:wrap;gap:12px 16px;justify-content:center;align-items:center;max-width:800px;margin:0 auto;min-height:120px;padding:10px 0;}
   .tag{
     font-family:'Kanit',sans-serif;font-weight:700;padding:8px 6px;border-radius:10px;
     animation:pop .4s cubic-bezier(.2,.9,.3,1);line-height:1.2;
-    background:rgba(255,255,255,.05);backdrop-filter:blur(10px);
+    background:rgba(15,23,42,.04);backdrop-filter:blur(10px);
     border:1px solid var(--border);
   }
   @keyframes pop{from{transform:scale(0) rotate(-10deg);opacity:0;}to{transform:scale(1) rotate(0);opacity:1;}}
   .cloud-empty{color:var(--ink-dim);font-size:14px;padding:30px 0;}
-
-  /* Moderation Queue */
-  .mod-queue{
-    background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);
-    padding:20px;margin-top:20px;
-  }
-  .mod-queue h3{font-family:'Kanit',sans-serif;font-size:16px;margin-bottom:14px;color:var(--warning);}
-  .mod-queue h3::before{content:'⏳ ';}
-  .mod-item{
-    display:flex;justify-content:space-between;align-items:center;gap:12px;
-    padding:12px 14px;background:var(--bg-3);border-radius:var(--radius-sm);margin-bottom:8px;
-    border:1px solid var(--border);
-  }
-  .mod-item .text{flex:1;font-size:14px;}
-  .mod-item .actions{display:flex;gap:6px;}
-  .mod-item .actions button{padding:6px 12px;font-size:12px;}
 
   .total-line{text-align:center;color:var(--ink-dim);font-size:13px;margin-top:24px;font-family:'JetBrains Mono',monospace;}
   .live-actions{display:flex;justify-content:center;gap:10px;margin-top:28px;flex-wrap:wrap;}
@@ -399,10 +363,9 @@
   .status-ok{background:rgba(0,230,118,.1);color:var(--success);border:1px solid rgba(0,230,118,.2);}
   .status-err{background:rgba(255,61,90,.1);color:var(--danger);border:1px solid rgba(255,61,90,.2);}
 
-  /* Toast */
   #toastContainer{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:10px;z-index:9999;width:min(92vw,420px);}
   .toast{
-    background:rgba(17,21,36,.95);backdrop-filter:blur(20px);
+    background:rgba(255,255,255,.97);backdrop-filter:blur(20px);
     border:1px solid var(--border);border-left:4px solid var(--accent-2);
     color:var(--ink);padding:14px 18px;border-radius:var(--radius-sm);
     font-size:14px;font-weight:600;box-shadow:var(--shadow);
@@ -413,11 +376,10 @@
   .toast.warning{border-left-color:var(--warning);}
   @keyframes toastIn{from{opacity:0;transform:translateY(20px) scale(.95);}to{opacity:1;transform:translateY(0) scale(1);}}
 
-  /* Modal */
-  #modalOverlay{position:fixed;inset:0;background:rgba(5,6,10,.8);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px;}
+  #modalOverlay{position:fixed;inset:0;background:rgba(15,23,42,.35);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px;}
   #modalOverlay.show{display:flex;}
   .modal-box{
-    background:rgba(17,21,36,.95);backdrop-filter:blur(20px);
+    background:rgba(255,255,255,.97);backdrop-filter:blur(20px);
     border:1px solid var(--border);border-radius:var(--radius);
     padding:28px;max-width:400px;width:100%;text-align:center;
     box-shadow:var(--shadow);
@@ -425,7 +387,6 @@
   .modal-box p{font-size:15px;margin-bottom:24px;line-height:1.6;}
   .modal-actions{display:flex;gap:10px;justify-content:center;}
 
-  /* Footer */
   .footer{
     text-align:center;margin-top:40px;padding:20px;
     font-size:12px;color:var(--ink-faint);
@@ -439,7 +400,6 @@
     border:1px solid rgba(0,224,255,.15);
   }
 
-  /* Fullscreen mode */
   body.present-mode{padding:0;}
   body.present-mode .wrap{max-width:none;padding:0;}
   body.present-mode .top,
@@ -582,7 +542,6 @@
         <div class="live-tools">
           <button class="icon-btn" id="toggleQrBtn">📱 QR Code</button>
           <button class="icon-btn" id="toggleTimerBtn">⏱️ ตั้งเวลา</button>
-          <button class="icon-btn" id="revealBtn" style="display:none;">👁️ เฉลยผล</button>
           <button class="icon-btn" id="fullscreenBtn">⛶ เต็มจอ</button>
         </div>
       </div>
@@ -627,11 +586,6 @@
         <div class="bars" id="barsView" style="display:none;"></div>
         <div class="cloud" id="cloudView" style="display:none;"></div>
 
-        <div class="mod-queue" id="modQueue" style="display:none;">
-          <h3>คำตอบรอตรวจสอบ (<span id="modCount">0</span>)</h3>
-          <div id="modList"></div>
-        </div>
-
         <div class="total-line" id="totalVotes"></div>
       </div>
 
@@ -674,7 +628,6 @@ const db = getFirestore(app);
 const CHALK = ['#7c5cff','#00e0ff','#ff4d8d','#00e676','#ffd166','#ff6b35'];
 const chalkColor = i => CHALK[i % CHALK.length];
 
-/* ================= TOAST & MODAL ================= */
 function showToast(msg, type = "info") {
   const c = document.getElementById("toastContainer");
   const t = document.createElement("div");
@@ -706,7 +659,6 @@ function confirmDialog(msg) {
   });
 }
 
-/* ================= CLASS SELECTOR ================= */
 const classSelect = document.getElementById("classSelect");
 CLASS_LIST.forEach(c => {
   const opt = document.createElement("option");
@@ -721,9 +673,7 @@ function pollRef() { return doc(db, "polls", CLASS_ID); }
 function bankCol() { return collection(db, "questionBank"); }
 function responsesCol() { return collection(db, "polls", CLASS_ID, "responses"); }
 function classMetaRef() { return doc(db, "classMeta", CLASS_ID); }
-function modCol() { return collection(db, "polls", CLASS_ID, "moderation"); }
 
-/* ================= SESSION META ================= */
 const topicInput = document.getElementById("topicInput");
 const expectedCountInput = document.getElementById("expectedCountInput");
 let currentMeta = { topic: "", expectedCount: 0 };
@@ -768,7 +718,6 @@ function renderTotalLine(count) {
   }
 }
 
-/* ================= TABS ================= */
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -780,7 +729,6 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
   });
 });
 
-/* ================= IMAGE UPLOAD ================= */
 let currentImageData = null;
 document.getElementById("pickImageBtn").addEventListener("click", () => document.getElementById("imageInput").click());
 document.getElementById("imageInput").addEventListener("change", async (e) => {
@@ -834,7 +782,6 @@ function compressImage(file) {
   });
 }
 
-/* ================= QUESTION TYPE ================= */
 let currentType = "choice";
 document.querySelectorAll(".type-opt").forEach(el => {
   el.addEventListener("click", () => {
@@ -846,7 +793,6 @@ document.querySelectorAll(".type-opt").forEach(el => {
   });
 });
 
-// Rating preview
 const ratingPreview = document.getElementById("ratingPreview");
 for (let i = 1; i <= 5; i++) {
   const star = document.createElement("span");
@@ -937,7 +883,6 @@ document.getElementById("startNowBtn").addEventListener("click", async () => {
   } catch (err) { showToast("เริ่มโพลไม่สำเร็จ: " + err.message, "error"); }
 });
 
-/* ================= QUESTION BANK ================= */
 async function loadBank() {
   const list = document.getElementById("bankList");
   const countEl = document.getElementById("bankCount");
@@ -987,13 +932,11 @@ async function loadBank() {
 }
 function escapeHtml(s){const d=document.createElement("div");d.textContent=s||"";return d.innerHTML;}
 
-/* ================= LAUNCH POLL ================= */
 async function launchPoll(data) {
   const pollId = Date.now().toString();
   const payload = {
     active: true, pollId, question: data.question, type: data.type,
-    image: data.image || null, createdAt: serverTimestamp(),
-    revealed: false
+    image: data.image || null, createdAt: serverTimestamp()
   };
   if (data.type === "choice" || data.type === "quiz") {
     payload.options = data.options;
@@ -1006,15 +949,11 @@ async function launchPoll(data) {
   }
   try {
     await setDoc(pollRef(), payload);
-    // Clear moderation queue
-    const modSnap = await getDocs(modCol());
-    modSnap.forEach(d => deleteDoc(d.ref));
   } catch (err) { showToast("เริ่มโพลไม่สำเร็จ: " + err.message, "error"); return; }
 
   document.getElementById("classBadge").textContent = "🎓 ห้อง ม." + CLASS_ID.replace("-", "/");
   const studentUrl = `${location.origin}${location.pathname.replace('poll-teacher.html','poll-student.html')}?class=${encodeURIComponent(CLASS_ID)}`;
-  
-  // Generate QR
+
   const qrBox = document.getElementById("qrBox");
   qrBox.innerHTML = "";
   new QRCode(qrBox, { text: studentUrl, width: 180, height: 180, colorDark: "#0a0d16", colorLight: "#ffffff" });
@@ -1037,10 +976,8 @@ function showSetup() {
   document.getElementById("setupView").style.display = "block";
 }
 
-/* ================= LIVE LISTENERS ================= */
 let unsubPoll = null, unsubResponses = null;
 let latestPollData = null;
-let moderationQueue = [];
 
 function watchClass() {
   if (unsubPoll) unsubPoll();
@@ -1058,9 +995,6 @@ function watchClass() {
     showLive();
     renderQuestion(data);
     watchResponses(data.pollId, data.type);
-    watchModeration(data.pollId);
-    // Show reveal button for text/rating
-    document.getElementById("revealBtn").style.display = (data.type === "text" || data.type === "rating") ? "inline-flex" : "none";
   }, (err) => console.error(err));
 }
 watchClass();
@@ -1071,18 +1005,10 @@ function watchResponses(pollId, type) {
   if (unsubResponses) unsubResponses();
   unsubResponses = onSnapshot(query(responsesCol(), where("pollId", "==", pollId)), (snap) => {
     if (type === "text") {
-      if (!latestPollData?.revealed) {
-        renderCloud([]);
-        return;
-      }
       const answers = [];
       snap.forEach(d => answers.push(d.data().text));
       renderCloud(answers);
     } else if (type === "rating") {
-      if (!latestPollData?.revealed) {
-        renderTotalLine(snap.size);
-        return;
-      }
       const counts = Array(5).fill(0);
       snap.forEach(d => { const v = d.data().value; if (v >= 1 && v <= 5) counts[v-1]++; });
       renderRatingBars(counts);
@@ -1092,20 +1018,12 @@ function watchResponses(pollId, type) {
   }, (err) => console.error(err));
 }
 
-function watchModeration(pollId) {
-  onSnapshot(query(modCol(), where("pollId", "==", pollId), where("status", "==", "pending")), (snap) => {
-    moderationQueue = [];
-    snap.forEach(d => moderationQueue.push({ id: d.id, ...d.data() }));
-    renderModQueue();
-  });
-}
-
 function renderQuestion(data) {
   document.getElementById("liveQuestion").textContent = data.question;
   const imgEl = document.getElementById("liveImage");
   if (data.image) { imgEl.src = data.image; imgEl.style.display = "block"; }
   else { imgEl.style.display = "none"; }
-  
+
   if (data.type === "choice" || data.type === "quiz") {
     document.getElementById("barsView").style.display = "block";
     document.getElementById("cloudView").style.display = "none";
@@ -1190,40 +1108,6 @@ function renderCloud(answers) {
   renderTotalLine(answers.length);
 }
 
-function renderModQueue() {
-  const queue = document.getElementById("modQueue");
-  const list = document.getElementById("modList");
-  const count = document.getElementById("modCount");
-  if (!moderationQueue.length) { queue.style.display = "none"; return; }
-  queue.style.display = "block";
-  count.textContent = moderationQueue.length;
-  list.innerHTML = "";
-  moderationQueue.forEach(item => {
-    const div = document.createElement("div");
-    div.className = "mod-item";
-    div.innerHTML = `
-      <div class="text">${escapeHtml(item.text)}</div>
-      <div class="actions">
-        <button class="btn btn-success" data-id="${item.id}" data-act="approve">✓ อนุมัติ</button>
-        <button class="btn btn-danger" data-id="${item.id}" data-act="reject">✕ ปฏิเสธ</button>
-      </div>`;
-    list.appendChild(div);
-  });
-  list.querySelectorAll('[data-act="approve"]').forEach(btn => {
-    btn.addEventListener("click", async () => {
-      await updateDoc(doc(modCol(), btn.dataset.id), { status: "approved" });
-      showToast("อนุมัติคำตอบแล้ว", "success");
-    });
-  });
-  list.querySelectorAll('[data-act="reject"]').forEach(btn => {
-    btn.addEventListener("click", async () => {
-      await deleteDoc(doc(modCol(), btn.dataset.id));
-      showToast("ปฏิเสธคำตอบแล้ว", "warning");
-    });
-  });
-}
-
-/* ================= TIMER ================= */
 let timerInterval = null;
 let timerSeconds = 30;
 let timerRunning = false;
@@ -1269,16 +1153,9 @@ function updateTimerDisplay() {
 }
 updateTimerDisplay();
 
-/* ================= LIVE ACTIONS ================= */
 document.getElementById("toggleQrBtn").addEventListener("click", () => {
   const row = document.getElementById("qrRow");
   row.style.display = row.style.display === "none" ? "flex" : "none";
-});
-document.getElementById("revealBtn").addEventListener("click", async () => {
-  if (!latestPollData) return;
-  await updateDoc(pollRef(), { revealed: true });
-  showToast("👁️ แสดงผลลัพธ์แล้ว", "success");
-  confetti({ particleCount: 60, spread: 50, origin: { y: 0.7 } });
 });
 document.getElementById("fullscreenBtn").addEventListener("click", () => {
   document.body.classList.add("present-mode");
