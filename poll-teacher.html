@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>โพลสด — Premium Control Room | @Skunkworks</title>
+<title>PhyPoll — Premium Control Room | @Skunkworks</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -270,7 +270,12 @@
     background:rgba(255,255,255,.75);backdrop-filter:blur(20px);
     border:1px solid var(--border);border-radius:var(--radius);
     padding:32px;box-shadow:var(--shadow);
+    /* 🔒 ป้องกัน gsap ทิ้ง inline opacity ค้าง */
+    opacity:1 !important;
+    transform:none !important;
   }
+  /* อนุญาตให้ gsap animate ได้เฉพาะตอน .animating เท่านั้น */
+  .live-shell.animating{opacity:0 !important;transform:translateY(30px) !important;}
   .live-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
   .class-badge{
     display:inline-flex;align-items:center;gap:8px;
@@ -339,6 +344,8 @@
     height:100%;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;
     color:#fff;font-weight:700;font-size:13px;transition:width .6s cubic-bezier(.2,.9,.3,1);
     white-space:nowrap;min-width:2%;position:relative;overflow:hidden;
+    /* 🔒 GPU acceleration ลด repaint */
+    will-change:width;
   }
   .bar-fill::after{
     content:'';position:absolute;inset:0;
@@ -349,10 +356,12 @@
   .cloud{display:flex;flex-wrap:wrap;gap:12px 16px;justify-content:center;align-items:center;max-width:800px;margin:0 auto;min-height:120px;padding:10px 0;}
   .tag{
     font-family:'Kanit',sans-serif;font-weight:700;padding:8px 6px;border-radius:10px;
-    animation:pop .4s cubic-bezier(.2,.9,.3,1);line-height:1.2;
+    line-height:1.2;
     background:rgba(15,23,42,.04);backdrop-filter:blur(10px);
     border:1px solid var(--border);
   }
+  /* 🔒 เฉพาะ tag ใหม่เท่านั้นที่ animate (ใช้ class .new) */
+  .tag.new{animation:pop .4s cubic-bezier(.2,.9,.3,1);}
   @keyframes pop{from{transform:scale(0) rotate(-10deg);opacity:0;}to{transform:scale(1) rotate(0);opacity:1;}}
   .cloud-empty{color:var(--ink-dim);font-size:14px;padding:30px 0;}
 
@@ -627,16 +636,18 @@ const db = getFirestore(app);
 const CHALK = ['#7c5cff','#00e0ff','#ff4d8d','#00e676','#ffd166','#ff6b35'];
 const chalkColor = i => CHALK[i % CHALK.length];
 
-// ---- Animation safety wrapper -------------------------------------------
-// If the GSAP CDN script is blocked or fails to load, the dashboard must
-// still function fully — a missing animation should never break rendering.
+// ---------------------------------------------------------------------------
+// GSAP safety wrapper
+// ---------------------------------------------------------------------------
 function hasGsap() { return typeof gsap !== "undefined"; }
 function safeAnim(run) {
   if (!hasGsap()) return;
   try { run(); } catch (e) { console.warn("Animation skipped:", e); }
 }
-// ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Toast & Modal
+// ---------------------------------------------------------------------------
 function showToast(msg, type = "info") {
   const c = document.getElementById("toastContainer");
   const t = document.createElement("div");
@@ -668,6 +679,9 @@ function confirmDialog(msg) {
   });
 }
 
+// ---------------------------------------------------------------------------
+// Class selector
+// ---------------------------------------------------------------------------
 const classSelect = document.getElementById("classSelect");
 CLASS_LIST.forEach(c => {
   const opt = document.createElement("option");
@@ -678,11 +692,17 @@ CLASS_LIST.forEach(c => {
 let CLASS_ID = classSelect.value;
 classSelect.addEventListener("change", () => { CLASS_ID = classSelect.value; watchClass(); watchMeta(); });
 
+// ---------------------------------------------------------------------------
+// Firestore refs
+// ---------------------------------------------------------------------------
 function pollRef() { return doc(db, "polls", CLASS_ID); }
 function bankCol() { return collection(db, "questionBank"); }
 function responsesCol(classId) { return collection(db, "polls", classId || CLASS_ID, "responses"); }
 function classMetaRef() { return doc(db, "classMeta", CLASS_ID); }
 
+// ---------------------------------------------------------------------------
+// Meta (topic + expected count)
+// ---------------------------------------------------------------------------
 const topicInput = document.getElementById("topicInput");
 const expectedCountInput = document.getElementById("expectedCountInput");
 let currentMeta = { topic: "", expectedCount: 0 };
@@ -727,6 +747,9 @@ function renderTotalLine(count) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Tabs
+// ---------------------------------------------------------------------------
 document.querySelectorAll(".tab-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -738,6 +761,9 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// Image upload
+// ---------------------------------------------------------------------------
 let currentImageData = null;
 document.getElementById("pickImageBtn").addEventListener("click", () => document.getElementById("imageInput").click());
 document.getElementById("imageInput").addEventListener("change", async (e) => {
@@ -791,6 +817,9 @@ function compressImage(file) {
   });
 }
 
+// ---------------------------------------------------------------------------
+// Question type switch
+// ---------------------------------------------------------------------------
 let currentType = "choice";
 document.querySelectorAll(".type-opt").forEach(el => {
   el.addEventListener("click", () => {
@@ -811,6 +840,9 @@ for (let i = 1; i <= 5; i++) {
   ratingPreview.appendChild(star);
 }
 
+// ---------------------------------------------------------------------------
+// Option rows
+// ---------------------------------------------------------------------------
 const optionsContainer = document.getElementById("optionsContainer");
 function addOptionRow(value = "", correct = false) {
   const idx = optionsContainer.children.length;
@@ -839,6 +871,9 @@ function restripeSwatches() {
 addOptionRow(); addOptionRow();
 document.getElementById("addOptionBtn").addEventListener("click", () => addOptionRow());
 
+// ---------------------------------------------------------------------------
+// Form reading
+// ---------------------------------------------------------------------------
 function readForm() {
   const question = document.getElementById("questionInput").value.trim();
   if (!question) { showToast("กรุณากรอกคำถาม", "error"); return null; }
@@ -892,6 +927,9 @@ document.getElementById("startNowBtn").addEventListener("click", async () => {
   } catch (err) { showToast("เริ่มโพลไม่สำเร็จ: " + err.message, "error"); }
 });
 
+// ---------------------------------------------------------------------------
+// Bank
+// ---------------------------------------------------------------------------
 async function loadBank() {
   const list = document.getElementById("bankList");
   const countEl = document.getElementById("bankCount");
@@ -941,6 +979,9 @@ async function loadBank() {
 }
 function escapeHtml(s){const d=document.createElement("div");d.textContent=s||"";return d.innerHTML;}
 
+// ---------------------------------------------------------------------------
+// Launch poll
+// ---------------------------------------------------------------------------
 async function launchPoll(data) {
   const pollId = Date.now().toString();
   const payload = {
@@ -959,54 +1000,42 @@ async function launchPoll(data) {
   try {
     await setDoc(pollRef(), payload);
   } catch (err) { showToast("เริ่มโพลไม่สำเร็จ: " + err.message, "error"); return; }
-  // The always-on watchClass() listener below will pick this write up (usually
-  // instantly, via Firestore's local-cache echo) and render the live view once.
-  // We deliberately do NOT touch the DOM here — doing so used to double-render
-  // the live view (once here, once from the listener) which was the cause of
-  // the "screen flashes then fades" glitch when starting a poll.
 }
 
-let liveShellVisible = false;
+// ---------------------------------------------------------------------------
+// View switching
+// ---------------------------------------------------------------------------
 function showLive() {
   document.getElementById("setupView").style.display = "none";
-  document.getElementById("liveView").style.display = "block";
-  if (!liveShellVisible) {
-    safeAnim(() => gsap.from(".live-shell", { opacity: 0, y: 30, duration: 0.6, ease: "power3.out" }));
-    liveShellVisible = true;
-  }
+  const liveView = document.getElementById("liveView");
+  liveView.style.display = "block";
+  // Animation ถูกควบคุมผ่าน CSS class .animating แทน inline style
 }
 function showSetup() {
   document.body.classList.remove("present-mode");
   document.getElementById("liveView").style.display = "none";
   document.getElementById("setupView").style.display = "block";
-  liveShellVisible = false;
 }
 
+// ---------------------------------------------------------------------------
+// Poll watcher — 🔒 THE FIX: แยก "โพลใหม่" vs "โหวตอัปเดต"
+// ---------------------------------------------------------------------------
 let unsubPoll = null, unsubResponses = null;
 let latestPollData = null;
 
 function watchClass() {
   if (unsubPoll) unsubPoll();
   if (unsubResponses) unsubResponses();
-  // Bind this listener to the class that was selected the moment it was created.
-  // Reading a shared mutable variable inside the callback (instead of this
-  // captured constant) was the cause of the "wrong room" mix-ups: if the
-  // teacher switched the class dropdown while a previous update was still
-  // in flight, the badge/QR/link could end up showing a different room than
-  // the data actually belongs to.
   const boundClassId = CLASS_ID;
   let lastRenderedPollId = null;
+
   unsubPoll = onSnapshot(pollRef(), (snap) => {
     if (!snap.exists() || !snap.data().active) return;
     const data = snap.data();
     latestPollData = data;
     document.getElementById("classBadge").textContent = "🎓 ห้อง ม." + boundClassId.replace("-", "/");
 
-    // Only rebuild the QR/link and replay the entrance animation once per
-    // poll (i.e. when a genuinely new question starts) — NOT on every vote.
-    // Every vote updates `counts` on this same document, which used to
-    // re-trigger the whole setup (QR regeneration + gsap fade-in) on every
-    // single answer, causing the screen to visibly flash/fade repeatedly.
+    // ✅ เฉพาะโพลใหม่จริง ๆ เท่านั้นที่ setup หน้าจอครั้งเดียว
     if (data.pollId !== lastRenderedPollId) {
       lastRenderedPollId = data.pollId;
       const studentUrl = `${location.origin}${location.pathname.replace('poll-teacher.html','poll-student.html')}?class=${encodeURIComponent(boundClassId)}`;
@@ -1016,17 +1045,25 @@ function watchClass() {
       document.getElementById("linkText").textContent = studentUrl;
       document.getElementById("statusMsg").textContent = "";
       document.getElementById("statusMsg").className = "";
+      
+      // สร้างโครงสร้าง bars/cloud ครั้งเดียว (ไม่ใช่ทุกโหวต)
+      buildBarsStructure(data);
+      
       showLive();
       watchResponses(data.pollId, data.type, boundClassId);
     }
 
-    renderQuestion(data);
+    // ✅ อัปเดตเฉพาะค่า (ไม่สร้าง DOM ใหม่)
+    updateLiveContent(data);
   }, (err) => console.error(err));
 }
 watchClass();
 watchMeta();
 loadBank();
 
+// ---------------------------------------------------------------------------
+// Responses watcher
+// ---------------------------------------------------------------------------
 function watchResponses(pollId, type, classId) {
   if (unsubResponses) unsubResponses();
   unsubResponses = onSnapshot(query(responsesCol(classId), where("pollId", "==", pollId)), (snap) => {
@@ -1037,14 +1074,19 @@ function watchResponses(pollId, type, classId) {
     } else if (type === "rating") {
       const counts = Array(5).fill(0);
       snap.forEach(d => { const v = d.data().value; if (v >= 1 && v <= 5) counts[v-1]++; });
-      renderRatingBars(counts);
+      updateRatingBars(counts);
     } else {
       renderTotalLine(snap.size);
     }
   }, (err) => console.error(err));
 }
 
-function renderQuestion(data) {
+// ---------------------------------------------------------------------------
+// 🎯 THE CORE FIX: แยก "สร้างโครงสร้าง" vs "อัปเดตค่า"
+// ---------------------------------------------------------------------------
+
+// สร้าง bars ครั้งเดียวเมื่อโพลใหม่เริ่ม
+function buildBarsStructure(data) {
   document.getElementById("liveQuestion").textContent = data.question;
   const imgEl = document.getElementById("liveImage");
   if (data.image) { imgEl.src = data.image; imgEl.style.display = "block"; }
@@ -1053,67 +1095,106 @@ function renderQuestion(data) {
   if (data.type === "choice" || data.type === "quiz") {
     document.getElementById("barsView").style.display = "block";
     document.getElementById("cloudView").style.display = "none";
-    renderBars(data);
+    buildChoiceBars(data);
   } else if (data.type === "rating") {
     document.getElementById("barsView").style.display = "block";
     document.getElementById("cloudView").style.display = "none";
-    renderRatingBars(data.counts || Array(5).fill(0));
+    buildRatingBars();
   } else {
     document.getElementById("barsView").style.display = "none";
     document.getElementById("cloudView").style.display = "flex";
-    renderCloud([]);
   }
 }
 
-function renderBars(data) {
-  const total = (data.counts || []).reduce((a, b) => a + b, 0) || 0;
+function buildChoiceBars(data) {
   const el = document.getElementById("barsView");
   el.innerHTML = "";
   data.options.forEach((opt, i) => {
-    const count = data.counts[i] || 0;
-    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
     const isCorrect = data.type === "quiz" && i === data.correctIndex;
     const row = document.createElement("div");
     row.className = "bar-row";
+    row.dataset.index = i;
     row.innerHTML = `
       <div class="bar-label">
         <span class="opt-name">${isCorrect ? '✅ ' : ''}${escapeHtml(opt)}</span>
-        <span>${count} คน (${pct}%)</span>
+        <span class="bar-stats">0 คน (0%)</span>
       </div>
       <div class="bar-track">
-        <div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg, ${chalkColor(i)}, ${chalkColor((i+1)%CHALK.length)})"></div>
+        <div class="bar-fill" style="width:0%;background:linear-gradient(90deg, ${chalkColor(i)}, ${chalkColor((i+1)%CHALK.length)})">
+          <span class="bar-pct">0%</span>
+        </div>
       </div>`;
     el.appendChild(row);
   });
-  renderTotalLine(total);
 }
 
-function renderRatingBars(counts) {
-  const total = counts.reduce((a, b) => a + b, 0) || 0;
+function buildRatingBars() {
   const el = document.getElementById("barsView");
   el.innerHTML = "";
   const labels = ['😕', '😐', '🙂', '😄', '🤩'];
-  counts.forEach((count, i) => {
-    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+  labels.forEach((label, i) => {
     const row = document.createElement("div");
     row.className = "bar-row";
+    row.dataset.index = i;
     row.innerHTML = `
       <div class="bar-label">
-        <span class="opt-name">${labels[i]} ${i+1} ดาว</span>
-        <span>${count} คน (${pct}%)</span>
+        <span class="opt-name">${label} ${i+1} ดาว</span>
+        <span class="bar-stats">0 คน (0%)</span>
       </div>
       <div class="bar-track">
-        <div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg, #ffd166, #ff6b35)"></div>
+        <div class="bar-fill" style="width:0%;background:linear-gradient(90deg, #ffd166, #ff6b35)">
+          <span class="bar-pct">0%</span>
+        </div>
       </div>`;
     el.appendChild(row);
+  });
+}
+
+// ✅ อัปเดตแค่ค่า — ไม่ rebuild DOM (ไม่ flash, ไม่จาง)
+function updateLiveContent(data) {
+  if (data.type === "choice" || data.type === "quiz") {
+    updateChoiceBars(data);
+  } else if (data.type === "rating") {
+    updateRatingBars(data.counts || Array(5).fill(0));
+  }
+}
+
+function updateChoiceBars(data) {
+  const total = (data.counts || []).reduce((a, b) => a + b, 0) || 0;
+  const el = document.getElementById("barsView");
+  const rows = el.querySelectorAll(".bar-row");
+  data.options.forEach((_, i) => {
+    const row = rows[i];
+    if (!row) return;
+    const count = data.counts[i] || 0;
+    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+    row.querySelector(".bar-stats").textContent = `${count} คน (${pct}%)`;
+    row.querySelector(".bar-fill").style.width = pct + "%";
   });
   renderTotalLine(total);
 }
 
+function updateRatingBars(counts) {
+  const total = counts.reduce((a, b) => a + b, 0) || 0;
+  const el = document.getElementById("barsView");
+  const rows = el.querySelectorAll(".bar-row");
+  counts.forEach((count, i) => {
+    const row = rows[i];
+    if (!row) return;
+    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+    row.querySelector(".bar-stats").textContent = `${count} คน (${pct}%)`;
+    row.querySelector(".bar-fill").style.width = pct + "%";
+  });
+  renderTotalLine(total);
+}
+
+// Word cloud — ใช้ Set เพื่อเช็คว่า tag ไหน "ใหม่" จริง ๆ (ไม่ต้อง animate ซ้ำ)
+let lastCloudKeys = new Set();
 function renderCloud(answers) {
   const el = document.getElementById("cloudView");
   if (!answers.length) {
     el.innerHTML = `<div class="cloud-empty">⏳ กำลังรอคำตอบจากนักเรียน...</div>`;
+    lastCloudKeys = new Set();
     renderTotalLine(0);
     return;
   }
@@ -1121,19 +1202,25 @@ function renderCloud(answers) {
   answers.forEach(a => { const key = (a || "").trim(); if (key) freq[key] = (freq[key] || 0) + 1; });
   const entries = Object.entries(freq).sort((a, b) => b[1] - a[1]);
   const maxCount = entries.length ? entries[0][1] : 1;
+  
+  const currentKeys = new Set(entries.map(e => e[0]));
   el.innerHTML = "";
   entries.forEach(([text, count], i) => {
     const scale = 0.8 + (count / maxCount) * 1.4;
     const tag = document.createElement("div");
-    tag.className = "tag";
+    tag.className = "tag" + (lastCloudKeys.has(text) ? "" : " new");
     tag.style.fontSize = scale + "em";
     tag.style.color = chalkColor(i);
     tag.textContent = count > 1 ? `${text} ×${count}` : text;
     el.appendChild(tag);
   });
+  lastCloudKeys = currentKeys;
   renderTotalLine(answers.length);
 }
 
+// ---------------------------------------------------------------------------
+// Timer
+// ---------------------------------------------------------------------------
 let timerInterval = null;
 let timerSeconds = 30;
 let timerRunning = false;
@@ -1178,6 +1265,9 @@ function updateTimerDisplay() {
 }
 updateTimerDisplay();
 
+// ---------------------------------------------------------------------------
+// QR, Fullscreen, Actions
+// ---------------------------------------------------------------------------
 document.getElementById("toggleQrBtn").addEventListener("click", () => {
   const row = document.getElementById("qrRow");
   row.style.display = row.style.display === "none" ? "flex" : "none";
