@@ -627,6 +627,16 @@ const db = getFirestore(app);
 const CHALK = ['#7c5cff','#00e0ff','#ff4d8d','#00e676','#ffd166','#ff6b35'];
 const chalkColor = i => CHALK[i % CHALK.length];
 
+// ---- Animation safety wrapper -------------------------------------------
+// If the GSAP CDN script is blocked or fails to load, the dashboard must
+// still function fully — a missing animation should never break rendering.
+function hasGsap() { return typeof gsap !== "undefined"; }
+function safeAnim(run) {
+  if (!hasGsap()) return;
+  try { run(); } catch (e) { console.warn("Animation skipped:", e); }
+}
+// ---------------------------------------------------------------------------
+
 function showToast(msg, type = "info") {
   const c = document.getElementById("toastContainer");
   const t = document.createElement("div");
@@ -670,7 +680,7 @@ classSelect.addEventListener("change", () => { CLASS_ID = classSelect.value; wat
 
 function pollRef() { return doc(db, "polls", CLASS_ID); }
 function bankCol() { return collection(db, "questionBank"); }
-function responsesCol() { return collection(db, "polls", CLASS_ID, "responses"); }
+function responsesCol(classId) { return collection(db, "polls", classId || CLASS_ID, "responses"); }
 function classMetaRef() { return doc(db, "classMeta", CLASS_ID); }
 
 const topicInput = document.getElementById("topicInput");
@@ -949,29 +959,27 @@ async function launchPoll(data) {
   try {
     await setDoc(pollRef(), payload);
   } catch (err) { showToast("เริ่มโพลไม่สำเร็จ: " + err.message, "error"); return; }
-
-  document.getElementById("classBadge").textContent = "🎓 ห้อง ม." + CLASS_ID.replace("-", "/");
-  const studentUrl = `${location.origin}${location.pathname.replace('poll-teacher.html','poll-student.html')}?class=${encodeURIComponent(CLASS_ID)}`;
-
-  const qrBox = document.getElementById("qrBox");
-  qrBox.innerHTML = "";
-  new QRCode(qrBox, { text: studentUrl, width: 180, height: 180, colorDark: "#0a0d16", colorLight: "#ffffff" });
-  document.getElementById("linkText").textContent = studentUrl;
-  document.getElementById("statusMsg").textContent = "";
-  document.getElementById("statusMsg").className = "";
-
-  showLive();
+  // The always-on watchClass() listener below will pick this write up (usually
+  // instantly, via Firestore's local-cache echo) and render the live view once.
+  // We deliberately do NOT touch the DOM here — doing so used to double-render
+  // the live view (once here, once from the listener) which was the cause of
+  // the "screen flashes then fades" glitch when starting a poll.
 }
 
+let liveShellVisible = false;
 function showLive() {
   document.getElementById("setupView").style.display = "none";
   document.getElementById("liveView").style.display = "block";
-  gsap.from(".live-shell", { opacity: 0, y: 30, duration: 0.6, ease: "power3.out" });
+  if (!liveShellVisible) {
+    safeAnim(() => gsap.from(".live-shell", { opacity: 0, y: 30, duration: 0.6, ease: "power3.out" }));
+    liveShellVisible = true;
+  }
 }
 function showSetup() {
   document.body.classList.remove("present-mode");
   document.getElementById("liveView").style.display = "none";
   document.getElementById("setupView").style.display = "block";
+  liveShellVisible = false;
 }
 
 let unsubPoll = null, unsubResponses = null;
@@ -980,28 +988,48 @@ let latestPollData = null;
 function watchClass() {
   if (unsubPoll) unsubPoll();
   if (unsubResponses) unsubResponses();
+  // Bind this listener to the class that was selected the moment it was created.
+  // Reading a shared mutable variable inside the callback (instead of this
+  // captured constant) was the cause of the "wrong room" mix-ups: if the
+  // teacher switched the class dropdown while a previous update was still
+  // in flight, the badge/QR/link could end up showing a different room than
+  // the data actually belongs to.
+  const boundClassId = CLASS_ID;
+  let lastRenderedPollId = null;
   unsubPoll = onSnapshot(pollRef(), (snap) => {
     if (!snap.exists() || !snap.data().active) return;
     const data = snap.data();
     latestPollData = data;
-    document.getElementById("classBadge").textContent = "🎓 ห้อง ม." + CLASS_ID.replace("-", "/");
-    const studentUrl = `${location.origin}${location.pathname.replace('poll-teacher.html','poll-student.html')}?class=${encodeURIComponent(CLASS_ID)}`;
-    const qrBox = document.getElementById("qrBox");
-    qrBox.innerHTML = "";
-    new QRCode(qrBox, { text: studentUrl, width: 180, height: 180, colorDark: "#0a0d16", colorLight: "#ffffff" });
-    document.getElementById("linkText").textContent = studentUrl;
-    showLive();
+    document.getElementById("classBadge").textContent = "🎓 ห้อง ม." + boundClassId.replace("-", "/");
+
+    // Only rebuild the QR/link and replay the entrance animation once per
+    // poll (i.e. when a genuinely new question starts) — NOT on every vote.
+    // Every vote updates `counts` on this same document, which used to
+    // re-trigger the whole setup (QR regeneration + gsap fade-in) on every
+    // single answer, causing the screen to visibly flash/fade repeatedly.
+    if (data.pollId !== lastRenderedPollId) {
+      lastRenderedPollId = data.pollId;
+      const studentUrl = `${location.origin}${location.pathname.replace('poll-teacher.html','poll-student.html')}?class=${encodeURIComponent(boundClassId)}`;
+      const qrBox = document.getElementById("qrBox");
+      qrBox.innerHTML = "";
+      new QRCode(qrBox, { text: studentUrl, width: 180, height: 180, colorDark: "#1a1f2e", colorLight: "#ffffff" });
+      document.getElementById("linkText").textContent = studentUrl;
+      document.getElementById("statusMsg").textContent = "";
+      document.getElementById("statusMsg").className = "";
+      showLive();
+      watchResponses(data.pollId, data.type, boundClassId);
+    }
+
     renderQuestion(data);
-    watchResponses(data.pollId, data.type);
   }, (err) => console.error(err));
 }
 watchClass();
 watchMeta();
 loadBank();
 
-function watchResponses(pollId, type) {
+function watchResponses(pollId, type, classId) {
   if (unsubResponses) unsubResponses();
-  unsubResponses = onSnapshot(query(responsesCol(), where("pollId", "==", pollId)), (snap) => {
+  unsubResponses = onSnapshot(query(responsesCol(classId), where("pollId", "==", pollId)), (snap) => {
     if (type === "text") {
       const answers = [];
       snap.forEach(d => answers.push(d.data().text));
