@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <style>
   :root{
     --bg-0:#f3f4f9;
@@ -69,6 +68,21 @@
     animation:cardIn .6s cubic-bezier(.2,.9,.3,1);
   }
   @keyframes cardIn{from{opacity:0;transform:translateY(20px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
+
+  /* 🎬 เอ็นทรานซ์แอนิเมชันแบบ CSS ล้วน — ค้างที่ opacity 0 ไม่ได้ */
+  @keyframes riseIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+  #content > *{animation:riseIn .5s cubic-bezier(.2,.9,.3,1) both;}
+  #content > *:nth-child(1){animation-delay:0s;}
+  #content > *:nth-child(2){animation-delay:.07s;}
+  #content > *:nth-child(3){animation-delay:.14s;}
+  #content > *:nth-child(4){animation-delay:.21s;}
+  #content > *:nth-child(5){animation-delay:.28s;}
+  #content > *:nth-child(6){animation-delay:.35s;}
+  #content > *:nth-child(n+7){animation-delay:.4s;}
+  @media (prefers-reduced-motion: reduce){
+    #content > *{animation:none !important;}
+    .card{animation:none !important;}
+  }
 
   .brand{
     display:flex;align-items:center;justify-content:center;gap:12px;
@@ -220,7 +234,6 @@
   }
   .submit-btn.secondary:hover{border-color:var(--accent);color:var(--accent);}
 
-  /* ===== Name section (ปรับปรุง) ===== */
   .name-section{text-align:center;padding:10px 0;}
   .name-icon{font-size:54px;margin-bottom:12px;}
   .name-title{font-family:'Kanit',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px;}
@@ -239,9 +252,8 @@
   }
   .name-error.show{display:block;}
 
-  /* ===== Student badge (ใหญ่ขึ้น + ชัดเจน) ===== */
   .student-badge{
-    display:flex;align-items:center;justify-content:center;gap:10px;
+    display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
     background:linear-gradient(135deg, rgba(124,92,255,.12), rgba(0,224,255,.12));
     border:1.5px solid rgba(124,92,255,.3);
     color:var(--ink);border-radius:var(--radius-sm);padding:12px 16px;
@@ -249,20 +261,15 @@
     font-family:'Kanit',sans-serif;
   }
   .student-badge::before{content:'👤';font-size:18px;}
-  .student-badge .name-text{
-    color:var(--accent);font-weight:800;
-  }
+  .student-badge .name-text{color:var(--accent);font-weight:800;}
   .student-badge .edit-name{
     background:rgba(255,255,255,.7);border:1px solid var(--border);
     color:var(--ink-dim);cursor:pointer;
     font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;
     font-family:'Sarabun',sans-serif;transition:.2s;margin-left:6px;
   }
-  .student-badge .edit-name:hover{
-    color:var(--accent);border-color:var(--accent);background:#fff;
-  }
+  .student-badge .edit-name:hover{color:var(--accent);border-color:var(--accent);background:#fff;}
 
-  /* ===== ปุ่มเปลี่ยนชื่อเด่นชัดในหน้า waiting ===== */
   .change-name-btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
     background:rgba(255,255,255,.8);border:1.5px solid var(--accent);
@@ -271,10 +278,7 @@
     font-family:'Kanit',sans-serif;transition:.2s;
     box-shadow:0 4px 12px rgba(124,92,255,.15);
   }
-  .change-name-btn:hover{
-    background:var(--accent);color:#fff;transform:translateY(-1px);
-    box-shadow:0 6px 16px rgba(124,92,255,.3);
-  }
+  .change-name-btn:hover{background:var(--accent);color:#fff;transform:translateY(-1px);}
   .change-name-btn::before{content:'✏️';}
 
   .msg{color:var(--ink-dim);font-size:15px;margin-top:16px;line-height:1.6;}
@@ -309,10 +313,8 @@
   .modal-overlay{
     position:fixed;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(8px);
     display:none;align-items:center;justify-content:center;z-index:10000;padding:20px;
-    animation:fadeIn .3s;
   }
   .modal-overlay.show{display:flex;}
-  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
   .modal-box{
     background:#fff;border:1px solid var(--border);border-radius:var(--radius);
     padding:28px 24px;max-width:380px;width:100%;text-align:center;
@@ -386,15 +388,8 @@ import { firebaseConfig, CLASS_LIST } from "./firebase-config.js";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-function hasGsap() { return typeof gsap !== "undefined"; }
-function safeAnim(run) {
-  if (!hasGsap()) return;
-  try { run(); } catch (e) { console.warn("Animation skipped:", e); }
-}
-
 const params = new URLSearchParams(location.search);
 let classId = params.get("class") || localStorage.getItem("studentLastClass") || CLASS_LIST[0];
-
 if (!params.get("class") && localStorage.getItem("studentLastClass")) {
   classId = localStorage.getItem("studentLastClass");
 }
@@ -433,20 +428,9 @@ function getStudentId() {
 }
 const studentId = getStudentId();
 
-// 🔧 FIX #1: เพิ่ม .trim() เพื่อจับ whitespace-only names
 function getStudentName() {
   const name = localStorage.getItem("studentName");
   return name ? name.trim() : "";
-}
-
-// 🔧 Helper: ตั้งชื่อใหม่ (ใช้ตอนแก้ไข)
-function setStudentName(name) {
-  localStorage.setItem("studentName", name.trim());
-}
-
-// 🔧 Helper: ล้างชื่อทั้งหมด (ใช้ตอน "เริ่มใหม่")
-function clearStudentName() {
-  localStorage.removeItem("studentName");
 }
 
 document.getElementById("switchRoomBtn").addEventListener("click", openRoomModal);
@@ -465,48 +449,35 @@ function openRoomModal() {
 }
 
 function switchRoom(newClassId) {
-  if (newClassId === classId) {
-    roomModal.classList.remove("show");
-    return;
-  }
+  if (newClassId === classId) { roomModal.classList.remove("show"); return; }
   classId = newClassId;
   localStorage.setItem("studentLastClass", classId);
-
   const newUrl = new URL(location.href);
   newUrl.searchParams.set("class", classId);
   history.replaceState(null, "", newUrl.toString());
-
   pollRef = doc(db, "polls", classId);
   updateClassDisplay();
   roomModal.classList.remove("show");
-
   if (unsubPoll) unsubPoll();
   showToast("🔄 เปลี่ยนห้องเป็น ม." + classId.replace("-", "/") + " แล้ว", "success");
-
-  // 🔧 ตรวจสอบชื่อก่อนเสมอ
-  if (!getStudentName()) {
-    renderNameInput();
-  } else {
-    startWatching();
-  }
+  if (!getStudentName()) { renderNameInput(); } else { startWatching(); }
 }
 
-// 🔧 FIX #2: renderNameInput แบบใหม่ — มี error message + ปุ่มชัดเจน
-function renderNameInput(existingError = "") {
+function renderNameInput() {
   const currentName = getStudentName();
   contentEl.innerHTML = `
     <div class="name-section">
       <div class="name-icon">👤</div>
       <div class="name-title">คุณชื่ออะไร?</div>
       <div class="name-hint">กรอกชื่อหรือชื่อเล่นของคุณ<br>ครูจะได้รู้ว่าใครตอบอะไร</div>
-      <div class="name-error ${existingError ? 'show' : ''}" id="nameError">${existingError}</div>
-      <input type="text" id="nameInput" class="name-input" 
+      <div class="name-error" id="nameError"></div>
+      <input type="text" id="nameInput" class="name-input"
              placeholder="เช่น น้องใหม่, สมชาย" maxlength="40"
-             value="${escapeHtml(currentName)}" autocomplete="name">
+             value="${escapeHtml(currentName)}" autocomplete="nickname">
       <button class="submit-btn" id="saveNameBtn" ${!currentName ? 'disabled' : ''}>
         เข้าสู่ห้องเรียน 🚀
       </button>
-      ${getStudentName() ? '<button class="submit-btn secondary" id="cancelEditBtn" style="margin-top:8px;">ยกเลิก</button>' : ''}
+      ${currentName ? '<button class="submit-btn secondary" id="cancelEditBtn" type="button" style="margin-top:8px;">ยกเลิก</button>' : ''}
     </div>`;
 
   const input = document.getElementById("nameInput");
@@ -515,74 +486,34 @@ function renderNameInput(existingError = "") {
   const cancelBtn = document.getElementById("cancelEditBtn");
 
   input.addEventListener("input", () => {
-    const val = input.value.trim();
-    btn.disabled = val.length === 0;
-    if (val.length > 0 && errorEl.classList.contains("show")) {
-      errorEl.classList.remove("show");
-    }
+    btn.disabled = input.value.trim().length === 0;
+    if (errorEl.classList.contains("show")) errorEl.classList.remove("show");
   });
-
   input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && input.value.trim()) {
-      btn.click();
-    }
+    if (e.key === "Enter" && input.value.trim()) btn.click();
   });
-
-  if (cancelBtn) {
-    cancelBtn.addEventListener("click", () => {
-      // ยกเลิกการแก้ไข → กลับไปหน้าเดิม
-      startWatching();
-    });
-  }
+  if (cancelBtn) cancelBtn.addEventListener("click", () => startWatching());
 
   btn.addEventListener("click", () => {
     const name = input.value.trim();
-    
-    // 🔧 Validation: ต้องมีความยาวอย่างน้อย 1 ตัวอักษร
     if (!name) {
-      errorEl.textContent = "❌ กรุณากรอกชื่อของคุณ";
+      errorEl.textContent = "❌ กรุณากรอกชื่อของคุณก่อน";
       errorEl.classList.add("show");
       return;
     }
-    if (name.length < 1) {
-      errorEl.textContent = "❌ ชื่อต้องมีความยาวอย่างน้อย 1 ตัวอักษร";
-      errorEl.classList.add("show");
-      return;
-    }
-
-    setStudentName(name);
+    localStorage.setItem("studentName", name);
     showToast("👋 สวัสดี " + name + "!", "success");
-
-    if (hasGsap()) {
-      try {
-        gsap.to(contentEl, {
-          opacity: 0, y: -10, duration: 0.4,
-          onComplete: () => {
-            startWatching();
-            safeAnim(() => gsap.fromTo(contentEl, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 }));
-          }
-        });
-        return;
-      } catch (e) {
-        console.warn("Animation skipped:", e);
-      }
-    }
-    startWatching();
+    startWatching();   // ไปต่อทันที ไม่พึ่งแอนิเมชันใด ๆ
   });
 
-  setTimeout(() => input.focus(), 100);
-
-  safeAnim(() => gsap.from(".name-section > *", {
-    opacity: 0, y: 15, stagger: 0.1, duration: 0.6, ease: "power2.out"
-  }));
+  setTimeout(() => { try { input.focus({ preventScroll: true }); } catch (e) { input.focus(); } }, 150);
 }
 
-// 🔧 FIX #3: Badge แบบใหม่ — ใหญ่ขึ้น ชัดเจนขึ้น
 function renderStudentBadge() {
   const name = getStudentName();
   if (!name) return "";
   return `<div class="student-badge">
-    <span>สวัสดี </span><span class="name-text">${escapeHtml(name)}</span>
+    <span>สวัสดี</span><span class="name-text">${escapeHtml(name)}</span>
     <button class="edit-name" id="editNameBtn" type="button">✏️ เปลี่ยนชื่อ</button>
   </div>`;
 }
@@ -591,6 +522,16 @@ function attachNameEditListener() {
   const editBtn = document.getElementById("editNameBtn");
   if (editBtn) {
     editBtn.addEventListener("click", () => {
+      if (unsubPoll) unsubPoll();
+      renderNameInput();
+    });
+  }
+}
+
+function attachSetNameListener() {
+  const btn = document.getElementById("setNameBtn");
+  if (btn) {
+    btn.addEventListener("click", () => {
       if (unsubPoll) unsubPoll();
       renderNameInput();
     });
@@ -616,7 +557,6 @@ function getVotedInfo(cid) {
   return raw ? JSON.parse(raw) : null;
 }
 
-// 🔧 FIX #4: หน้า waiting — แสดงชื่อชัดเจน + ปุ่มเปลี่ยนชื่อเด่น
 function renderWaiting() {
   const name = getStudentName();
   contentEl.innerHTML = `
@@ -626,19 +566,9 @@ function renderWaiting() {
     <div style="margin-top:14px;font-size:13px;color:var(--ink-faint);line-height:1.6;">
       💡 สแกน QR Code ที่หน้าจอครู<br>หรือรอครูเปิดโพลในห้อง <b>ม.${classId.replace('-', '/')}</b>
     </div>
-    ${!name ? '<button class="change-name-btn" id="setNameBtn">✏️ ตั้งชื่อของคุณ</button>' : ''}
-  `;
+    ${!name ? '<button class="change-name-btn" id="setNameBtn" type="button">ตั้งชื่อของคุณ</button>' : ''}`;
   attachNameEditListener();
-  
-  const setNameBtn = document.getElementById("setNameBtn");
-  if (setNameBtn) {
-    setNameBtn.addEventListener("click", () => {
-      if (unsubPoll) unsubPoll();
-      renderNameInput();
-    });
-  }
-  
-  safeAnim(() => gsap.from("#content > *", { opacity: 0, y: 10, stagger: 0.1, duration: 0.6 }));
+  attachSetNameListener();
 }
 
 function renderClosed() {
@@ -648,19 +578,9 @@ function renderClosed() {
     <div class="thankyou">✅</div>
     <div class="msg" style="font-size:17px;font-weight:600;">โพลนี้ปิดแล้ว</div>
     <div class="msg">ขอบคุณที่ร่วมโหวตครับ/ค่ะ 🙏</div>
-    ${!name ? '<button class="change-name-btn" id="setNameBtn">✏️ ตั้งชื่อของคุณ</button>' : ''}
-  `;
+    ${!name ? '<button class="change-name-btn" id="setNameBtn" type="button">ตั้งชื่อของคุณ</button>' : ''}`;
   attachNameEditListener();
-  
-  const setNameBtn = document.getElementById("setNameBtn");
-  if (setNameBtn) {
-    setNameBtn.addEventListener("click", () => {
-      if (unsubPoll) unsubPoll();
-      renderNameInput();
-    });
-  }
-  
-  safeAnim(() => gsap.from("#content > *", { opacity: 0, scale: 0.9, stagger: 0.1, duration: 0.6 }));
+  attachSetNameListener();
 }
 
 function underlineSvg() {
@@ -682,7 +602,6 @@ function renderQuestion(data) {
       <button class="submit-btn" id="submitBtn" disabled>ส่งคำตอบ</button>`;
     contentEl.innerHTML = html;
     attachNameEditListener();
-
     const input = document.getElementById("answerInput");
     const btn = document.getElementById("submitBtn");
     input.addEventListener("input", () => {
@@ -704,7 +623,6 @@ function renderQuestion(data) {
     <button class="submit-btn" id="submitBtn" disabled>ส่งคะแนน</button>`;
     contentEl.innerHTML = html;
     attachNameEditListener();
-
     let selectedRating = 0;
     const stars = contentEl.querySelectorAll(".rating-star");
     const valueEl = document.getElementById("ratingValue");
@@ -713,9 +631,7 @@ function renderQuestion(data) {
     stars.forEach(star => {
       star.addEventListener("click", () => {
         selectedRating = parseInt(star.dataset.value);
-        stars.forEach((s, i) => {
-          s.classList.toggle("active", i < selectedRating);
-        });
+        stars.forEach((s, i) => s.classList.toggle("active", i < selectedRating));
         valueEl.textContent = `${selectedRating} / 5 — ${emojiLabels[selectedRating]}`;
         btn.disabled = false;
         if (navigator.vibrate) navigator.vibrate(15);
@@ -723,7 +639,7 @@ function renderQuestion(data) {
     });
     btn.addEventListener("click", () => submitRating(selectedRating, data));
   }
-  else if (data.type === "quiz" || data.type === "choice") {
+  else {
     data.options.forEach((opt, i) => {
       html += `<button class="opt-btn" data-idx="${i}">
         <span class="letter" style="background:${CHALK[i%CHALK.length]}">${String.fromCharCode(65+i)}</span>
@@ -732,7 +648,6 @@ function renderQuestion(data) {
     });
     contentEl.innerHTML = html;
     attachNameEditListener();
-
     contentEl.querySelectorAll(".opt-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         btn.disabled = true;
@@ -740,10 +655,6 @@ function renderQuestion(data) {
       });
     });
   }
-
-  safeAnim(() => gsap.from("#content > *", {
-    opacity: 0, y: 15, stagger: 0.08, duration: 0.7, ease: "power2.out", delay: 0.1
-  }));
 }
 
 function renderVoted(data, votedInfo) {
@@ -755,15 +666,14 @@ function renderVoted(data, votedInfo) {
     html += `<div class="your-answer">💬 "${escapeHtml(votedInfo.text || "")}"</div>`;
   }
   else if (data.type === "rating") {
-    const emojiLabels = ['', '😕', '😐', '🙂', '😄', '🤩'];
+    const emojiLabels = ['', '😕', '', '🙂', '😄', '🤩'];
     html += `<div class="your-answer">${emojiLabels[votedInfo.value] || '⭐'} คุณให้คะแนน: <strong>${votedInfo.value}/5</strong></div>`;
   }
   else if (data.type === "quiz") {
     data.options.forEach((opt, i) => {
       const isChosen = i === votedInfo.optionIndex;
       const isCorrect = i === data.correctIndex;
-      let cls = "";
-      let icon = "";
+      let cls = "", icon = "";
       if (isCorrect) { cls = "correct"; icon = "✓"; }
       else if (isChosen) { cls = "wrong"; icon = "✕"; }
       html += `<div class="opt-btn ${cls}" style="cursor:default;">
@@ -791,10 +701,6 @@ function renderVoted(data, votedInfo) {
   html += `<div class="msg" style="margin-top:20px;font-weight:600;">✅ คุณตอบแล้ว ขอบคุณครับ/ค่ะ 🙏</div>`;
   contentEl.innerHTML = html;
   attachNameEditListener();
-
-  safeAnim(() => gsap.from("#content > *", {
-    opacity: 0, y: 12, stagger: 0.1, duration: 0.8, ease: "power2.out"
-  }));
 }
 
 function escapeHtml(s){const d=document.createElement("div");d.textContent=s||"";return d.innerHTML;}
@@ -802,9 +708,7 @@ function escapeHtml(s){const d=document.createElement("div");d.textContent=s||""
 async function voteChoice(optionIndex, data) {
   const studentName = getStudentName();
   const responseRef = doc(db, "polls", classId, "responses", studentId);
-
   showToast("⏳ กำลังส่งคำตอบ...", "info");
-
   try {
     await runTransaction(db, async (tx) => {
       const pollSnap = await tx.get(pollRef);
@@ -812,45 +716,28 @@ async function voteChoice(optionIndex, data) {
       const pollData = pollSnap.data();
       if (!pollData.active) throw new Error("โพลปิดไปแล้ว");
       if (pollData.pollId !== data.pollId) throw new Error("โพลเปลี่ยนไปแล้ว กรุณารีเฟรช");
-
       const respSnap = await tx.get(responseRef);
       if (respSnap.exists() && respSnap.data().pollId === pollData.pollId) throw new Error("คุณตอบไปแล้ว");
-
       if (pollData.counts) {
         const counts = [...pollData.counts];
         counts[optionIndex] = (counts[optionIndex] || 0) + 1;
         tx.update(pollRef, { counts });
       }
-
-      tx.set(responseRef, { 
-        pollId: pollData.pollId, 
-        optionIndex, 
-        studentName,
-        classId,
-        votedAt: serverTimestamp() 
-      });
+      tx.set(responseRef, { pollId: pollData.pollId, optionIndex, studentName, classId, votedAt: serverTimestamp() });
     });
-
     const votedInfo = { pollId: data.pollId, optionIndex, studentName };
     localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
-
     await new Promise(r => setTimeout(r, 600));
-
     renderVoted(data, votedInfo);
     showToast("✅ ส่งคำตอบแล้ว! ครูเห็นทันที", "success");
-  } catch (err) { 
-    showToast("❌ " + err.message, "error"); 
-    startWatching();
-  }
+  } catch (err) { showToast("❌ " + err.message, "error"); startWatching(); }
 }
 
 async function submitText(text, data) {
   if (!text) return;
   const studentName = getStudentName();
   const responseRef = doc(db, "polls", classId, "responses", studentId);
-
   showToast("⏳ กำลังส่งคำตอบ...", "info");
-
   try {
     await runTransaction(db, async (tx) => {
       const pollSnap = await tx.get(pollRef);
@@ -858,39 +745,23 @@ async function submitText(text, data) {
       const pollData = pollSnap.data();
       if (!pollData.active) throw new Error("โพลปิดไปแล้ว");
       if (pollData.pollId !== data.pollId) throw new Error("โพลเปลี่ยนไปแล้ว กรุณารีเฟรช");
-
       const respSnap = await tx.get(responseRef);
       if (respSnap.exists() && respSnap.data().pollId === pollData.pollId) throw new Error("คุณตอบไปแล้ว");
-
-      tx.set(responseRef, { 
-        pollId: pollData.pollId, 
-        text, 
-        studentName,
-        classId,
-        votedAt: serverTimestamp() 
-      });
+      tx.set(responseRef, { pollId: pollData.pollId, text, studentName, classId, votedAt: serverTimestamp() });
     });
-
     const votedInfo = { pollId: data.pollId, text, studentName };
     localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
-
     await new Promise(r => setTimeout(r, 600));
-
     renderVoted(data, votedInfo);
     showToast("✅ ส่งคำตอบแล้ว! ครูเห็นทันที", "success");
-  } catch (err) { 
-    showToast("❌ " + err.message, "error"); 
-    startWatching();
-  }
+  } catch (err) { showToast("❌ " + err.message, "error"); startWatching(); }
 }
 
 async function submitRating(value, data) {
   if (value < 1 || value > 5) return;
   const studentName = getStudentName();
   const responseRef = doc(db, "polls", classId, "responses", studentId);
-
   showToast("⏳ กำลังส่งคะแนน...", "info");
-
   try {
     await runTransaction(db, async (tx) => {
       const pollSnap = await tx.get(pollRef);
@@ -898,37 +769,21 @@ async function submitRating(value, data) {
       const pollData = pollSnap.data();
       if (!pollData.active) throw new Error("โพลปิดไปแล้ว");
       if (pollData.pollId !== data.pollId) throw new Error("โพลเปลี่ยนไปแล้ว กรุณารีเฟรช");
-
       const respSnap = await tx.get(responseRef);
       if (respSnap.exists() && respSnap.data().pollId === pollData.pollId) throw new Error("คุณตอบไปแล้ว");
-
       const counts = [...(pollData.counts || Array(5).fill(0))];
       counts[value - 1] = (counts[value - 1] || 0) + 1;
       tx.update(pollRef, { counts });
-
-      tx.set(responseRef, { 
-        pollId: pollData.pollId, 
-        value, 
-        studentName,
-        classId,
-        votedAt: serverTimestamp() 
-      });
+      tx.set(responseRef, { pollId: pollData.pollId, value, studentName, classId, votedAt: serverTimestamp() });
     });
-
     const votedInfo = { pollId: data.pollId, value, studentName };
     localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
-
     await new Promise(r => setTimeout(r, 600));
-
     renderVoted(data, votedInfo);
     showToast(`✅ ให้คะแนน ${value}/5 แล้ว!`, "success");
-  } catch (err) { 
-    showToast("❌ " + err.message, "error"); 
-    startWatching();
-  }
+  } catch (err) { showToast("❌ " + err.message, "error"); startWatching(); }
 }
 
-// 🔧 FIX #5: จุดเริ่มต้น — บังคับเข้าหน้ากรอกชื่อถ้าชื่อว่าง
 if (!getStudentName()) {
   renderNameInput();
 } else {
