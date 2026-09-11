@@ -353,6 +353,17 @@ import { firebaseConfig, CLASS_LIST } from "./firebase-config.js";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// ---- Animation safety wrapper -------------------------------------------
+// If the GSAP CDN script is blocked or fails to load (common on school
+// networks / ad-blockers), the page must still work fully — typing a name,
+// voting, submitting answers — with just slightly less-fancy motion.
+function hasGsap() { return typeof gsap !== "undefined"; }
+function safeAnim(run) {
+  if (!hasGsap()) return;
+  try { run(); } catch (e) { console.warn("Animation skipped:", e); }
+}
+// ---------------------------------------------------------------------------
+
 const params = new URLSearchParams(location.search);
 let classId = params.get("class") || localStorage.getItem("studentLastClass") || CLASS_LIST[0];
 
@@ -420,18 +431,18 @@ function switchRoom(newClassId) {
   }
   classId = newClassId;
   localStorage.setItem("studentLastClass", classId);
-  
+
   const newUrl = new URL(location.href);
   newUrl.searchParams.set("class", classId);
   history.replaceState(null, "", newUrl.toString());
-  
+
   pollRef = doc(db, "polls", classId);
   updateClassDisplay();
   roomModal.classList.remove("show");
-  
+
   if (unsubPoll) unsubPoll();
   showToast("🔄 เปลี่ยนห้องเป็น ม." + classId.replace("-", "/") + " แล้ว", "success");
-  
+
   if (!getStudentName()) {
     renderNameInput();
   } else {
@@ -445,7 +456,7 @@ function renderNameInput() {
     <div class="name-section">
       <div class="name-icon">👤</div>
       <div class="name-title">คุณชื่ออะไร?</div>
-      <div class="name-hint">กรอกชื่อหรือนickname ของคุณ<br>ครูจะได้รู้ว่าใครตอบอะไร</div>
+      <div class="name-hint">กรอกชื่อหรือnickname ของคุณ<br>ครูจะได้รู้ว่าใครตอบอะไร</div>
       <input type="text" id="nameInput" class="name-input" 
              placeholder="เช่น น้องใหม่, สมชาย" maxlength="40"
              value="${escapeHtml(currentName)}" autocomplete="off">
@@ -453,40 +464,50 @@ function renderNameInput() {
         เข้าสู่ห้องเรียน 🚀
       </button>
     </div>`;
-  
+
   const input = document.getElementById("nameInput");
   const btn = document.getElementById("saveNameBtn");
-  
+
   input.addEventListener("input", () => {
     btn.disabled = input.value.trim().length === 0;
   });
-  
+
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && input.value.trim()) {
       btn.click();
     }
   });
-  
+
   btn.addEventListener("click", () => {
     const name = input.value.trim();
     if (!name) return;
     localStorage.setItem("studentName", name);
     showToast("👋 สวัสดี " + name + "!", "success");
-    
-    gsap.to(contentEl, {
-      opacity: 0, y: -10, duration: 0.4,
-      onComplete: () => {
-        startWatching();
-        gsap.fromTo(contentEl, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 });
+
+    // Always proceed to the poll, whether or not the fade animation runs —
+    // an animation-library hiccup must never block the student from continuing.
+    if (hasGsap()) {
+      try {
+        gsap.to(contentEl, {
+          opacity: 0, y: -10, duration: 0.4,
+          onComplete: () => {
+            startWatching();
+            safeAnim(() => gsap.fromTo(contentEl, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 }));
+          }
+        });
+        return;
+      } catch (e) {
+        console.warn("Animation skipped:", e);
       }
-    });
+    }
+    startWatching();
   });
-  
+
   setTimeout(() => input.focus(), 100);
-  
-  gsap.from(".name-section > *", {
+
+  safeAnim(() => gsap.from(".name-section > *", {
     opacity: 0, y: 15, stagger: 0.1, duration: 0.6, ease: "power2.out"
-  });
+  }));
 }
 
 function renderStudentBadge() {
@@ -536,7 +557,7 @@ function renderWaiting() {
       💡 สแกน QR Code ที่หน้าจอครู<br>หรือรอครูเปิดโพลในห้อง ม.${classId.replace('-', '/')}
     </div>`;
   attachNameEditListener();
-  gsap.from(".waiting, .msg", { opacity: 0, y: 10, stagger: 0.15, duration: 0.8 });
+  safeAnim(() => gsap.from(".waiting, .msg", { opacity: 0, y: 10, stagger: 0.15, duration: 0.8 }));
 }
 
 function renderClosed() {
@@ -546,7 +567,7 @@ function renderClosed() {
     <div class="msg" style="font-size:17px;font-weight:600;">โพลนี้ปิดแล้ว</div>
     <div class="msg">ขอบคุณที่ร่วมโหวตครับ/ค่ะ 🙏</div>`;
   attachNameEditListener();
-  gsap.from(".thankyou, .msg", { opacity: 0, scale: 0.8, stagger: 0.15, duration: 0.8 });
+  safeAnim(() => gsap.from(".thankyou, .msg", { opacity: 0, scale: 0.8, stagger: 0.15, duration: 0.8 }));
 }
 
 function underlineSvg() {
@@ -568,7 +589,7 @@ function renderQuestion(data) {
       <button class="submit-btn" id="submitBtn" disabled>ส่งคำตอบ</button>`;
     contentEl.innerHTML = html;
     attachNameEditListener();
-    
+
     const input = document.getElementById("answerInput");
     const btn = document.getElementById("submitBtn");
     input.addEventListener("input", () => {
@@ -590,7 +611,7 @@ function renderQuestion(data) {
     <button class="submit-btn" id="submitBtn" disabled>ส่งคะแนน</button>`;
     contentEl.innerHTML = html;
     attachNameEditListener();
-    
+
     let selectedRating = 0;
     const stars = contentEl.querySelectorAll(".rating-star");
     const valueEl = document.getElementById("ratingValue");
@@ -618,7 +639,7 @@ function renderQuestion(data) {
     });
     contentEl.innerHTML = html;
     attachNameEditListener();
-    
+
     contentEl.querySelectorAll(".opt-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         btn.disabled = true;
@@ -626,10 +647,10 @@ function renderQuestion(data) {
       });
     });
   }
-  
-  gsap.from("#content > *", {
+
+  safeAnim(() => gsap.from("#content > *", {
     opacity: 0, y: 15, stagger: 0.08, duration: 0.7, ease: "power2.out", delay: 0.1
-  });
+  }));
 }
 
 function renderVoted(data, votedInfo) {
@@ -677,10 +698,10 @@ function renderVoted(data, votedInfo) {
   html += `<div class="msg" style="margin-top:20px;font-weight:600;">✅ คุณตอบแล้ว ขอบคุณครับ/ค่ะ 🙏</div>`;
   contentEl.innerHTML = html;
   attachNameEditListener();
-  
-  gsap.from("#content > *", {
+
+  safeAnim(() => gsap.from("#content > *", {
     opacity: 0, y: 12, stagger: 0.1, duration: 0.8, ease: "power2.out"
-  });
+  }));
 }
 
 function escapeHtml(s){const d=document.createElement("div");d.textContent=s||"";return d.innerHTML;}
@@ -688,9 +709,9 @@ function escapeHtml(s){const d=document.createElement("div");d.textContent=s||""
 async function voteChoice(optionIndex, data) {
   const studentName = getStudentName();
   const responseRef = doc(db, "polls", classId, "responses", studentId);
-  
+
   showToast("⏳ กำลังส่งคำตอบ...", "info");
-  
+
   try {
     await runTransaction(db, async (tx) => {
       const pollSnap = await tx.get(pollRef);
@@ -698,16 +719,16 @@ async function voteChoice(optionIndex, data) {
       const pollData = pollSnap.data();
       if (!pollData.active) throw new Error("โพลปิดไปแล้ว");
       if (pollData.pollId !== data.pollId) throw new Error("โพลเปลี่ยนไปแล้ว กรุณารีเฟรช");
-      
+
       const respSnap = await tx.get(responseRef);
       if (respSnap.exists() && respSnap.data().pollId === pollData.pollId) throw new Error("คุณตอบไปแล้ว");
-      
+
       if (pollData.counts) {
         const counts = [...pollData.counts];
         counts[optionIndex] = (counts[optionIndex] || 0) + 1;
         tx.update(pollRef, { counts });
       }
-      
+
       tx.set(responseRef, { 
         pollId: pollData.pollId, 
         optionIndex, 
@@ -716,12 +737,12 @@ async function voteChoice(optionIndex, data) {
         votedAt: serverTimestamp() 
       });
     });
-    
+
     const votedInfo = { pollId: data.pollId, optionIndex, studentName };
     localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
-    
+
     await new Promise(r => setTimeout(r, 600));
-    
+
     renderVoted(data, votedInfo);
     showToast("✅ ส่งคำตอบแล้ว! ครูเห็นทันที", "success");
   } catch (err) { 
@@ -734,9 +755,9 @@ async function submitText(text, data) {
   if (!text) return;
   const studentName = getStudentName();
   const responseRef = doc(db, "polls", classId, "responses", studentId);
-  
+
   showToast("⏳ กำลังส่งคำตอบ...", "info");
-  
+
   try {
     await runTransaction(db, async (tx) => {
       const pollSnap = await tx.get(pollRef);
@@ -744,10 +765,10 @@ async function submitText(text, data) {
       const pollData = pollSnap.data();
       if (!pollData.active) throw new Error("โพลปิดไปแล้ว");
       if (pollData.pollId !== data.pollId) throw new Error("โพลเปลี่ยนไปแล้ว กรุณารีเฟรช");
-      
+
       const respSnap = await tx.get(responseRef);
       if (respSnap.exists() && respSnap.data().pollId === pollData.pollId) throw new Error("คุณตอบไปแล้ว");
-      
+
       tx.set(responseRef, { 
         pollId: pollData.pollId, 
         text, 
@@ -756,12 +777,12 @@ async function submitText(text, data) {
         votedAt: serverTimestamp() 
       });
     });
-    
+
     const votedInfo = { pollId: data.pollId, text, studentName };
     localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
-    
+
     await new Promise(r => setTimeout(r, 600));
-    
+
     renderVoted(data, votedInfo);
     showToast("✅ ส่งคำตอบแล้ว! ครูเห็นทันที", "success");
   } catch (err) { 
@@ -774,9 +795,9 @@ async function submitRating(value, data) {
   if (value < 1 || value > 5) return;
   const studentName = getStudentName();
   const responseRef = doc(db, "polls", classId, "responses", studentId);
-  
+
   showToast("⏳ กำลังส่งคะแนน...", "info");
-  
+
   try {
     await runTransaction(db, async (tx) => {
       const pollSnap = await tx.get(pollRef);
@@ -784,14 +805,14 @@ async function submitRating(value, data) {
       const pollData = pollSnap.data();
       if (!pollData.active) throw new Error("โพลปิดไปแล้ว");
       if (pollData.pollId !== data.pollId) throw new Error("โพลเปลี่ยนไปแล้ว กรุณารีเฟรช");
-      
+
       const respSnap = await tx.get(responseRef);
       if (respSnap.exists() && respSnap.data().pollId === pollData.pollId) throw new Error("คุณตอบไปแล้ว");
-      
+
       const counts = [...(pollData.counts || Array(5).fill(0))];
       counts[value - 1] = (counts[value - 1] || 0) + 1;
       tx.update(pollRef, { counts });
-      
+
       tx.set(responseRef, { 
         pollId: pollData.pollId, 
         value, 
@@ -800,12 +821,12 @@ async function submitRating(value, data) {
         votedAt: serverTimestamp() 
       });
     });
-    
+
     const votedInfo = { pollId: data.pollId, value, studentName };
     localStorage.setItem(`voted_${classId}`, JSON.stringify(votedInfo));
-    
+
     await new Promise(r => setTimeout(r, 600));
-    
+
     renderVoted(data, votedInfo);
     showToast(`✅ ให้คะแนน ${value}/5 แล้ว!`, "success");
   } catch (err) { 
