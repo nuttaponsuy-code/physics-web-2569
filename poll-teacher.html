@@ -1009,7 +1009,6 @@ function showLive() {
   document.getElementById("setupView").style.display = "none";
   const liveView = document.getElementById("liveView");
   liveView.style.display = "block";
-  // Animation ถูกควบคุมผ่าน CSS class .animating แทน inline style
 }
 function showSetup() {
   document.body.classList.remove("present-mode");
@@ -1018,7 +1017,7 @@ function showSetup() {
 }
 
 // ---------------------------------------------------------------------------
-// Poll watcher — 🔒 THE FIX: แยก "โพลใหม่" vs "โหวตอัปเดต"
+// Poll watcher — แยก "โพลใหม่" vs "โหวตอัปเดต"
 // ---------------------------------------------------------------------------
 let unsubPoll = null, unsubResponses = null;
 let latestPollData = null;
@@ -1035,7 +1034,6 @@ function watchClass() {
     latestPollData = data;
     document.getElementById("classBadge").textContent = "🎓 ห้อง ม." + boundClassId.replace("-", "/");
 
-    // ✅ เฉพาะโพลใหม่จริง ๆ เท่านั้นที่ setup หน้าจอครั้งเดียว
     if (data.pollId !== lastRenderedPollId) {
       lastRenderedPollId = data.pollId;
       const studentUrl = `${location.origin}${location.pathname.replace('poll-teacher.html','poll-student.html')}?class=${encodeURIComponent(boundClassId)}`;
@@ -1045,15 +1043,13 @@ function watchClass() {
       document.getElementById("linkText").textContent = studentUrl;
       document.getElementById("statusMsg").textContent = "";
       document.getElementById("statusMsg").className = "";
-      
-      // สร้างโครงสร้าง bars/cloud ครั้งเดียว (ไม่ใช่ทุกโหวต)
+
       buildBarsStructure(data);
-      
+
       showLive();
       watchResponses(data.pollId, data.type, boundClassId);
     }
 
-    // ✅ อัปเดตเฉพาะค่า (ไม่สร้าง DOM ใหม่)
     updateLiveContent(data);
   }, (err) => console.error(err));
 }
@@ -1082,10 +1078,8 @@ function watchResponses(pollId, type, classId) {
 }
 
 // ---------------------------------------------------------------------------
-// 🎯 THE CORE FIX: แยก "สร้างโครงสร้าง" vs "อัปเดตค่า"
+// Bars: แยก "สร้างโครงสร้าง" vs "อัปเดตค่า"
 // ---------------------------------------------------------------------------
-
-// สร้าง bars ครั้งเดียวเมื่อโพลใหม่เริ่ม
 function buildBarsStructure(data) {
   document.getElementById("liveQuestion").textContent = data.question;
   const imgEl = document.getElementById("liveImage");
@@ -1150,7 +1144,6 @@ function buildRatingBars() {
   });
 }
 
-// ✅ อัปเดตแค่ค่า — ไม่ rebuild DOM (ไม่ flash, ไม่จาง)
 function updateLiveContent(data) {
   if (data.type === "choice" || data.type === "quiz") {
     updateChoiceBars(data);
@@ -1188,7 +1181,7 @@ function updateRatingBars(counts) {
   renderTotalLine(total);
 }
 
-// Word cloud — ใช้ Set เพื่อเช็คว่า tag ไหน "ใหม่" จริง ๆ (ไม่ต้อง animate ซ้ำ)
+// Word cloud
 let lastCloudKeys = new Set();
 function renderCloud(answers) {
   const el = document.getElementById("cloudView");
@@ -1202,7 +1195,7 @@ function renderCloud(answers) {
   answers.forEach(a => { const key = (a || "").trim(); if (key) freq[key] = (freq[key] || 0) + 1; });
   const entries = Object.entries(freq).sort((a, b) => b[1] - a[1]);
   const maxCount = entries.length ? entries[0][1] : 1;
-  
+
   const currentKeys = new Set(entries.map(e => e[0]));
   el.innerHTML = "";
   entries.forEach(([text, count], i) => {
@@ -1297,6 +1290,9 @@ document.getElementById("newPollBtn").addEventListener("click", async () => {
   showSetup();
 });
 
+// ---------------------------------------------------------------------------
+//  ปิดโพล & บันทึกผลลง Sheet (V2 — ส่งชื่อ + คำตอบรายคน)
+// ---------------------------------------------------------------------------
 document.getElementById("closePollBtn").addEventListener("click", async () => {
   if (!latestPollData) return;
   const ok = await confirmDialog("ปิดโพลและบันทึกผลลง Google Sheet ใช่หรือไม่?");
@@ -1308,36 +1304,53 @@ document.getElementById("closePollBtn").addEventListener("click", async () => {
   statusEl.textContent = "⏳ กำลังบันทึก...";
   statusEl.className = "status-msg";
 
-  let results;
-  if (latestPollData.type === "choice" || latestPollData.type === "quiz") {
-    results = latestPollData.options.map((opt, i) => ({ option: opt, count: latestPollData.counts[i] || 0 }));
-  } else if (latestPollData.type === "rating") {
-    results = latestPollData.counts.map((count, i) => ({ rating: i+1, count }));
-  } else {
-    const snap = await getDocs(query(responsesCol(), where("pollId", "==", latestPollData.pollId)));
-    const freq = {};
-    snap.forEach(d => { const t = (d.data().text || "").trim(); if (t) freq[t] = (freq[t] || 0) + 1; });
-    results = Object.entries(freq).map(([answer, count]) => ({ answer, count }));
-  }
-
   try {
+    // 1) ดึงคำตอบ "รายคน" (พร้อมชื่อนักเรียน) ออกจาก Firestore
+    const snap = await getDocs(query(responsesCol(), where("pollId", "==", latestPollData.pollId)));
+    const responses = [];
+    const freq = {};
+    snap.forEach(d => {
+      const r = d.data();
+      let answer = "";
+      if (latestPollData.type === "choice" || latestPollData.type === "quiz") {
+        answer = (latestPollData.options || [])[r.optionIndex] || "(ไม่ระบุตัวเลือก)";
+      } else if (latestPollData.type === "rating") {
+        answer = (r.value || 0) + " ดาว";
+      } else {
+        answer = (r.text || "").trim();
+      }
+      responses.push({ name: (r.studentName || "").trim() || "(ไม่ระบุชื่อ)", answer });
+      if (answer) freq[answer] = (freq[answer] || 0) + 1;
+    });
+
+    // 2) สรุปยอดรวม — ใช้คีย์ "answer" ตัวเดียวให้ตรงกับ Apps Script
+    let results;
+    if (latestPollData.type === "choice" || latestPollData.type === "quiz") {
+      results = latestPollData.options.map((opt, i) => ({ answer: opt, count: latestPollData.counts[i] || 0 }));
+    } else if (latestPollData.type === "rating") {
+      results = (latestPollData.counts || []).map((count, i) => ({ answer: (i + 1) + " ดาว", count }));
+    } else {
+      results = Object.entries(freq).map(([answer, count]) => ({ answer, count }));
+    }
+
     const res = await fetch(APPS_SCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({
-        action: "savePollResult",
+        action: "savePollResultV2",
         payload: {
           classId: "ม." + CLASS_ID.replace("-", "/"),
           question: latestPollData.question,
           type: latestPollData.type,
           topic: currentMeta.topic || "",
-          results
+          results,
+          responses
         }
       })
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
-    statusEl.textContent = "✅ บันทึกลง Sheet สำเร็จแล้ว";
+    statusEl.textContent = `✅ บันทึกลง Sheet สำเร็จ (${data.saved || 0} คำตอบ)`;
     statusEl.className = "status-msg status-ok";
   } catch (err) {
     statusEl.textContent = "❌ บันทึกไม่สำเร็จ: " + err.message;
